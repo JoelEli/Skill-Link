@@ -409,7 +409,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
         <h2>Welcome back</h2>
         <p class="auth-subtitle">Sign in to continue to SkillLink</p>
         <div class="auth-err" id="signin-err"></div>
-        <form onsubmit="doSignin(event)">
+        <form method="POST" onsubmit="doSignin(event)">
           <div class="form-group">
             <label>Email address</label>
             <input type="email" id="si-email" placeholder="you@university.edu" required autocomplete="email"/>
@@ -445,7 +445,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
             <div class="su-step-lbl">Academic</div>
           </div>
         </div>
-        <form onsubmit="doSignup(event)">
+        <form method="POST" onsubmit="doSignup(event)">
           <!-- STEP 1: Account details -->
           <div id="su-step1">
             <div class="form-group">
@@ -866,14 +866,23 @@ function api(method, path, body, isForm) {
   } else if (body && isForm) {
     opts.body = body;
   }
-  return fetch('/api' + path, opts).then(function(r) {
+  var url = '/api' + path;
+  return fetch(url, opts).then(function(r) {
     if (r.status === 401) { clearAuth(); showAuthOverlay(); return Promise.reject(new Error('Session expired')); }
     return r.json().then(function(data) {
-      if (!r.ok) return Promise.reject(new Error(data.error || data.message || 'Request failed'));
+      if (!r.ok) {
+        var msg = data.error || data.message || 'Request failed';
+        if (data.details && data.details.length) msg = data.details[0].msg;
+        return Promise.reject(new Error(msg));
+      }
       return data;
     }, function() {
-      return Promise.reject(new Error(r.ok ? 'Invalid server response' : 'Request failed (' + r.status + ')'));
+      console.error('[API] Non-JSON response:', r.status, url);
+      return Promise.reject(new Error(r.ok ? 'Invalid server response' : 'Request failed (' + r.status + ') — ' + method + ' ' + url));
     });
+  }).catch(function(err) {
+    if (err.message !== 'Session expired') console.error('[API] Error:', method, url, err.message);
+    return Promise.reject(err);
   });
 }
 
@@ -992,7 +1001,12 @@ function doSignup(e) {
     nav('home');
     toast('Account created! Welcome, ' + d.user.name.split(' ')[0] + '!', 'success');
   }).catch(function(err) {
-    errEl.textContent = err.message;
+    var msg = err.message || 'Something went wrong';
+    if (msg.toLowerCase().indexOf('already exists') !== -1) {
+      errEl.innerHTML = msg + ' &mdash; <a href="#" onclick="openAuth(\'signin\');return false" style="color:var(--primary)">Sign in instead</a>';
+    } else {
+      errEl.textContent = msg;
+    }
     errEl.classList.add('show');
     suPrevStep();
   }).finally(function() {

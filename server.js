@@ -148,8 +148,9 @@ app.use('/api/*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Serve the SPA for all other routes
+// Serve the SPA — no-cache ensures CSP/JS changes apply without browser hard-refresh
 app.get('*', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
