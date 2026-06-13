@@ -55,10 +55,16 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 }
 
-// CORS — restrict to configured origin in production
-const allowedOrigin = process.env.CORS_ORIGIN || 'http://localhost:5000';
+// CORS — allow comma-separated origins from CORS_ORIGIN env var
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5000')
+  .split(',').map(function(s) { return s.trim(); });
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? allowedOrigin : '*',
+  origin: process.env.NODE_ENV === 'production'
+    ? function(origin, cb) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) return cb(null, true);
+        cb(new Error('Not allowed by CORS'));
+      }
+    : '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
