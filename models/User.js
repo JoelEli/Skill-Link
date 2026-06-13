@@ -1,46 +1,20 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Name is required'],
-    trim: true,
-    maxlength: [50, 'Name cannot be more than 50 characters']
-  },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: true,
-    lowercase: true,
-    trim: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
-  },
-  password: {
-    type: String,
-    required: [true, 'Password is required'],
-    minlength: [6, 'Password must be at least 6 characters long']
-  },
-  skills: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Skill'
-  }],
-  ratings: [{
-    type: Number,
-    min: 1,
-    max: 5
-  }]
-}, {
-  timestamps: true
-});
+  name:      { type: String, required: true, trim: true, maxlength: 80 },
+  email:     { type: String, required: true, unique: true, lowercase: true, trim: true },
+  password:  { type: String, required: true, minlength: 6 },
+  bio:       { type: String, default: '', maxlength: 300 },
+  university:{ type: String, default: '', maxlength: 100 },
+  year:      { type: String, default: '', enum: ['','1st Year','2nd Year','3rd Year','4th Year','5th Year','Masters','PhD','Graduate'] },
+  subject:   { type: String, default: '' },
+  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  savedResources: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }]
+}, { timestamps: true });
 
-// Virtual for average rating
-userSchema.virtual('averageRating').get(function() {
-  if (this.ratings.length === 0) return 0;
-  const sum = this.ratings.reduce((acc, rating) => acc + rating, 0);
-  return (sum / this.ratings.length).toFixed(1);
-});
+userSchema.virtual('followerCount').get(function(){ return this.followers ? this.followers.length : 0; });
+userSchema.virtual('followingCount').get(function(){ return this.following ? this.following.length : 0; });
+userSchema.set('toJSON', { virtuals: true, transform: function(doc, ret){ delete ret.password; return ret; } });
 
-// Ensure virtual fields are serialized
-userSchema.set('toJSON', { virtuals: true });
-
-module.exports = mongoose.model('User', userSchema); 
+module.exports = mongoose.model('User', userSchema);

@@ -1,50 +1,67 @@
 const { body, validationResult } = require('express-validator');
 
-// Validation rules for user signup
+const VALID_YEARS = ['','1st Year','2nd Year','3rd Year','4th Year','5th Year','Masters','PhD','Graduate'];
+
 const signupValidation = [
   body('name')
     .trim()
-    .isLength({ min: 2, max: 50 })
-    .withMessage('Name must be between 2 and 50 characters'),
+    .isLength({ min: 2, max: 80 })
+    .withMessage('Name must be between 2 and 80 characters'),
   body('email')
     .isEmail()
     .normalizeEmail()
     .withMessage('Please provide a valid email'),
   body('password')
     .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters long')
+    .withMessage('Password must be at least 6 characters'),
+  body('university')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('University name cannot exceed 100 characters'),
+  body('year')
+    .optional({ checkFalsy: true })
+    .isIn(VALID_YEARS)
+    .withMessage('Invalid academic level'),
+  body('subject')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('Course name cannot exceed 100 characters')
 ];
 
-// Validation rules for user login
 const loginValidation = [
   body('email')
     .isEmail()
     .normalizeEmail()
     .withMessage('Please provide a valid email'),
   body('password')
-    .notEmpty()
-    .withMessage('Password is required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters')
 ];
 
-// Validation rules for skill creation
-const skillValidation = [
-  body('title')
+const updateProfileValidation = [
+  body('name')
+    .optional()
     .trim()
-    .isLength({ min: 3, max: 100 })
-    .withMessage('Title must be between 3 and 100 characters'),
-  body('description')
+    .isLength({ min: 2, max: 80 })
+    .withMessage('Name must be between 2 and 80 characters'),
+  body('bio')
+    .optional()
     .trim()
-    .isLength({ min: 10, max: 500 })
-    .withMessage('Description must be between 10 and 500 characters'),
-  body('category')
-    .isIn(['Technology', 'Design', 'Marketing', 'Writing', 'Music', 'Cooking', 'Fitness', 'Language', 'Art', 'Business', 'Other'])
-    .withMessage('Please select a valid category'),
-  body('price')
-    .isFloat({ min: 0, max: 10000 })
-    .withMessage('Price must be a number between 0 and 10000')
+    .isLength({ max: 300 })
+    .withMessage('Bio cannot exceed 300 characters'),
+  body('university')
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('University cannot exceed 100 characters'),
+  body('year')
+    .optional()
+    .isIn(VALID_YEARS)
+    .withMessage('Invalid year value')
 ];
 
-// Middleware to check for validation errors
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -59,6 +76,6 @@ const handleValidationErrors = (req, res, next) => {
 module.exports = {
   signupValidation,
   loginValidation,
-  skillValidation,
+  updateProfileValidation,
   handleValidationErrors
-}; 
+};

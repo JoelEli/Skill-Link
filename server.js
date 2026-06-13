@@ -1,70 +1,168 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
+const path = require('path');
+const fs = require('fs');
 
-// Load environment variables
 dotenv.config();
 
-// Import routes
+const User = require('./models/User');
+const Resource = require('./models/Resource');
+const { Channel } = require('./models/Channel');
 const authRoutes = require('./routes/auth');
-const skillRoutes = require('./routes/skills');
 const userRoutes = require('./routes/users');
+const resourceRoutes = require('./routes/resources');
+const channelRoutes = require('./routes/channels');
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Ensure uploads directories exist
+const uploadsDir = path.join(__dirname, 'public', 'uploads');
+const resourcesDir = path.join(__dirname, 'public', 'uploads', 'resources');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+if (!fs.existsSync(resourcesDir)) {
+  fs.mkdirSync(resourcesDir, { recursive: true });
+}
 
-// Serve static files from public directory
-app.use(express.static('public'));
+// Security headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:'],
+      fontSrc: ["'self'", 'https:', 'data:'],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      frameAncestors: ["'self'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"]
+    }
+  }
+}));
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => {
-  console.log('Connected to MongoDB Atlas');
-})
-.catch((error) => {
-  console.error('MongoDB connection error:', error);
-  process.exit(1);
+// HTTP request logging
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+}
+
+// CORS — restrict to configured origin in production
+const allowedOrigin = process.env.CORS_ORIGIN || 'http://localhost:5000';
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' ? allowedOrigin : '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// General rate limiter
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' }
+}));
+
+// Stricter limiter for auth routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many auth attempts, please try again later.' }
 });
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/skills', skillRoutes);
-app.use('/api/users', userRoutes);
+// Upload limiter — 20 uploads per hour per IP
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Upload limit reached. Please try again later.' }
+});
 
-// Health check route
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Serve static files (frontend + uploaded files)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Database connection with auto-retry
+function connectDB() {
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('Connected to MongoDB Atlas'))
+    .catch((error) => {
+      console.error('MongoDB connection error:', error.message, '— retrying in 5s');
+      setTimeout(connectDB, 5000);
+    });
+}
+connectDB();
+
+// Routes
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/users', userRoutes);
+app.post('/api/resources', uploadLimiter);
+app.use('/api/resources', resourceRoutes);
+app.use('/api/channels', channelRoutes);
+
+// Stats endpoint
+app.get('/api/stats', async (req, res) => {
+  try {
+    const [totalResources, totalUsers, dlResult, totalChannels] = await Promise.all([
+      Resource.countDocuments(),
+      User.countDocuments(),
+      Resource.aggregate([{ $group: { _id: null, total: { $sum: '$downloads' } } }]),
+      Channel.countDocuments()
+    ]);
+    res.json({
+      totalResources,
+      totalUsers,
+      totalDownloads: (dlResult[0] && dlResult[0].total) || 0,
+      totalChannels
+    });
+  } catch(e) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'SkillLink API is running',
     timestamp: new Date().toISOString()
   });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
+// 404 handler for API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
+// Serve the SPA for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Global error handler
+app.use((err, req, res, _next) => {
   console.error(err.stack);
-  res.status(500).json({ 
+  res.status(500).json({
     error: 'Something went wrong!',
     message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
   });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
-
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-}); 
+  console.log(`Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+});

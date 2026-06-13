@@ -1,152 +1,116 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
-const Skill = require('../models/Skill');
+const Resource = require('../models/Resource');
 const auth = require('../middleware/auth');
-
+const { updateProfileValidation, handleValidationErrors } = require('../middleware/validation');
 const router = express.Router();
 
-// @route   GET /api/users/:id
-// @desc    Get user profile with posted skills
-// @access  Public
-router.get('/:id', async (req, res) => {
+// GET / — list users (search, page, limit)
+router.get('/', async (req, res) => {
   try {
-    const user = await User.findById(req.params.id)
-      .select('-password')
-      .populate({
-        path: 'skills',
-        select: 'title description category price createdAt',
-        options: { sort: { createdAt: -1 } }
-      });
-    
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    
-    res.json({
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        averageRating: user.averageRating,
-        skillsCount: user.skills.length,
-        skills: user.skills,
-        createdAt: user.createdAt
-      }
-    });
-    
-  } catch (error) {
-    console.error('Get user profile error:', error);
-    if (error.kind === 'ObjectId') {
-      return res.status(400).json({ error: 'Invalid user ID' });
-    }
-    res.status(500).json({ error: 'Server error while fetching user profile' });
-  }
+    const { search, page=1, limit=12 } = req.query;
+    const pageNum = Math.max(1, parseInt(page)||1);
+    const limitNum = Math.min(50, parseInt(limit)||12);
+    const query = {};
+    if (search) query.name = { $regex: search, $options: 'i' };
+    const [users, total] = await Promise.all([
+      User.find(query).select('-password -savedResources').sort({ createdAt: -1 }).skip((pageNum-1)*limitNum).limit(limitNum),
+      User.countDocuments(query)
+    ]);
+    res.json({ total, count: users.length, page: pageNum, pages: Math.ceil(total/limitNum), users });
+  } catch(e) { res.status(500).json({ error: 'Server error' }); }
 });
 
-// @route   GET /api/users/me/profile
-// @desc    Get current user's profile
-// @access  Private
+// GET /me/profile
 router.get('/me/profile', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id)
-      .select('-password')
-      .populate({
-        path: 'skills',
-        select: 'title description category price createdAt',
-        options: { sort: { createdAt: -1 } }
-      });
-    
-    res.json({
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        averageRating: user.averageRating,
-        skillsCount: user.skills.length,
-        skills: user.skills,
-        ratings: user.ratings,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
-      }
-    });
-    
-  } catch (error) {
-    console.error('Get current user profile error:', error);
-    res.status(500).json({ error: 'Server error while fetching profile' });
-  }
+    const user = await User.findById(req.user._id).select('-password').populate('savedResources', 'title subject fileType fileSize downloads likesCount likes createdAt user');
+    const resources = await Resource.find({ user: req.user._id }).sort({ createdAt: -1 });
+    res.json({ user: { ...user.toJSON(), uploadCount: resources.length, resources } });
+  } catch(e) { res.status(500).json({ error: 'Server error' }); }
 });
 
-// @route   PUT /api/users/me/profile
-// @desc    Update current user's profile
-// @access  Private
-router.put('/me/profile', auth, async (req, res) => {
+// PUT /me/profile
+router.put('/me/profile', auth, updateProfileValidation, handleValidationErrors, async (req, res) => {
   try {
-    const { name, email } = req.body;
-    
-    // Check if email is already taken by another user
-    if (email && email !== req.user.email) {
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(400).json({ error: 'Email is already taken' });
-      }
-    }
-    
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user._id,
-      { name, email },
-      { new: true, runValidators: true }
-    ).select('-password');
-    
-    res.json({
-      message: 'Profile updated successfully',
-      user: updatedUser
-    });
-    
-  } catch (error) {
-    console.error('Update profile error:', error);
-    res.status(500).json({ error: 'Server error while updating profile' });
-  }
+    const { name, bio, university, year, subject } = req.body;
+    const updates = {};
+    if (name) updates.name = name.trim();
+    if (bio !== undefined) updates.bio = bio.trim();
+    if (university !== undefined) updates.university = university.trim();
+    if (year !== undefined) updates.year = year;
+    if (subject !== undefined) updates.subject = subject;
+    const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true, runValidators: true }).select('-password');
+    res.json({ message: 'Profile updated', user });
+  } catch(e) { res.status(500).json({ error: 'Server error' }); }
 });
 
-// @route   POST /api/users/:id/rate
-// @desc    Rate a user (1-5 stars)
-// @access  Private
-router.post('/:id/rate', auth, async (req, res) => {
+// PUT /me/password
+router.put('/me/password', auth, async (req, res) => {
   try {
-    const { rating } = req.body;
-    
-    // Validate rating
-    if (!rating || rating < 1 || rating > 5) {
-      return res.status(400).json({ error: 'Rating must be between 1 and 5' });
-    }
-    
-    // Prevent self-rating
-    if (req.params.id === req.user._id.toString()) {
-      return res.status(400).json({ error: 'You cannot rate yourself' });
-    }
-    
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    
-    // Add rating to user's ratings array
-    user.ratings.push(rating);
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) return res.status(400).json({ error: 'Both passwords required' });
+    if (newPassword.length < 6) return res.status(400).json({ error: 'New password must be at least 6 characters' });
+    const user = await User.findById(req.user._id);
+    const valid = await bcrypt.compare(currentPassword, user.password);
+    if (!valid) return res.status(400).json({ error: 'Current password is incorrect' });
+    user.password = await bcrypt.hash(newPassword, 12);
     await user.save();
-    
-    res.json({
-      message: 'Rating added successfully',
-      averageRating: user.averageRating,
-      totalRatings: user.ratings.length
-    });
-    
-  } catch (error) {
-    console.error('Rate user error:', error);
-    if (error.kind === 'ObjectId') {
-      return res.status(400).json({ error: 'Invalid user ID' });
+    res.json({ message: 'Password changed' });
+  } catch(e) { res.status(500).json({ error: 'Server error' }); }
+});
+
+// POST /me/save/:resourceId — toggle saved resource (must be before /:id)
+router.post('/me/save/:resourceId', auth, async (req, res) => {
+  try {
+    const me = await User.findById(req.user._id);
+    const rid = req.params.resourceId;
+    const isSaved = me.savedResources.some(id => id.toString() === rid);
+    if (isSaved) {
+      me.savedResources = me.savedResources.filter(id => id.toString() !== rid);
+    } else {
+      me.savedResources.push(rid);
     }
-    res.status(500).json({ error: 'Server error while rating user' });
+    await me.save();
+    res.json({ saved: !isSaved });
+  } catch(e) { res.status(500).json({ error: 'Server error' }); }
+});
+
+// GET /:id — public profile
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password -savedResources');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const resources = await Resource.find({ user: req.params.id }).sort({ createdAt: -1 }).limit(20);
+    res.json({ user: { ...user.toJSON(), resources } });
+  } catch(e) {
+    if (e.name === 'CastError') return res.status(400).json({ error: 'Invalid user ID' });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-module.exports = router; 
+// POST /:id/follow — toggle follow
+router.post('/:id/follow', auth, async (req, res) => {
+  try {
+    if (req.params.id === req.user._id.toString()) return res.status(400).json({ error: 'Cannot follow yourself' });
+    const target = await User.findById(req.params.id);
+    if (!target) return res.status(404).json({ error: 'User not found' });
+    const me = await User.findById(req.user._id);
+    const isFollowing = me.following.some(id => id.toString() === req.params.id);
+    if (isFollowing) {
+      me.following = me.following.filter(id => id.toString() !== req.params.id);
+      target.followers = target.followers.filter(id => id.toString() !== req.user._id.toString());
+    } else {
+      me.following.push(req.params.id);
+      target.followers.push(req.user._id);
+    }
+    await Promise.all([me.save(), target.save()]);
+    res.json({ following: !isFollowing, followerCount: target.followers.length });
+  } catch(e) {
+    if (e.name === 'CastError') return res.status(400).json({ error: 'Invalid user ID' });
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+module.exports = router;
