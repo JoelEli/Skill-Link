@@ -834,7 +834,6 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
           <button class="disc-pill" onclick="setDiscType('doc',this)">DOC</button>
           <button class="disc-pill" onclick="setDiscType('xls',this)">XLS</button>
           <button class="disc-pill" onclick="setDiscType('img',this)">Images</button>
-          <button class="disc-pill" onclick="setDiscType('video',this)">Video</button>
         </div>
         <div class="disc-filter-right">
           <select id="disc-sort" class="disc-sort-sel" onchange="loadDiscover(1)">
@@ -865,11 +864,11 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
       </div>
       <div class="upload-wrap">
         <div class="dropzone" id="dropzone" ondragover="dzDrag(event,true)" ondragleave="dzDrag(event,false)" ondrop="dzDrop(event)">
-          <input type="file" id="upload-file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar,.7z,.png,.jpg,.jpeg,.gif,.mp4,.avi,.mov,.csv,.json,.md" onchange="dzSelect(this)"/>
+          <input type="file" id="upload-file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar,.7z,.png,.jpg,.jpeg,.gif,.csv,.json,.md" onchange="dzSelect(this)"/>
           <div id="dz-placeholder">
             <div class="dropzone-ico">📁</div>
             <div class="dropzone-txt">Drag &amp; drop your file here, or <strong>click to browse</strong></div>
-            <div class="text-sm text4 mt8">PDF, PPT, DOC, XLS, ZIP, images, video and more — up to 50MB</div>
+            <div class="text-sm text4 mt8">PDF, PPT, DOC, XLS, ZIP, images and more — up to 50MB</div>
           </div>
           <div class="dropzone-preview" id="dz-preview">
             <div class="dropzone-preview-ico" id="dz-prev-ico"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
@@ -1097,7 +1096,6 @@ var FILE_TYPE_MAP = {
   xls:  { color:'#10B981', label:'XLS'   },
   zip:  { color:'#6B7280', label:'ZIP'   },
   img:  { color:'#8B5CF6', label:'IMAGE' },
-  video:{ color:'#F59E0B', label:'VIDEO' },
   txt:  { color:'#14B8A6', label:'TXT'   },
   csv:  { color:'#059669', label:'CSV'   },
   md:   { color:'#7C3AED', label:'MD'    },
@@ -1676,7 +1674,7 @@ function dzClear(e) {
   document.getElementById('dz-preview').classList.remove('show');
 }
 function getFileTypeFromExt(ext) {
-  var m = {pdf:'pdf',ppt:'ppt',pptx:'ppt',doc:'doc',docx:'doc',xls:'xls',xlsx:'xls',zip:'zip',rar:'zip','7z':'zip',png:'img',jpg:'img',jpeg:'img',gif:'img',mp4:'video',avi:'video',mov:'video',txt:'txt',csv:'csv',md:'md'};
+  var m = {pdf:'pdf',ppt:'ppt',pptx:'ppt',doc:'doc',docx:'doc',xls:'xls',xlsx:'xls',zip:'zip',rar:'zip','7z':'zip',png:'img',jpg:'img',jpeg:'img',gif:'img',txt:'txt',csv:'csv',md:'md'};
   return m[ext] || 'other';
 }
 function submitResource(e) {
@@ -2194,8 +2192,6 @@ function previewResource(resourceId) {
         + '<img src="' + fileUrl + '" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:8px" '
         + 'onerror="this.parentNode.innerHTML=\'<p style=color:var(--text3);text-align:center>Image could not be loaded</p>\'">'
         + '</div>';
-    } else if (r.fileType === 'video') {
-      viewer.innerHTML = '<video src="' + fileUrl + '" controls style="width:100%;height:100%;background:#000;display:block"></video>';
     } else if (r.fileType === 'txt' || r.fileType === 'md' || r.fileType === 'csv') {
       viewer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%"><div class="spinner"></div></div>';
       fetch(fileUrl).then(function(res) { return res.text(); }).then(function(text) {

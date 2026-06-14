@@ -18,7 +18,7 @@ cloudinary.config({
 const ALLOWED_EXTENSIONS = new Set([
   '.pdf','.ppt','.pptx','.doc','.docx','.xls','.xlsx',
   '.txt','.zip','.rar','.7z','.png','.jpg','.jpeg','.gif',
-  '.mp4','.avi','.mov','.csv','.json','.md'
+  '.csv','.json','.md'
 ]);
 
 const upload = multer({
@@ -51,7 +51,6 @@ function getFileType(ext) {
     '.xls': 'xls', '.xlsx': 'xls',
     '.zip': 'zip', '.rar': 'zip', '.7z': 'zip',
     '.png': 'img', '.jpg': 'img', '.jpeg': 'img', '.gif': 'img',
-    '.mp4': 'video', '.avi': 'video', '.mov': 'video',
     '.txt': 'txt', '.csv': 'csv', '.md': 'md'
   };
   return map[ext] || 'other';
@@ -59,7 +58,6 @@ function getFileType(ext) {
 
 function getCloudinaryResourceType(ext) {
   if (['.png','.jpg','.jpeg','.gif','.webp'].includes(ext)) return 'image';
-  if (['.mp4','.avi','.mov','.webm'].includes(ext)) return 'video';
   return 'raw';
 }
 
