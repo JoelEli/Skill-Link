@@ -255,6 +255,18 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .dropzone-preview-info{flex:1;text-align:left}
 .dropzone-preview-name{font-size:.875rem;font-weight:600;color:var(--text)}
 .dropzone-preview-size{font-size:.75rem;color:var(--text3)}
+/* Category picker */
+.cat-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:6px}
+@media(max-width:640px){.cat-picker{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:400px){.cat-picker{grid-template-columns:repeat(2,1fr)}}
+.cat-card{display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 8px 12px;background:var(--bg);border:1.5px solid var(--border2);border-radius:14px;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s,box-shadow .15s;text-align:center;width:100%}
+.cat-card:hover{border-color:var(--primary);background:var(--primary-g)}
+.cat-card.active{border-color:var(--primary);background:var(--primary-g);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.cat-ico{font-size:1.7rem;line-height:1;display:block}
+.cat-name{font-size:.8rem;font-weight:700;color:var(--text);line-height:1.2}
+.cat-desc{font-size:.67rem;color:var(--text4);line-height:1.35}
+.cat-card.active .cat-name{color:var(--primary-l)}
+.cat-card.active .cat-desc{color:var(--text3)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form-group select,.form-group textarea{width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.9rem;font-family:inherit;outline:none;transition:border-color .15s}
 .form-group select:focus,.form-group textarea:focus{border-color:var(--primary)}
@@ -873,17 +885,40 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
             <label>Title *</label>
             <input type="text" id="up-title" placeholder="e.g. Calculus Chapter 3 Notes" maxlength="150" required/>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Subject *</label>
-              <select id="up-subject" required>
-                <option value="">— Select Subject —</option>
-              </select>
+          <div class="form-group">
+            <label>Category *</label>
+            <div class="cat-picker" id="cat-picker">
+              <button type="button" class="cat-card" onclick="selectCategory('Academic',this)">
+                <span class="cat-ico">📚</span>
+                <span class="cat-name">Academic</span>
+                <span class="cat-desc">Lecture notes, past papers, study guides</span>
+              </button>
+              <button type="button" class="cat-card" onclick="selectCategory('Story Books',this)">
+                <span class="cat-ico">📖</span>
+                <span class="cat-name">Story Books</span>
+                <span class="cat-desc">Fiction, novels, literature</span>
+              </button>
+              <button type="button" class="cat-card" onclick="selectCategory('Journals',this)">
+                <span class="cat-ico">📰</span>
+                <span class="cat-name">Journals</span>
+                <span class="cat-desc">Articles, periodicals, magazines</span>
+              </button>
+              <button type="button" class="cat-card" onclick="selectCategory('Academic Research',this)">
+                <span class="cat-ico">🔬</span>
+                <span class="cat-name">Academic Research</span>
+                <span class="cat-desc">Research papers, dissertations, theses</span>
+              </button>
+              <button type="button" class="cat-card" onclick="selectCategory('Other',this)">
+                <span class="cat-ico">📄</span>
+                <span class="cat-name">Other</span>
+                <span class="cat-desc">Anything that doesn't fit above</span>
+              </button>
             </div>
-            <div class="form-group">
-              <label>Tags <span class="text4">(comma-separated)</span></label>
-              <input type="text" id="up-tags" placeholder="calculus, exam, notes"/>
-            </div>
+            <input type="hidden" id="up-subject"/>
+          </div>
+          <div class="form-group">
+            <label>Tags <span class="text4">(comma-separated)</span></label>
+            <input type="text" id="up-tags" placeholder="calculus, exam, notes"/>
           </div>
           <div class="form-group">
             <label>Description</label>
@@ -1596,15 +1631,16 @@ function loadDiscover(page) {
 window.browsePage = function(p) { loadDiscover(p); };
 
 // ─── UPLOAD ───────────────────────────────────────────────────────────────────
+function selectCategory(cat, el) {
+  document.querySelectorAll('#cat-picker .cat-card').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('up-subject').value = cat;
+}
+
 function initUpload() {
-  var sel = document.getElementById('up-subject');
-  if (sel.options.length <= 1) {
-    SUBJECTS.forEach(function(s) {
-      var o = document.createElement('option');
-      o.value = s; o.textContent = s;
-      sel.appendChild(o);
-    });
-  }
+  // reset category picker
+  document.querySelectorAll('#cat-picker .cat-card').forEach(function(c){ c.classList.remove('active'); });
+  document.getElementById('up-subject').value = '';
 }
 
 function dzDrag(e, active) {
@@ -1646,19 +1682,22 @@ function getFileTypeFromExt(ext) {
 function submitResource(e) {
   e.preventDefault();
   if (!uploadFile) { toast('Please select a file', 'error'); return; }
+  var subject = document.getElementById('up-subject').value;
+  if (!subject) { toast('Please select a category', 'error'); return; }
   var btn = document.getElementById('btn-upload');
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Uploading…';
   var fd = new FormData();
   fd.append('file', uploadFile);
   fd.append('title', document.getElementById('up-title').value);
   fd.append('description', document.getElementById('up-desc').value);
-  fd.append('subject', document.getElementById('up-subject').value);
+  fd.append('subject', subject);
   fd.append('tags', document.getElementById('up-tags').value);
   api('POST', '/resources', fd, true).then(function(d) {
     toast('Resource uploaded successfully!', 'success');
     document.getElementById('upload-form').reset();
     dzClear();
     uploadFile = null;
+    initUpload();
     nav('profile');
   }).catch(function(err) {
     toast(err.message, 'error');
