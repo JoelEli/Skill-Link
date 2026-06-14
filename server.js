@@ -144,8 +144,12 @@ app.get('/api/stats', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
-    message: 'SkillLink API is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    cloudinary: {
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'NOT SET',
+      api_key_set: !!process.env.CLOUDINARY_API_KEY,
+      api_secret_set: !!process.env.CLOUDINARY_API_SECRET
+    }
   });
 });
 
