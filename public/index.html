@@ -681,11 +681,8 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
               <label>Course / Subject</label>
               <input type="text" id="su-subject" placeholder="e.g. Computer Science" maxlength="100" list="su-subject-list"/>
               <datalist id="su-subject-list">
-                <option value="Mathematics"><option value="Physics"><option value="Chemistry">
-                <option value="Biology"><option value="Computer Science"><option value="Engineering">
-                <option value="Medicine"><option value="Business"><option value="Economics">
-                <option value="History"><option value="Literature"><option value="Languages">
-                <option value="Arts"><option value="Psychology"><option value="Law">
+                <option value="Academic"><option value="Story Books"><option value="Journals">
+                <option value="Academic Research"><option value="Other">
               </datalist>
             </div>
             <div class="su-step2-actions">
@@ -1056,9 +1053,7 @@ var uploadFile = null;
 var attachedResource = null;
 var selectedIcon = '📚';
 
-var SUBJECTS = ['Mathematics','Physics','Chemistry','Biology','Computer Science',
-  'Engineering','Medicine','Business','Economics','History',
-  'Literature','Languages','Arts','Psychology','Law','Other'];
+var SUBJECTS = ['Academic','Story Books','Journals','Academic Research','Other'];
 
 var FILE_TYPE_MAP = {
   pdf:  { color:'#EF4444', label:'PDF'   },

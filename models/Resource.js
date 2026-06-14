@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
 
 const SUBJECTS = [
-  'Mathematics','Physics','Chemistry','Biology','Computer Science',
-  'Engineering','Medicine','Business','Economics','History',
-  'Literature','Languages','Arts','Psychology','Law','Other'
+  'Academic',
+  'Story Books',
+  'Journals',
+  'Academic Research',
+  'Other'
 ];
 
 const resourceSchema = new mongoose.Schema({
   title:       { type: String, required: true, trim: true, maxlength: 150 },
   description: { type: String, default: '', maxlength: 1000 },
-  subject:     { type: String, required: true, enum: SUBJECTS },
+  subject:     { type: String, required: true },
   fileUrl:     { type: String, required: true },
   fileName:    { type: String, required: true },
   fileType:    { type: String, required: true },
