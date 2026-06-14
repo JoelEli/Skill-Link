@@ -1,58 +1,40 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
 const Resource = require('../models/Resource');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// Ensure upload directory exists
-const uploadDir = path.join(__dirname, '..', 'public', 'uploads', 'resources');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Multer storage config
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function(req, file, cb) {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, unique + ext);
-  }
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+// Multer: memory storage (buffer sent to Cloudinary, nothing hits disk)
 const ALLOWED_EXTENSIONS = new Set([
   '.pdf','.ppt','.pptx','.doc','.docx','.xls','.xlsx',
   '.txt','.zip','.rar','.7z','.png','.jpg','.jpeg','.gif',
   '.mp4','.avi','.mov','.csv','.json','.md'
 ]);
 
-const fileFilter = function(req, file, cb) {
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (ALLOWED_EXTENSIONS.has(ext)) {
-    cb(null, true);
-  } else {
-    cb(new Error('File type not allowed. Allowed: PDF, PPT, DOC, XLS, TXT, ZIP, images, video, CSV, JSON, MD'), false);
-  }
-};
-
 const upload = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 50 * 1024 * 1024 },
-  fileFilter: fileFilter
+  fileFilter: function(req, file, cb) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (ALLOWED_EXTENSIONS.has(ext)) return cb(null, true);
+    cb(new Error('File type not allowed. Allowed: PDF, PPT, DOC, XLS, TXT, ZIP, images, video, CSV, JSON, MD'));
+  }
 });
 
 function applyUpload(req, res, next) {
   upload.single('file')(req, res, function(err) {
     if (err instanceof multer.MulterError) {
-      if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ error: 'File too large. Maximum size is 50MB.' });
-      }
+      if (err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'File too large. Maximum size is 50MB.' });
       return res.status(400).json({ error: err.message });
     } else if (err) {
       return res.status(400).json({ error: err.message });
@@ -70,19 +52,29 @@ function getFileType(ext) {
     '.zip': 'zip', '.rar': 'zip', '.7z': 'zip',
     '.png': 'img', '.jpg': 'img', '.jpeg': 'img', '.gif': 'img',
     '.mp4': 'video', '.avi': 'video', '.mov': 'video',
-    '.txt': 'txt',
-    '.csv': 'csv',
-    '.md': 'md'
+    '.txt': 'txt', '.csv': 'csv', '.md': 'md'
   };
   return map[ext] || 'other';
 }
 
+function getCloudinaryResourceType(ext) {
+  if (['.png','.jpg','.jpeg','.gif','.webp'].includes(ext)) return 'image';
+  if (['.mp4','.avi','.mov','.webm'].includes(ext)) return 'video';
+  return 'raw';
+}
+
+function uploadToCloudinary(buffer, options) {
+  return new Promise(function(resolve, reject) {
+    cloudinary.uploader.upload_stream(options, function(err, result) {
+      if (err) return reject(err);
+      resolve(result);
+    }).end(buffer);
+  });
+}
+
 function parseTags(raw) {
   if (!raw) return [];
-  return raw.split(',')
-    .map(t => t.trim())
-    .filter(t => t.length > 0)
-    .slice(0, 10);
+  return raw.split(',').map(t => t.trim()).filter(t => t.length > 0).slice(0, 10);
 }
 
 // GET / — list resources
@@ -106,7 +98,7 @@ router.get('/', async (req, res) => {
 
     var sortObj = { createdAt: -1 };
     if (sort === 'downloads') sortObj = { downloads: -1, createdAt: -1 };
-    else if (sort === 'likes') sortObj = { likesCount: -1, createdAt: -1 };
+    else if (sort === 'likes')  sortObj = { likesCount: -1, createdAt: -1 };
 
     var [resources, total] = await Promise.all([
       Resource.find(query)
@@ -117,20 +109,14 @@ router.get('/', async (req, res) => {
       Resource.countDocuments(query)
     ]);
 
-    res.json({
-      total,
-      count: resources.length,
-      page: pageNum,
-      pages: Math.ceil(total / limitNum),
-      resources
-    });
+    res.json({ total, count: resources.length, page: pageNum, pages: Math.ceil(total / limitNum), resources });
   } catch(e) {
     console.error('List resources error:', e);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-// POST / — upload resource
+// POST / — upload resource (streams buffer → Cloudinary, no disk write)
 router.post('/', auth, applyUpload, async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'File is required' });
@@ -141,28 +127,35 @@ router.post('/', auth, applyUpload, async (req, res) => {
 
     var ext = path.extname(req.file.originalname).toLowerCase();
     var fileType = getFileType(ext);
+    var cloudinaryResourceType = getCloudinaryResourceType(ext);
+
+    var result = await uploadToCloudinary(req.file.buffer, {
+      folder: 'skilllink/resources',
+      resource_type: cloudinaryResourceType,
+      use_filename: true,
+      unique_filename: true,
+      overwrite: false
+    });
 
     var resource = new Resource({
-      title: title.trim(),
-      description: description ? description.trim() : '',
+      title:                  title.trim(),
+      description:            description ? description.trim() : '',
       subject,
-      fileUrl: '/uploads/resources/' + req.file.filename,
-      fileName: req.file.originalname,
+      fileUrl:                result.secure_url,
+      cloudinaryId:           result.public_id,
+      cloudinaryResourceType: cloudinaryResourceType,
+      fileName:               req.file.originalname,
       fileType,
-      fileSize: req.file.size,
-      tags: parseTags(tags),
-      user: req.user._id
+      fileSize:               req.file.size,
+      tags:                   parseTags(tags),
+      user:                   req.user._id
     });
 
     await resource.save();
     await resource.populate('user', 'name university year');
-
     res.status(201).json({ message: 'Resource uploaded successfully', resource });
   } catch(e) {
     console.error('Upload resource error:', e);
-    if (req.file) {
-      fs.unlink(req.file.path, function() {});
-    }
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -179,21 +172,18 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// GET /:id/download — auth required, serve file
+// GET /:id/download — auth required; increments counter, returns Cloudinary URL
 router.get('/:id/download', auth, async (req, res) => {
   try {
     var resource = await Resource.findById(req.params.id);
     if (!resource) return res.status(404).json({ error: 'Resource not found' });
 
-    var filePath = path.join(__dirname, '..', 'public', resource.fileUrl);
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'File not found on server' });
-    }
-
     resource.downloads = (resource.downloads || 0) + 1;
     await resource.save();
 
-    res.download(filePath, resource.fileName);
+    // Insert fl_attachment flag so Cloudinary forces a file download instead of inline display
+    var downloadUrl = resource.fileUrl.replace('/upload/', '/upload/fl_attachment/');
+    res.json({ url: downloadUrl, fileName: resource.fileName });
   } catch(e) {
     if (e.name === 'CastError') return res.status(400).json({ error: 'Invalid resource ID' });
     res.status(500).json({ error: 'Server error' });
@@ -215,7 +205,6 @@ router.post('/:id/like', auth, async (req, res) => {
       resource.likes.push(req.user._id);
     }
     resource.likesCount = resource.likes.length;
-
     await resource.save();
     res.json({ liked: !isLiked, likesCount: resource.likesCount });
   } catch(e) {
@@ -224,7 +213,7 @@ router.post('/:id/like', auth, async (req, res) => {
   }
 });
 
-// DELETE /:id — owner only
+// DELETE /:id — owner only; removes from Cloudinary too
 router.delete('/:id', auth, async (req, res) => {
   try {
     var resource = await Resource.findById(req.params.id);
@@ -233,9 +222,10 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(403).json({ error: 'Not authorized' });
     }
 
-    var filePath = path.join(__dirname, '..', 'public', resource.fileUrl);
-    if (fs.existsSync(filePath)) {
-      fs.unlink(filePath, function() {});
+    if (resource.cloudinaryId) {
+      await cloudinary.uploader.destroy(resource.cloudinaryId, {
+        resource_type: resource.cloudinaryResourceType || 'raw'
+      }).catch(function() {});
     }
 
     await Resource.findByIdAndDelete(req.params.id);

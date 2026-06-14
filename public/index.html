@@ -2160,12 +2160,15 @@ function downloadResource(resourceId, fileName) {
     headers: { 'Authorization': 'Bearer ' + token }
   }).then(function(r) {
     if (!r.ok) return r.json().then(function(d){ throw new Error(d.error || 'Download failed (' + r.status + ')'); });
-    return r.blob();
-  }).then(function(blob) {
-    var url = URL.createObjectURL(blob);
+    return r.json();
+  }).then(function(d) {
     var a = document.createElement('a');
-    a.href = url; a.download = fileName; a.click();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+    a.href = d.url;
+    a.download = d.fileName || fileName;
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     toast('Download started!', 'success');
   }).catch(function(err) { toast(err.message || 'Download failed', 'error'); });
 }
@@ -2181,7 +2184,7 @@ function previewResource(resourceId) {
     document.getElementById('prev-modal-title').textContent = r.title;
     document.getElementById('prev-modal-dl-btn').onclick = function() { downloadResource(r._id, r.fileName); };
 
-    var fileUrl = API_BASE + r.fileUrl;
+    var fileUrl = r.fileUrl.startsWith('http') ? r.fileUrl : API_BASE + r.fileUrl;
     var viewer = document.getElementById('prev-modal-viewer');
 
     if (r.fileType === 'pdf') {
