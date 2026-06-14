@@ -180,7 +180,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .section-hd a{font-size:.8rem;color:var(--primary-l);cursor:pointer;text-decoration:none}
 .section-hd a:hover{text-decoration:underline}
 
-/* FILTERS */
+/* FILTERS (legacy - kept for other panels) */
 .filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .filter-bar input{flex:1;min-width:200px;padding:9px 14px;background:var(--card);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.875rem;font-family:inherit;outline:none;transition:border-color .15s}
 .filter-bar input:focus{border-color:var(--primary)}
@@ -189,6 +189,46 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .chip{padding:6px 14px;border-radius:99px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid var(--border2);color:var(--text3);background:transparent;transition:all .15s;font-family:inherit}
 .chip:hover{border-color:var(--primary);color:var(--primary-l)}
 .chip.active{background:var(--primary-g);border-color:var(--primary);color:var(--primary-l)}
+
+/* ── DISCOVER PAGE ─────────────────────────────────────────────────────── */
+.disc-hero{background:linear-gradient(135deg,rgba(99,102,241,.09) 0%,rgba(139,92,246,.06) 100%);border:1px solid rgba(99,102,241,.15);border-radius:16px;padding:28px 28px 24px;margin-bottom:20px}
+.disc-hero h1{font-size:1.5rem;font-weight:800;color:var(--text);margin-bottom:4px}
+.disc-hero p{color:var(--text3);font-size:.875rem;margin-bottom:20px}
+.disc-search-wrap{position:relative;max-width:620px}
+.disc-search-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;display:flex}
+.disc-search-input{width:100%;padding:12px 42px 12px 44px;background:var(--bg);border:1.5px solid var(--border2);border-radius:12px;color:var(--text);font-size:.95rem;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;box-sizing:border-box}
+.disc-search-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.disc-search-input::placeholder{color:var(--text4)}
+.disc-search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:4px;display:flex;align-items:center;transition:color .15s}
+.disc-search-clear:hover{color:var(--text)}
+/* Filter row */
+.disc-filter-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:14px}
+.disc-type-pills{display:flex;gap:6px;flex-wrap:wrap}
+.disc-pill{padding:5px 14px;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid var(--border2);color:var(--text3);background:transparent;transition:all .15s;font-family:inherit;white-space:nowrap}
+.disc-pill:hover{border-color:var(--primary);color:var(--primary-l);background:var(--primary-g)}
+.disc-pill.active{background:var(--primary-g);border-color:var(--primary);color:var(--primary-l)}
+.disc-filter-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.disc-sort-sel{padding:6px 10px;background:var(--card);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:.8rem;font-family:inherit;outline:none;cursor:pointer}
+.disc-view-tog{display:flex;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.disc-vbtn{padding:6px 9px;background:none;border:none;color:var(--text3);cursor:pointer;transition:all .15s;display:flex;align-items:center}
+.disc-vbtn.active{background:var(--primary-g);color:var(--primary-l)}
+.disc-vbtn:not(.active):hover{background:var(--border);color:var(--text)}
+/* Subject chips row */
+.disc-subjects{margin-bottom:10px}
+/* Results meta */
+.disc-meta{color:var(--text4);font-size:.8rem;margin-bottom:16px;min-height:18px}
+.disc-meta strong{color:var(--text3)}
+/* Skeleton loading */
+.skel{background:linear-gradient(90deg,var(--border) 25%,rgba(255,255,255,.04) 50%,var(--border) 75%);background-size:200% 100%;animation:skel-shine 1.5s ease-in-out infinite;border-radius:6px}
+@keyframes skel-shine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* List view cards */
+.res-list-card{flex-direction:row!important;align-items:stretch!important;min-height:72px}
+.rli-type{width:72px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-right:1px solid var(--border);font-size:1.5rem}
+.rli-body{flex:1;padding:10px 14px;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:5px}
+.rli-title{font-size:.875rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rli-meta{display:flex;gap:10px;flex-wrap:wrap;color:var(--text4);font-size:.73rem;align-items:center}
+.rli-meta span{display:flex;align-items:center;gap:3px}
+.rli-actions{display:flex;gap:6px;padding:0 12px;flex-shrink:0;align-items:center}
 
 /* UPLOAD FORM */
 .upload-wrap{max-width:680px;margin:0 auto}
@@ -445,6 +485,11 @@ html.bw .sl-ico{background:#1e1e1e;box-shadow:none}
 html.bw .stat-card:hover{border-color:rgba(255,255,255,.3);box-shadow:0 6px 24px rgba(255,255,255,.07)}
 /* Resource card */
 html.bw .res-card:hover{border-color:rgba(255,255,255,.2)}
+/* Discover page */
+html.bw .disc-hero{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
+html.bw .disc-search-input{background:var(--card);border-color:rgba(255,255,255,.12)}
+html.bw .disc-pill.active{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff}
+html.bw .disc-view-tog,.html.bw .disc-vbtn{border-color:rgba(255,255,255,.1)}
 /* Channel items */
 html.bw .ch-item.active{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15)}
 html.bw .ch-item.active .ch-item-name{color:#fff}
@@ -750,19 +795,47 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
 
     <!-- DISCOVER -->
     <div class="panel" id="panel-discover">
-      <div class="panel-hd">
-        <div><h1>Discover Resources</h1><p>Browse thousands of study materials</p></div>
+      <!-- Hero search -->
+      <div class="disc-hero">
+        <h1>Discover Resources</h1>
+        <p>Browse notes, slides, past papers and more — shared by students like you.</p>
+        <div class="disc-search-wrap">
+          <span class="disc-search-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input class="disc-search-input" id="disc-search" placeholder="Search by topic, title, keyword…" oninput="discSearchDebounce()" autocomplete="off"/>
+          <button class="disc-search-clear" id="disc-search-clear" onclick="clearDiscSearch()" style="display:none" title="Clear search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
       </div>
-      <div class="filter-bar">
-        <input type="text" id="disc-search" placeholder="Search resources…" oninput="discSearchDebounce()"/>
-        <select id="disc-sort" onchange="loadDiscover(1)">
-          <option value="newest">Newest</option>
-          <option value="downloads">Most Downloaded</option>
-          <option value="likes">Most Liked</option>
-        </select>
-        <select id="disc-type" onchange="loadDiscover(1)">
-          <option value="">All Types</option>
-          <option value="pdf">PDF</option>
+      <!-- Filter row -->
+      <div class="disc-filter-row">
+        <div class="disc-type-pills" id="disc-type-pills">
+          <button class="disc-pill active" onclick="setDiscType('',this)">All Types</button>
+          <button class="disc-pill" onclick="setDiscType('pdf',this)">PDF</button>
+          <button class="disc-pill" onclick="setDiscType('ppt',this)">PPT</button>
+          <button class="disc-pill" onclick="setDiscType('doc',this)">DOC</button>
+          <button class="disc-pill" onclick="setDiscType('xls',this)">XLS</button>
+          <button class="disc-pill" onclick="setDiscType('img',this)">Images</button>
+          <button class="disc-pill" onclick="setDiscType('video',this)">Video</button>
+        </div>
+        <div class="disc-filter-right">
+          <select id="disc-sort" class="disc-sort-sel" onchange="loadDiscover(1)">
+            <option value="newest">Newest</option>
+            <option value="downloads">Most Downloaded</option>
+            <option value="likes">Most Liked</option>
+          </select>
+          <div class="disc-view-tog">
+            <button class="disc-vbtn active" id="dvb-grid" onclick="setDiscView('grid',this)" title="Grid view"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+            <button class="disc-vbtn" id="dvb-list" onclick="setDiscView('list',this)" title="List view"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <!-- Subject chips -->
+      <div class="chips disc-subjects" id="subj-chips"></div>
+      <!-- Results count -->
+      <div class="disc-meta" id="disc-meta"></div>
+      <!-- LEGACY select kept hidden so old code refs don't break -->
+      <select id="disc-type" style="display:none">
+        <option value="">All Types</option>
+        <option value="pdf">PDF</option>
           <option value="ppt">PPT</option>
           <option value="doc">DOC</option>
           <option value="xls">XLS</option>
@@ -975,6 +1048,7 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
 var me = null;
 var token = null;
 var discoverState = { page: 1, subject: '', search: '', fileType: '', sort: 'newest' };
+var discViewMode = 'grid';
 var channelState = { activeChannelId: null, myChannels: [] };
 var discSearchTimer = null;
 var chSearchTimer = null;
@@ -1395,36 +1469,129 @@ function setSubjectFilter(s, el) {
   loadDiscover(1);
 }
 
+function setDiscType(type, el) {
+  discoverState.fileType = type;
+  document.querySelectorAll('#disc-type-pills .disc-pill').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+  loadDiscover(1);
+}
+
+function setDiscView(mode, el) {
+  discViewMode = mode;
+  document.querySelectorAll('.disc-vbtn').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+  var grid = document.getElementById('disc-grid');
+  if (mode === 'list') grid.classList.add('disc-list-mode');
+  else grid.classList.remove('disc-list-mode');
+  loadDiscover(discoverState.page);
+}
+
+function clearDiscSearch() {
+  document.getElementById('disc-search').value = '';
+  var clr = document.getElementById('disc-search-clear');
+  if (clr) clr.style.display = 'none';
+  loadDiscover(1);
+}
+
 function discSearchDebounce() {
+  var v = document.getElementById('disc-search').value;
+  var clr = document.getElementById('disc-search-clear');
+  if (clr) clr.style.display = v ? '' : 'none';
   clearTimeout(discSearchTimer);
   discSearchTimer = setTimeout(function(){ loadDiscover(1); }, 350);
+}
+
+function mkSkelCard() {
+  if (discViewMode === 'list') {
+    return '<div class="res-card res-list-card" style="pointer-events:none">'
+      + '<div class="rli-type skel" style="width:72px;min-height:72px;border-radius:0;flex-shrink:0"></div>'
+      + '<div class="rli-body" style="gap:8px">'
+      + '<div class="skel" style="height:13px;width:60%"></div>'
+      + '<div style="display:flex;gap:8px"><div class="skel" style="height:10px;width:80px"></div><div class="skel" style="height:10px;width:50px"></div></div>'
+      + '</div><div class="rli-actions"><div class="skel" style="height:28px;width:80px;border-radius:8px"></div></div></div>';
+  }
+  return '<div class="res-card" style="pointer-events:none">'
+    + '<div class="res-card-top skel" style="height:120px;border-radius:0;flex-shrink:0"></div>'
+    + '<div class="res-card-body" style="gap:10px">'
+    + '<div class="skel" style="height:13px;width:75%;margin-bottom:2px"></div>'
+    + '<div class="skel" style="height:11px;width:40%"></div>'
+    + '<div class="skel" style="height:11px;width:85%;margin-top:6px"></div>'
+    + '<div style="display:flex;gap:6px;margin-top:12px">'
+    + '<div class="skel" style="height:28px;flex:1;border-radius:8px"></div>'
+    + '<div class="skel" style="height:28px;flex:1;border-radius:8px"></div>'
+    + '</div></div></div>';
+}
+
+function mkResCardList(r, opts) {
+  opts = opts || {};
+  var ft = FILE_TYPE_MAP[r.fileType] || FILE_TYPE_MAP.other;
+  var isLiked = me && r.likes && r.likes.some(function(id){ return id === me._id || (id && id._id === me._id); });
+  var isSaved = me && me.savedResources && me.savedResources.some(function(id){ return id === r._id || (id && (id._id || id) === r._id); });
+  var likesCount = r.likesCount !== undefined ? r.likesCount : (r.likes ? r.likes.length : 0);
+  var authorName = r.user ? (r.user.name || 'Unknown') : 'Unknown';
+  var authorId = r.user ? (r.user._id || r.user) : null;
+  var html = '<div class="res-card res-list-card" onclick="viewResDetail(\'' + esc(r._id) + '\')">';
+  html += '<div class="rli-type" style="background:' + ft.color + '18">';
+  html += '<span style="font-size:1.4rem">' + ft.ico + '</span>';
+  html += '<span style="font-size:.58rem;font-weight:800;color:' + ft.color + ';letter-spacing:.08em">' + ft.label + '</span>';
+  html += '</div>';
+  html += '<div class="rli-body">';
+  html += '<div class="rli-title">' + esc(r.title) + '</div>';
+  html += '<div class="rli-meta">';
+  html += '<span style="cursor:pointer" onclick="event.stopPropagation();viewStudentProfile(\'' + esc(String(authorId)) + '\')">' + esc(authorName) + '</span>';
+  html += '<span>' + esc(r.subject) + '</span>';
+  html += '<span>' + _ico('download', 12, 2.5) + ' ' + (r.downloads || 0) + '</span>';
+  html += '<span>' + _ico('heart', 12, 2.5) + ' ' + likesCount + '</span>';
+  html += '<span>' + esc(fmtSize(r.fileSize)) + '</span>';
+  html += '<span style="margin-left:auto">' + timeAgo(r.createdAt) + '</span>';
+  html += '</div></div>';
+  html += '<div class="rli-actions" onclick="event.stopPropagation()">';
+  html += '<button class="btn btn-ghost btn-sm" onclick="previewResource(\'' + esc(r._id) + '\')">' + _ico('eye', 13, 2.5) + ' Preview</button>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="downloadResource(\'' + esc(r._id) + '\',\'' + esc(r.fileName) + '\')">' + _ico('download', 13, 2.5) + '</button>';
+  if (!opts.hideSave) html += '<button class="btn btn-sm ' + (isSaved ? 'btn-green' : 'btn-ghost') + '" onclick="toggleSave(\'' + esc(r._id) + '\',this)">' + _ico('bookmark', 12, 2.5, isSaved) + '</button>';
+  html += '</div></div>';
+  return html;
 }
 
 function loadDiscover(page) {
   initSubjectChips();
   var search = document.getElementById('disc-search').value.trim();
   var sort = document.getElementById('disc-sort').value;
-  var fileType = document.getElementById('disc-type').value;
-  discoverState = { page: page || 1, subject: discoverState.subject, search: search, sort: sort, fileType: fileType };
+  discoverState = { page: page || 1, subject: discoverState.subject, search: search, sort: sort, fileType: discoverState.fileType || '' };
 
   var q = '?page=' + discoverState.page + '&limit=12&sort=' + sort;
   if (discoverState.subject) q += '&subject=' + encodeURIComponent(discoverState.subject);
   if (search) q += '&search=' + encodeURIComponent(search);
-  if (fileType) q += '&fileType=' + encodeURIComponent(fileType);
+  if (discoverState.fileType) q += '&fileType=' + encodeURIComponent(discoverState.fileType);
 
   var grid = document.getElementById('disc-grid');
-  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px"><div class="spinner"></div></div>';
+  grid.innerHTML = [1,2,3,4,5,6].map(mkSkelCard).join('');
+  document.getElementById('disc-meta').innerHTML = '';
 
   api('GET', '/resources' + q).then(function(d) {
     if (!d.resources || !d.resources.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1" class="empty-state"><div class="empty-state-ico">'+_ico('search',44,1.2)+'</div><h3>No results found</h3><p>Try adjusting your filters</p></div>';
+      grid.innerHTML = '<div style="grid-column:1/-1" class="empty-state">'
+        + '<div class="empty-state-ico">' + _ico('search', 44, 1.2) + '</div>'
+        + '<h3>' + (search ? 'No results for &ldquo;' + esc(search) + '&rdquo;' : 'No resources found') + '</h3>'
+        + '<p>' + (search ? 'Try a different keyword or clear your search.' : 'Be the first to share a resource!') + '</p>'
+        + (search ? '<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="clearDiscSearch()">Clear search</button>' : '')
+        + '</div>';
       document.getElementById('disc-pagination').innerHTML = '';
+      document.getElementById('disc-meta').innerHTML = '';
       return;
     }
-    grid.innerHTML = d.resources.map(function(r){ return mkResCard(r); }).join('');
+    grid.innerHTML = d.resources.map(function(r) {
+      return discViewMode === 'list' ? mkResCardList(r) : mkResCard(r);
+    }).join('');
+    var meta = document.getElementById('disc-meta');
+    var info = 'Showing <strong>' + d.count + '</strong> of <strong>' + d.total + '</strong> resource' + (d.total !== 1 ? 's' : '');
+    if (search) info += ' for &ldquo;<strong>' + esc(search) + '</strong>&rdquo;';
+    if (discoverState.subject) info += ' in <strong>' + esc(discoverState.subject) + '</strong>';
+    meta.innerHTML = info;
     renderPagination('disc-pagination', d.page, d.pages, 'browsePage');
   }).catch(function(err) {
-    grid.innerHTML = '<div style="grid-column:1/-1" class="empty-state"><div class="empty-state-ico">'+_ico('warn',44,1.2)+'</div><h3>Error loading resources</h3></div>';
+    grid.innerHTML = '<div style="grid-column:1/-1" class="empty-state"><div class="empty-state-ico">' + _ico('warn', 44, 1.2) + '</div><h3>Failed to load resources</h3><p>' + esc(err.message) + '</p></div>';
+    document.getElementById('disc-meta').innerHTML = '';
   });
 }
 window.browsePage = function(p) { loadDiscover(p); };
