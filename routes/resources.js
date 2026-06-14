@@ -154,7 +154,7 @@ router.post('/', auth, applyUpload, async (req, res) => {
     res.status(201).json({ message: 'Resource uploaded successfully', resource });
   } catch(e) {
     console.error('Upload resource error:', e);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', detail: e.message });
   }
 });
 
