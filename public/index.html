@@ -371,6 +371,29 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
   .form-row{grid-template-columns:1fr}
 }
 
+/* ─── HOME HERO ─────────────────────────────────────────────────────────────*/
+.home-hero{background:linear-gradient(135deg,#0b0730 0%,#130d42 55%,#080c28 100%);border:1px solid rgba(99,102,241,.2);border-radius:16px;padding:36px 30px;margin-bottom:24px;position:relative;overflow:hidden}
+.home-hero::before{content:'';position:absolute;top:-70px;right:-70px;width:300px;height:300px;background:radial-gradient(circle,rgba(99,102,241,.28),transparent 68%);pointer-events:none}
+.home-hero::after{content:'';position:absolute;bottom:-50px;left:25%;width:220px;height:220px;background:radial-gradient(circle,rgba(244,114,182,.18),transparent 68%);pointer-events:none}
+.home-hero-content{position:relative;z-index:1;max-width:560px}
+.home-hero h1{font-size:1.75rem;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.025em}
+.home-hero-sub{color:#94A3B8;font-size:.875rem;margin-bottom:22px;line-height:1.55}
+.home-hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+/* Quick actions */
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.qa-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 16px;cursor:pointer;transition:border-color .18s,transform .15s,box-shadow .18s;display:flex;flex-direction:column;gap:8px}
+.qa-card:hover{border-color:var(--primary-l);transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.qa-ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:4px}
+.qa-title{font-size:.875rem;font-weight:700;color:var(--text)}
+.qa-desc{font-size:.75rem;color:var(--text3);line-height:1.5}
+@media(max-width:640px){
+  .quick-actions{grid-template-columns:1fr 1fr}
+  .home-hero{padding:24px 18px}
+  .home-hero h1{font-size:1.35rem}
+  .home-hero-btns{flex-direction:column}
+  .home-hero-btns .btn{justify-content:center}
+}
+
 /* ─── BLACK & WHITE MODE ────────────────────────────────────────────────────*/
 html.bw{
   --bg:#000;--surf:#0d0d0d;--card:#161616;
@@ -419,6 +442,11 @@ html.bw .res-card:hover{border-color:rgba(255,255,255,.2)}
 html.bw .ch-item.active{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15)}
 html.bw .ch-item.active .ch-item-name{color:#fff}
 html.bw .ch-member-badge{background:rgba(255,255,255,.08);color:#bbb}
+/* Home hero & quick actions */
+html.bw .home-hero{background:#0a0a0a;border-color:rgba(255,255,255,.12)}
+html.bw .home-hero::before,html.bw .home-hero::after{opacity:0}
+html.bw .qa-card:hover{border-color:rgba(255,255,255,.25);box-shadow:0 8px 28px rgba(255,255,255,.05)}
+html.bw .qa-ico{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.12)!important}
 /* Scrollbar */
 html.bw ::-webkit-scrollbar-thumb{background:#333}
 html.bw ::-webkit-scrollbar-thumb:hover{background:#555}
@@ -646,17 +674,55 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
   <main class="main">
     <!-- HOME -->
     <div class="panel active" id="panel-home">
-      <div class="panel-hd">
-        <div>
-          <h1 id="home-greeting">Good morning! 👋</h1>
-          <p>Here's what's happening in your network</p>
+
+      <!-- Hero banner -->
+      <div class="home-hero">
+        <div class="home-hero-content">
+          <h1 id="home-greeting">Welcome back! 👋</h1>
+          <p class="home-hero-sub">Share knowledge, discover resources, and connect with students in your network.</p>
+          <div class="home-hero-btns">
+            <button class="btn btn-primary btn-sm" onclick="nav('upload')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg> Upload Resource</button>
+            <button class="btn btn-ghost btn-sm" onclick="nav('discover')">Explore Resources →</button>
+          </div>
         </div>
       </div>
+
+      <!-- Stats -->
       <div class="stat-row" id="home-stats"></div>
+
+      <!-- Quick actions -->
+      <div class="section">
+        <div class="section-hd"><h2>Quick Actions</h2></div>
+        <div class="quick-actions">
+          <div class="qa-card" onclick="nav('upload')">
+            <div class="qa-ico" style="background:rgba(99,102,241,.14);border:1px solid rgba(99,102,241,.28)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg></div>
+            <div class="qa-title">Upload Resource</div>
+            <div class="qa-desc">Share PDFs, slides and notes with your peers</div>
+          </div>
+          <div class="qa-card" onclick="nav('discover')">
+            <div class="qa-ico" style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.28)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
+            <div class="qa-title">Discover</div>
+            <div class="qa-desc">Browse thousands of study materials by subject</div>
+          </div>
+          <div class="qa-card" onclick="nav('channels')">
+            <div class="qa-ico" style="background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.28)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="qa-title">Channels</div>
+            <div class="qa-desc">Join study channels and discuss topics live</div>
+          </div>
+          <div class="qa-card" onclick="nav('students')">
+            <div class="qa-ico" style="background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.28)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="qa-title">Find Students</div>
+            <div class="qa-desc">Follow peers and grow your academic network</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trending resources -->
       <div class="section">
         <div class="section-hd"><h2>Trending Resources</h2><a onclick="nav('discover')">View all →</a></div>
         <div class="resource-grid" id="home-trending"></div>
       </div>
+
     </div>
 
     <!-- DISCOVER -->
