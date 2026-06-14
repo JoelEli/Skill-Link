@@ -142,15 +142,7 @@ app.get('/api/stats', async (req, res) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    cloudinary: {
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'NOT SET',
-      api_key_set: !!process.env.CLOUDINARY_API_KEY,
-      api_secret_set: !!process.env.CLOUDINARY_API_SECRET
-    }
-  });
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
 // 404 handler for API routes
