@@ -230,8 +230,10 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .disc-vbtn{padding:6px 9px;background:none;border:none;color:var(--text3);cursor:pointer;transition:all .15s;display:flex;align-items:center}
 .disc-vbtn.active{background:var(--primary-g);color:var(--primary-l)}
 .disc-vbtn:not(.active):hover{background:var(--border);color:var(--text)}
-/* Subject chips row */
-.disc-subjects{margin-bottom:10px}
+/* Subject chips — single scrollable row, no wrapping */
+.disc-subjects{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:6px;flex-wrap:nowrap;scrollbar-width:none}
+.disc-subjects::-webkit-scrollbar{display:none}
+.disc-subjects .chip{flex-shrink:0;padding:4px 12px;font-size:.74rem}
 /* Results meta */
 .disc-meta{color:var(--text4);font-size:.8rem;margin-bottom:16px;min-height:18px}
 .disc-meta strong{color:var(--text3)}
@@ -814,10 +816,10 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
           <button class="disc-search-clear" id="disc-search-clear" onclick="clearDiscSearch()" style="display:none" title="Clear search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
       </div>
-      <!-- Filter row -->
+      <!-- Filter row: type pills + sort + view toggle -->
       <div class="disc-filter-row">
         <div class="disc-type-pills" id="disc-type-pills">
-          <button class="disc-pill active" onclick="setDiscType('',this)">All Types</button>
+          <button class="disc-pill active" onclick="setDiscType('',this)">All</button>
           <button class="disc-pill" onclick="setDiscType('pdf',this)">PDF</button>
           <button class="disc-pill" onclick="setDiscType('ppt',this)">PPT</button>
           <button class="disc-pill" onclick="setDiscType('doc',this)">DOC</button>
@@ -837,24 +839,12 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
           </div>
         </div>
       </div>
-      <!-- Subject chips -->
-      <div class="chips disc-subjects" id="subj-chips"></div>
-      <!-- Results count -->
+      <!-- Subject chips (single scrollable row) -->
+      <div class="disc-subjects" id="subj-chips"></div>
+      <!-- Results meta + hidden legacy select -->
       <div class="disc-meta" id="disc-meta"></div>
-      <!-- LEGACY select kept hidden so old code refs don't break -->
-      <select id="disc-type" style="display:none">
-        <option value="">All Types</option>
-        <option value="pdf">PDF</option>
-          <option value="ppt">PPT</option>
-          <option value="doc">DOC</option>
-          <option value="xls">XLS</option>
-          <option value="zip">ZIP</option>
-          <option value="img">Images</option>
-          <option value="video">Videos</option>
-          <option value="txt">TXT</option>
-        </select>
-      </div>
-      <div class="chips" id="subj-chips"></div>
+      <select id="disc-type" style="display:none"><option value=""></option></select>
+      <!-- Resource grid -->
       <div class="resource-grid" id="disc-grid"></div>
       <div id="disc-pagination"></div>
     </div>
