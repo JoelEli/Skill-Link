@@ -687,9 +687,6 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
         </div>
       </div>
 
-      <!-- Stats -->
-      <div class="stat-row" id="home-stats"></div>
-
       <!-- Quick actions -->
       <div class="section">
         <div class="section-hd"><h2>Quick Actions</h2></div>
@@ -1287,25 +1284,6 @@ function mkResCard(r, opts) {
 // ─── HOME ─────────────────────────────────────────────────────────────────────
 function loadHome() {
   if (!me) return;
-  // Stats
-  document.getElementById('home-stats').innerHTML =
-    '<div class="stat-card" onclick="nav(\'profile\')"><div class="stat-card-icon">'+_ico('file',20,1.8)+'</div><div class="stat-card-val" id="hs-uploads">—</div><div class="stat-card-lbl">My Uploads</div></div>' +
-    '<div class="stat-card" onclick="showUsersModal(\'Followers\',window._homeFollowers||[])"><div class="stat-card-icon">'+_ico('users',20)+'</div><div class="stat-card-val" id="hs-followers">—</div><div class="stat-card-lbl">Followers</div></div>' +
-    '<div class="stat-card" onclick="showUsersModal(\'Following\',window._homeFollowing||[])"><div class="stat-card-icon">'+_ico('arrowR',20)+'</div><div class="stat-card-val" id="hs-following">—</div><div class="stat-card-lbl">Following</div></div>' +
-    '<div class="stat-card" onclick="window._profileAutoTab=\'saved\';nav(\'profile\')"><div class="stat-card-icon">'+_ico('bookmark',20)+'</div><div class="stat-card-val" id="hs-saved">—</div><div class="stat-card-lbl">Saved</div></div>';
-
-  // Load profile for stats
-  api('GET', '/users/me/profile').then(function(d) {
-    var u = d.user;
-    window._homeFollowers = u.followers || [];
-    window._homeFollowing = u.following || [];
-    me = Object.assign({}, me, { followers: u.followers, following: u.following, savedResources: u.savedResources });
-    localStorage.setItem('sl_user', JSON.stringify(me));
-    document.getElementById('hs-uploads').textContent = u.uploadCount || 0;
-    document.getElementById('hs-followers').textContent = (u.followers || []).length;
-    document.getElementById('hs-following').textContent = (u.following || []).length;
-    document.getElementById('hs-saved').textContent = (u.savedResources || []).length;
-  }).catch(function() {});
 
   // Trending
   document.getElementById('home-trending').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px"><div class="spinner"></div></div>';
