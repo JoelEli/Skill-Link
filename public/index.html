@@ -322,6 +322,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .modal{background:var(--surf);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;transform:translateY(12px);transition:transform .2s}
 .modal-overlay.open .modal{transform:translateY(0)}
 .modal-lg{max-width:680px}
+.modal-xl{max-width:1060px;width:96vw}
 .modal-hd{padding:20px 24px 0;display:flex;align-items:flex-start;justify-content:space-between}
 .modal-hd h2{font-size:1.1rem;font-weight:700;color:var(--text)}
 .modal-close{background:none;border:none;color:var(--text3);font-size:1.2rem;cursor:pointer;padding:4px;border-radius:6px;transition:color .15s;line-height:1}
@@ -941,6 +942,20 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
   </div>
 </div>
 
+<!-- RESOURCE PREVIEW MODAL -->
+<div class="modal-overlay" id="mod-preview" onclick="closeModBg(event,'mod-preview')">
+  <div class="modal modal-xl" style="height:90vh;display:flex;flex-direction:column;overflow:hidden;padding:0">
+    <div class="modal-hd" style="padding:14px 20px;flex-shrink:0;border-bottom:1px solid var(--border)">
+      <h2 id="prev-modal-title" style="font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%">Preview</h2>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <button class="btn btn-primary btn-sm" id="prev-modal-dl-btn">Download</button>
+        <button class="modal-close" onclick="closeMod('mod-preview')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div id="prev-modal-viewer" style="flex:1;overflow:hidden;background:var(--bg)"></div>
+  </div>
+</div>
+
 <!-- ATTACH RESOURCE MODAL -->
 <div class="modal-overlay" id="mod-attach-res" onclick="closeModBg(event,'mod-attach-res')">
   <div class="modal">
@@ -1011,7 +1026,8 @@ var _P = {
   send:    '<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>',
   cloud:   '<polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>',
   save:    '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>',
-  dots:    '<circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/>'
+  dots:    '<circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/>',
+  eye:     '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
 };
 function _ico(name, size, sw, filled) {
   size = size || 16; sw = sw || 2;
@@ -1039,6 +1055,9 @@ function clearAuth() {
 }
 
 // ─── API ──────────────────────────────────────────────────────────────────────
+var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? '' : 'https://energetic-analysis-production-6afe.up.railway.app';
+
 function api(method, path, body, isForm) {
   var opts = { method: method, headers: {} };
   if (token) opts.headers['Authorization'] = 'Bearer ' + token;
@@ -1048,8 +1067,6 @@ function api(method, path, body, isForm) {
   } else if (body && isForm) {
     opts.body = body;
   }
-  var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? '' : 'https://energetic-analysis-production-6afe.up.railway.app';
   var url = API_BASE + '/api' + path;
   return fetch(url, opts).then(function(r) {
     if (r.status === 401) { clearAuth(); showAuthOverlay(); return Promise.reject(new Error('Session expired')); }
@@ -1297,6 +1314,7 @@ function mkResCard(r, opts) {
   html += '<span class="res-card-author-date">' + timeAgo(r.createdAt) + '</span></div>';
   html += '<div class="res-card-stats"><span>'+_ico('download',13,2.5)+' '+(r.downloads||0)+'</span><span>'+_ico('heart',13,2.5)+' '+likesCount+'</span><span>'+esc(fmtSize(r.fileSize))+'</span></div>';
   html += '<div class="res-card-actions">';
+  html += '<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();previewResource(\''+esc(r._id)+'\')">'+_ico('eye',13,2.5)+' Preview</button>';
   html += '<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();downloadResource(\''+esc(r._id)+'\',\''+esc(r.fileName)+'\')">'+_ico('download',13,2.5)+' Download</button>';
   html += '<button class="btn btn-sm '+(isLiked?'btn-danger':'btn-ghost')+'" onclick="event.stopPropagation();toggleLike(\''+esc(r._id)+'\',this)">'+_ico('heart',13,2.5)+' '+likesCount+'</button>';
   if (!opts.hideSave) {
@@ -1932,17 +1950,66 @@ function changePassword(e) {
 // ─── RESOURCE ACTIONS ─────────────────────────────────────────────────────────
 function downloadResource(resourceId, fileName) {
   if (!token) { toast('Sign in to download files', 'error'); return; }
-  fetch('/api/resources/' + resourceId + '/download', {
+  toast('Preparing download…', 'info');
+  fetch(API_BASE + '/api/resources/' + resourceId + '/download', {
     headers: { 'Authorization': 'Bearer ' + token }
   }).then(function(r) {
-    if (!r.ok) throw new Error('Download failed');
+    if (!r.ok) return r.json().then(function(d){ throw new Error(d.error || 'Download failed (' + r.status + ')'); });
     return r.blob();
   }).then(function(blob) {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url; a.download = fileName; a.click();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+    toast('Download started!', 'success');
   }).catch(function(err) { toast(err.message || 'Download failed', 'error'); });
+}
+
+function previewResource(resourceId) {
+  openMod('mod-preview');
+  document.getElementById('prev-modal-title').textContent = 'Loading…';
+  document.getElementById('prev-modal-viewer').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%"><div class="spinner"></div></div>';
+  document.getElementById('prev-modal-dl-btn').onclick = null;
+
+  api('GET', '/resources/' + resourceId).then(function(d) {
+    var r = d.resource;
+    document.getElementById('prev-modal-title').textContent = r.title;
+    document.getElementById('prev-modal-dl-btn').onclick = function() { downloadResource(r._id, r.fileName); };
+
+    var fileUrl = API_BASE + r.fileUrl;
+    var viewer = document.getElementById('prev-modal-viewer');
+
+    if (r.fileType === 'pdf') {
+      viewer.innerHTML = '<iframe src="' + fileUrl + '" style="width:100%;height:100%;border:none"></iframe>';
+    } else if (r.fileType === 'img') {
+      viewer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:16px;background:var(--bg);box-sizing:border-box">'
+        + '<img src="' + fileUrl + '" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:8px" '
+        + 'onerror="this.parentNode.innerHTML=\'<p style=color:var(--text3);text-align:center>Image could not be loaded</p>\'">'
+        + '</div>';
+    } else if (r.fileType === 'video') {
+      viewer.innerHTML = '<video src="' + fileUrl + '" controls style="width:100%;height:100%;background:#000;display:block"></video>';
+    } else if (r.fileType === 'txt' || r.fileType === 'md' || r.fileType === 'csv') {
+      viewer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%"><div class="spinner"></div></div>';
+      fetch(fileUrl).then(function(res) { return res.text(); }).then(function(text) {
+        viewer.innerHTML = '<pre style="width:100%;height:100%;overflow:auto;padding:20px 24px;background:var(--bg);color:var(--text);font-size:.85rem;line-height:1.65;margin:0;white-space:pre-wrap;word-break:break-word;box-sizing:border-box">' + esc(text) + '</pre>';
+      }).catch(function() {
+        viewer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3)">Could not load preview — download the file to view it.</div>';
+      });
+    } else if (r.fileType === 'doc' || r.fileType === 'ppt' || r.fileType === 'xls') {
+      var gdUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
+      viewer.innerHTML = '<iframe src="' + gdUrl + '" style="width:100%;height:100%;border:none"></iframe>'
+        + '<p style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:.75rem;color:var(--text3);pointer-events:none">Powered by Google Docs Viewer</p>';
+      viewer.style.position = 'relative';
+    } else {
+      viewer.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px;color:var(--text3);padding:24px;text-align:center">'
+        + _ico('file', 48, 1.4)
+        + '<p style="font-size:.9rem;margin:0">Preview not available for <strong>.' + esc(r.fileName.split('.').pop()) + '</strong> files.<br>Download the file to open it.</p>'
+        + '<button class="btn btn-primary btn-sm" onclick="downloadResource(\'' + esc(r._id) + '\',\'' + esc(r.fileName) + '\')">' + _ico('download',13,2.5) + ' Download</button>'
+        + '</div>';
+    }
+  }).catch(function(err) {
+    document.getElementById('prev-modal-viewer').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3)">' + esc(err.message) + '</div>';
+  });
 }
 
 function toggleLike(id, btn) {
@@ -2015,6 +2082,7 @@ function viewResDetail(id) {
     html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px"><div style="font-size:.7rem;color:var(--text4);margin-bottom:2px">Uploaded</div><div style="font-size:.9rem;font-weight:700;color:var(--text)">' + new Date(r.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + '</div></div>';
     html += '</div>';
     html += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    html += '<button class="btn btn-ghost" onclick="closeMod(\'mod-res-detail\');previewResource(\''+esc(r._id)+'\')">'+_ico('eye',15,2.5)+' Preview</button>';
     html += '<button class="btn btn-primary" onclick="downloadResource(\''+esc(r._id)+'\',\''+esc(r.fileName)+'\')">'+_ico('download',15,2.5)+' Download</button>';
     html += '<button class="btn btn-sm '+(isLiked?'btn-danger':'btn-ghost')+'" onclick="toggleLike(\''+esc(r._id)+'\',this)" id="modal-like-btn">'+_ico('heart',14,2.5,isLiked)+' '+(isLiked?'Liked':'Like')+'</button>';
     html += '<button class="btn btn-sm '+(isSaved?'btn-green':'btn-ghost')+'" onclick="toggleSave(\''+esc(r._id)+'\',this)">'+_ico('bookmark',14,2.5,isSaved)+' '+(isSaved?'Saved':'Save')+'</button>';
