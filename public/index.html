@@ -33,13 +33,19 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .auth-logo-ico{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6366F1,#F472B6);display:flex;align-items:center;justify-content:center;box-shadow:0 0 32px rgba(99,102,241,.55),0 0 0 1px rgba(255,255,255,.08);animation:logoPulse 4s ease-in-out infinite}
 .auth-brand-name{font-size:1.6rem;font-weight:400;color:#fff;font-family:'Lucida Calligraphy','Lucida Handwriting',cursive;letter-spacing:.02em}
 .auth-brand-name em{color:#818CF8;font-style:normal}
-.auth-headline{font-size:2.5rem;font-weight:900;color:#fff;line-height:1.12;margin-bottom:12px;max-width:440px;letter-spacing:-.02em;animation:fadeUp .6s .15s ease both}
+.auth-headline{font-size:2.2rem;font-weight:900;color:#fff;line-height:1.12;margin-bottom:14px;max-width:440px;letter-spacing:-.02em;animation:fadeUp .6s .15s ease both}
 .auth-headline .hl-grad{background:linear-gradient(120deg,#818CF8 20%,#F472B6 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.auth-tagline{font-size:.875rem;color:#94A3B8;margin-bottom:36px;animation:fadeUp .6s .25s ease both;line-height:1.6;max-width:340px}
-.auth-features{display:flex;flex-direction:column;gap:10px;margin-bottom:0;max-width:360px;width:100%;text-align:left}
-.auth-feat{display:flex;align-items:center;gap:14px;color:#CBD5E1;font-size:.875rem;padding:3px 0;opacity:0;animation:fadeUp .5s ease forwards}
-.auth-feat:nth-child(1){animation-delay:.4s}.auth-feat:nth-child(2){animation-delay:.52s}.auth-feat:nth-child(3){animation-delay:.64s}.auth-feat:nth-child(4){animation-delay:.76s}
-.auth-feat-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.auth-about{font-size:.875rem;color:#94A3B8;margin-bottom:28px;animation:fadeUp .6s .25s ease both;line-height:1.75;max-width:380px;text-align:center}
+.auth-divider{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#475569;margin-bottom:16px;display:flex;align-items:center;gap:10px;width:100%;max-width:380px;animation:fadeUp .5s .35s ease both;opacity:0;animation-fill-mode:forwards}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.auth-features{display:flex;flex-direction:column;gap:8px;margin-bottom:0;max-width:380px;width:100%;text-align:left}
+.auth-feat{display:flex;align-items:flex-start;gap:13px;padding:8px 10px;border-radius:10px;opacity:0;animation:fadeUp .5s ease forwards;transition:background .15s}
+.auth-feat:hover{background:rgba(255,255,255,.04)}
+.auth-feat:nth-child(1){animation-delay:.42s}.auth-feat:nth-child(2){animation-delay:.54s}.auth-feat:nth-child(3){animation-delay:.66s}.auth-feat:nth-child(4){animation-delay:.78s}
+.auth-feat-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.auth-feat-body{display:flex;flex-direction:column;gap:2px}
+.auth-feat-title{font-size:.875rem;font-weight:600;color:#CBD5E1}
+.auth-feat-sub{font-size:.75rem;color:#64748B;line-height:1.45}
 .auth-right{width:460px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:52px 44px;background:var(--surf);border-left:1px solid var(--border);min-height:100vh}
 .auth-box{width:100%;max-width:360px}
 .auth-box h2{font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:4px}
@@ -486,13 +492,32 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
       <div class="auth-logo-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
       <div class="auth-brand-name">Skill<em>Link</em></div>
     </div>
+
     <div class="auth-headline">Your Academic<br><span class="hl-grad">Resource Hub</span></div>
-    <div class="auth-tagline">The place where students share knowledge,<br>build networks, and grow together.</div>
+
+    <div class="auth-about">
+      SkillLink is a free, student-built platform where university and college students share study materials, connect with peers, and collaborate through topic channels — all in one place.
+    </div>
+
+    <div class="auth-divider">What you get</div>
+
     <div class="auth-features">
-      <div class="auth-feat"><div class="auth-feat-ico" style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>Upload PDF, PPT, DOC, XLS and more</div>
-      <div class="auth-feat"><div class="auth-feat-ico" style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>Follow students and build your network</div>
-      <div class="auth-feat"><div class="auth-feat-ico" style="background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>Join study channels and discussions</div>
-      <div class="auth-feat"><div class="auth-feat-ico" style="background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>Download notes and research freely</div>
+      <div class="auth-feat">
+        <div class="auth-feat-ico" style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="auth-feat-body"><div class="auth-feat-title">Upload Resources</div><div class="auth-feat-sub">Share PDFs, PowerPoints, Word docs, Excel sheets and more with your campus</div></div>
+      </div>
+      <div class="auth-feat">
+        <div class="auth-feat-ico" style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="auth-feat-body"><div class="auth-feat-title">Connect with Students</div><div class="auth-feat-sub">Follow peers in your field, grow your academic network and stay updated</div></div>
+      </div>
+      <div class="auth-feat">
+        <div class="auth-feat-ico" style="background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="auth-feat-body"><div class="auth-feat-title">Study Channels</div><div class="auth-feat-sub">Join topic-based channels, ask questions and discuss coursework in real time</div></div>
+      </div>
+      <div class="auth-feat">
+        <div class="auth-feat-ico" style="background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+        <div class="auth-feat-body"><div class="auth-feat-title">Free Downloads</div><div class="auth-feat-sub">Access every shared resource — lecture notes, past papers, research — at no cost</div></div>
+      </div>
     </div>
   </div>
   <div class="auth-right">
