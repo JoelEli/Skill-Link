@@ -21,64 +21,64 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 ::-webkit-scrollbar-thumb{background:#2d2d4e;border-radius:99px}
 ::-webkit-scrollbar-thumb:hover{background:var(--primary)}
 
-/* AUTH OVERLAY */
-#auth-overlay{position:fixed;inset:0;z-index:600;display:flex;background:var(--bg);overflow-y:auto}
-.auth-left{flex:1;background:linear-gradient(160deg,#07041a 0%,#0f0740 45%,#050e2e 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 48px;position:relative;overflow-y:auto;text-align:center;min-height:100vh}
-.auth-left::before{content:'';position:absolute;top:-80px;right:-80px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.22),transparent 70%);filter:blur(60px);pointer-events:none;animation:orbFloat 10s ease-in-out infinite}
-.auth-left::after{content:'';position:absolute;bottom:-60px;left:-60px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(244,114,182,.16),transparent 70%);filter:blur(60px);pointer-events:none;animation:orbFloat 13s ease-in-out infinite reverse}
+/* AUTH OVERLAY — cream / brown / black theme */
+#auth-overlay{position:fixed;inset:0;z-index:600;display:flex;background:#0D0805;overflow-y:auto}
+.auth-left{flex:1;background:linear-gradient(160deg,#0D0805 0%,#1C0F07 50%,#110A04 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 48px;position:relative;overflow-y:auto;text-align:center;min-height:100vh}
+.auth-left::before{content:'';position:absolute;top:-80px;right:-80px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(180,110,60,.28),transparent 70%);filter:blur(60px);pointer-events:none;animation:orbFloat 10s ease-in-out infinite}
+.auth-left::after{content:'';position:absolute;bottom:-60px;left:-60px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(200,140,80,.18),transparent 70%);filter:blur(60px);pointer-events:none;animation:orbFloat 13s ease-in-out infinite reverse}
 @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(24px,-18px) scale(1.04)}66%{transform:translate(-18px,24px) scale(.97)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes logoPulse{0%,100%{box-shadow:0 0 32px rgba(99,102,241,.55),0 0 0 1px rgba(255,255,255,.08)}50%{box-shadow:0 0 60px rgba(99,102,241,.85),0 0 0 1px rgba(255,255,255,.16)}}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 32px rgba(180,110,60,.6),0 0 0 1px rgba(245,230,200,.1)}50%{box-shadow:0 0 60px rgba(200,140,80,.8),0 0 0 1px rgba(245,230,200,.18)}}
 .auth-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:24px;animation:fadeUp .6s ease both}
-.auth-logo-ico{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6366F1,#F472B6);display:flex;align-items:center;justify-content:center;box-shadow:0 0 32px rgba(99,102,241,.55),0 0 0 1px rgba(255,255,255,.08);animation:logoPulse 4s ease-in-out infinite}
-.auth-brand-name{font-size:1.6rem;font-weight:400;color:#fff;font-family:'Lucida Calligraphy','Lucida Handwriting',cursive;letter-spacing:.02em}
-.auth-brand-name em{color:#818CF8;font-style:normal}
-.auth-headline{font-size:2rem;font-weight:900;color:#fff;line-height:1.15;margin-bottom:12px;max-width:440px;letter-spacing:-.02em;animation:fadeUp .6s .15s ease both}
-.auth-headline .hl-grad{color:#818CF8;background:none!important;-webkit-text-fill-color:#818CF8!important;-webkit-background-clip:unset!important;background-clip:unset!important;display:block}
-.auth-about{font-size:.85rem;color:#94A3B8;margin-bottom:20px;animation:fadeUp .6s .25s ease both;line-height:1.7;max-width:380px;text-align:center}
-.auth-divider{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#475569;margin-bottom:12px;display:flex;align-items:center;gap:10px;width:100%;max-width:380px;animation:fadeUp .5s .35s ease both;opacity:0;animation-fill-mode:forwards}
-.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.auth-logo-ico{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#8B4A1A,#C8956C);display:flex;align-items:center;justify-content:center;box-shadow:0 0 32px rgba(180,110,60,.6),0 0 0 1px rgba(245,230,200,.1);animation:logoPulse 4s ease-in-out infinite}
+.auth-brand-name{font-size:1.6rem;font-weight:400;color:#F5E6C8;font-family:'Lucida Calligraphy','Lucida Handwriting',cursive;letter-spacing:.02em}
+.auth-brand-name em{color:#C8956C;font-style:normal}
+.auth-headline{font-size:2rem;font-weight:900;color:#F5E6C8;line-height:1.15;margin-bottom:12px;max-width:440px;letter-spacing:-.02em;animation:fadeUp .6s .15s ease both}
+.auth-headline .hl-grad{color:#C8956C;background:none!important;-webkit-text-fill-color:#C8956C!important;background-clip:unset!important;display:block}
+.auth-about{font-size:.85rem;color:#B8956C;margin-bottom:20px;animation:fadeUp .6s .25s ease both;line-height:1.7;max-width:380px;text-align:center}
+.auth-divider{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7A5A3A;margin-bottom:12px;display:flex;align-items:center;gap:10px;width:100%;max-width:380px;animation:fadeUp .5s .35s ease both;opacity:0;animation-fill-mode:forwards}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(200,149,108,.2)}
 .auth-features{display:flex;flex-direction:column;gap:8px;margin-bottom:0;max-width:380px;width:100%;text-align:left}
 .auth-feat{display:flex;align-items:flex-start;gap:12px;padding:6px 10px;border-radius:10px;opacity:0;animation:fadeUp .5s ease forwards;transition:background .15s}
-.auth-feat:hover{background:rgba(255,255,255,.04)}
+.auth-feat:hover{background:rgba(200,149,108,.08)}
 .auth-feat:nth-child(1){animation-delay:.42s}.auth-feat:nth-child(2){animation-delay:.54s}.auth-feat:nth-child(3){animation-delay:.66s}.auth-feat:nth-child(4){animation-delay:.78s}
 .auth-feat-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .auth-feat-body{display:flex;flex-direction:column;gap:2px}
-.auth-feat-title{font-size:.875rem;font-weight:600;color:#CBD5E1}
-.auth-feat-sub{font-size:.75rem;color:#64748B;line-height:1.45}
-.auth-right{width:460px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:52px 44px;background:var(--surf);border-left:1px solid var(--border);min-height:100vh}
+.auth-feat-title{font-size:.875rem;font-weight:600;color:#E8D4B4}
+.auth-feat-sub{font-size:.75rem;color:#8A6A4A;line-height:1.45}
+.auth-right{width:460px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:52px 44px;background:#120C07;border-left:1px solid rgba(200,149,108,.2);min-height:100vh;overflow-y:auto}
 .auth-box{width:100%;max-width:360px}
-.auth-box h2{font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:4px}
-.auth-subtitle{color:var(--text3);font-size:.85rem;margin-bottom:28px}
-.auth-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:26px}
-.auth-tab{flex:1;padding:11px 8px;text-align:center;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--text4);transition:color .2s,border-color .2s;border-bottom:2px solid transparent;margin-bottom:-2px}
-.auth-tab:hover{color:var(--text2)}
-.auth-tab.active{color:var(--primary-l);border-bottom-color:var(--primary)}
-.auth-switch{text-align:center;font-size:.82rem;color:var(--text3);margin-top:20px}
-.auth-switch a{color:var(--primary-l);cursor:pointer;font-weight:600}
+.auth-box h2{font-size:1.5rem;font-weight:700;color:#F5E6C8;margin-bottom:4px}
+.auth-subtitle{color:#8A6A4A;font-size:.85rem;margin-bottom:28px}
+.auth-tabs{display:flex;border-bottom:2px solid rgba(200,149,108,.2);margin-bottom:26px}
+.auth-tab{flex:1;padding:11px 8px;text-align:center;cursor:pointer;font-size:.9rem;font-weight:600;color:#7A5A3A;transition:color .2s,border-color .2s;border-bottom:2px solid transparent;margin-bottom:-2px}
+.auth-tab:hover{color:#C8956C}
+.auth-tab.active{color:#C8956C;border-bottom-color:#C8956C}
+.auth-switch{text-align:center;font-size:.82rem;color:#8A6A4A;margin-top:20px}
+.auth-switch a{color:#C8956C;cursor:pointer;font-weight:600}
 .auth-switch a:hover{text-decoration:underline}
 .form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:.78rem;font-weight:500;color:var(--text3);margin-bottom:6px;letter-spacing:.01em}
-.form-group input{width:100%;padding:12px 14px;background:var(--card);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.9rem;font-family:inherit;transition:border-color .2s,box-shadow .2s;outline:none}
-.form-group input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
-.form-group input::placeholder{color:var(--text4)}
+.form-group label{display:block;font-size:.78rem;font-weight:500;color:#A07850;margin-bottom:6px;letter-spacing:.01em}
+.form-group input,.form-group select{width:100%;padding:12px 14px;background:#1C1108;border:1px solid rgba(200,149,108,.25);border-radius:var(--rs);color:#F5E6C8;font-size:.9rem;font-family:inherit;transition:border-color .2s,box-shadow .2s;outline:none}
+.form-group input:focus,.form-group select:focus{border-color:#C8956C;box-shadow:0 0 0 3px rgba(200,149,108,.15)}
+.form-group input::placeholder{color:#5A3A20}
 .pw-wrap{position:relative}
 .pw-wrap input{padding-right:44px}
-.pw-toggle{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text4);cursor:pointer;padding:4px;display:flex;align-items:center;transition:color .15s;line-height:1}
-.pw-toggle:hover{color:var(--text2)}
+.pw-toggle{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:#7A5A3A;cursor:pointer;padding:4px;display:flex;align-items:center;transition:color .15s;line-height:1}
+.pw-toggle:hover{color:#C8956C}
 .pw-toggle .eye-hide{display:none}
 .pw-toggle.shown .eye-show{display:none}
 .pw-toggle.shown .eye-hide{display:inline-block}
-.btn-auth{width:100%;padding:13px;font-size:.9rem;font-weight:600;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#6366F1 0%,#7C3AED 100%);color:#fff;box-shadow:0 2px 12px rgba(99,102,241,.25);margin-top:4px;letter-spacing:.01em}
-.btn-auth:hover:not(:disabled){background:linear-gradient(135deg,#4F52E8 0%,#6D28D9 100%);box-shadow:0 4px 20px rgba(99,102,241,.4);transform:translateY(-1px)}
-.btn-auth:active:not(:disabled){transform:translateY(0);box-shadow:0 2px 10px rgba(99,102,241,.3)}
+.btn-auth{width:100%;padding:13px;font-size:.9rem;font-weight:600;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#8B4A1A 0%,#C8956C 100%);color:#fff;box-shadow:0 2px 12px rgba(180,110,60,.35);margin-top:4px;letter-spacing:.01em}
+.btn-auth:hover:not(:disabled){background:linear-gradient(135deg,#7A3A0E 0%,#B8845C 100%);box-shadow:0 4px 20px rgba(180,110,60,.5);transform:translateY(-1px)}
+.btn-auth:active:not(:disabled){transform:translateY(0);box-shadow:0 2px 10px rgba(180,110,60,.3)}
 .btn-auth:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
 /* Sign-up step indicator */
 .su-steps{display:flex;align-items:center;margin:18px 0 22px}
 .su-step-item{display:flex;flex-direction:column;align-items:center;gap:5px}
-.su-step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);color:var(--text4);font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .25s}
-.su-step-dot.active{border-color:var(--primary);background:var(--primary);color:#fff}
-.su-step-dot.done{border-color:var(--primary);background:transparent;color:var(--primary)}
+.su-step-dot{width:28px;height:28px;border-radius:50%;border:2px solid rgba(200,149,108,.3);color:#7A5A3A;font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.su-step-dot.active{border-color:#C8956C;background:#C8956C;color:#fff}
+.su-step-dot.done{border-color:#C8956C;background:transparent;color:#C8956C}
 .su-step-lbl{font-size:.68rem;color:var(--text4);white-space:nowrap;letter-spacing:.02em}
 .su-connector{flex:1;height:2px;background:var(--border);margin:0 10px 16px;transition:background .25s}
 .su-connector.done{background:var(--primary)}
@@ -572,19 +572,19 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
 
     <div class="auth-features">
       <div class="auth-feat">
-        <div class="auth-feat-ico" style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="auth-feat-ico" style="background:rgba(200,149,108,.12);border:1px solid rgba(200,149,108,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8956C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
         <div class="auth-feat-body"><div class="auth-feat-title">Upload Resources</div><div class="auth-feat-sub">Share PDFs, PowerPoints, Word docs, Excel sheets and more with your campus</div></div>
       </div>
       <div class="auth-feat">
-        <div class="auth-feat-ico" style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="auth-feat-ico" style="background:rgba(180,130,80,.1);border:1px solid rgba(180,130,80,.28)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B48250" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
         <div class="auth-feat-body"><div class="auth-feat-title">Connect with Students</div><div class="auth-feat-sub">Follow peers in your field, grow your academic network and stay updated</div></div>
       </div>
       <div class="auth-feat">
-        <div class="auth-feat-ico" style="background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="auth-feat-ico" style="background:rgba(220,170,110,.1);border:1px solid rgba(220,170,110,.28)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DCAA6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         <div class="auth-feat-body"><div class="auth-feat-title">Study Channels</div><div class="auth-feat-sub">Join topic-based channels, ask questions and discuss coursework in real time</div></div>
       </div>
       <div class="auth-feat">
-        <div class="auth-feat-ico" style="background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+        <div class="auth-feat-ico" style="background:rgba(160,110,60,.12);border:1px solid rgba(160,110,60,.28)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A06E3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
         <div class="auth-feat-body"><div class="auth-feat-title">Free Downloads</div><div class="auth-feat-sub">Access every shared resource — lecture notes, past papers, research — at no cost</div></div>
       </div>
     </div>
@@ -693,8 +693,20 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
               <label>Course / Subject</label>
               <input type="text" id="su-subject" placeholder="e.g. Computer Science" maxlength="100" list="su-subject-list"/>
               <datalist id="su-subject-list">
-                <option value="Academic"><option value="Story Books"><option value="Journals">
-                <option value="Academic Research"><option value="Other">
+                <option value="Accounting"><option value="Agriculture"><option value="Architecture">
+                <option value="Biochemistry"><option value="Biology"><option value="Business Administration">
+                <option value="Chemical Engineering"><option value="Chemistry"><option value="Civil Engineering">
+                <option value="Computer Science"><option value="Economics"><option value="Education">
+                <option value="Electrical Engineering"><option value="English Literature"><option value="Environmental Science">
+                <option value="Finance"><option value="Fine Arts"><option value="Food Science">
+                <option value="Geography"><option value="History"><option value="Information Technology">
+                <option value="International Relations"><option value="Law"><option value="Linguistics">
+                <option value="Marketing"><option value="Mass Communication"><option value="Mathematics">
+                <option value="Mechanical Engineering"><option value="Medicine"><option value="Microbiology">
+                <option value="Music"><option value="Nursing"><option value="Pharmacy">
+                <option value="Philosophy"><option value="Physics"><option value="Political Science">
+                <option value="Psychology"><option value="Public Health"><option value="Sociology">
+                <option value="Software Engineering"><option value="Statistics"><option value="Theatre Arts">
               </datalist>
             </div>
             <div class="su-step2-actions">
