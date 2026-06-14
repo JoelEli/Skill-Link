@@ -347,20 +347,53 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .ch-empty-title{font-size:1rem;font-weight:700;color:var(--text);margin:0}
 .ch-empty-desc{font-size:.875rem;color:var(--text3);margin:0;max-width:260px;line-height:1.6}
 
-/* PROFILE */
-.profile-hero{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:20px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
-.profile-av-wrap{flex-shrink:0}
-.profile-info{flex:1}
-.profile-name{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:4px}
-.profile-meta{font-size:.85rem;color:var(--text3);margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap}
-.profile-bio{font-size:.875rem;color:var(--text2);margin-bottom:14px;line-height:1.6}
-.profile-stats{display:flex;gap:20px;flex-wrap:wrap}
-.profile-stat{text-align:center}
-.profile-stat-val{font-size:1.25rem;font-weight:700;color:var(--text)}
-.profile-stat-lbl{font-size:.72rem;color:var(--text3)}
-.profile-tabs{display:flex;gap:2px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:20px;width:fit-content}
-.ptab{padding:7px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--text3);transition:all .15s}
-.ptab.active{background:var(--primary);color:#fff}
+/* INSTAGRAM-STYLE PROFILE */
+.ig-profile{max-width:935px;margin:0 auto;padding:0 0 60px}
+.ig-header{display:flex;align-items:flex-start;gap:52px;padding:28px 0 32px}
+.ig-av-ring{flex-shrink:0;width:150px;height:150px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);padding:3px;cursor:default}
+.ig-av{width:100%;height:100%;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;color:var(--text);letter-spacing:-.02em;border:3px solid var(--bg)}
+.ig-info{flex:1;padding-top:4px}
+.ig-top-row{display:flex;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.ig-username{font-size:1.4rem;font-weight:300;color:var(--text);margin:0}
+.ig-edit-btn{padding:7px 18px;border:1px solid var(--border2);border-radius:8px;background:transparent;color:var(--text);font-size:.88rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.ig-edit-btn:hover{background:rgba(255,255,255,.06)}
+.ig-follow-btn{padding:8px 24px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-size:.88rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.ig-follow-btn:hover{background:#4F52E8}
+.ig-follow-btn.following{background:transparent;border:1px solid var(--border2);color:var(--text)}
+.ig-follow-btn.following:hover{background:rgba(255,255,255,.06)}
+.ig-stats-row{display:flex;gap:40px;margin-bottom:20px}
+.ig-stat-item{display:flex;align-items:baseline;gap:5px}
+.ig-stat-num{font-size:1rem;font-weight:700;color:var(--text)}
+.ig-stat-lbl{font-size:.925rem;color:var(--text2)}
+.ig-bio-wrap{line-height:1.55}
+.ig-real-name{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.ig-study-line{font-size:.85rem;color:var(--text3);margin-bottom:2px}
+.ig-bio-text{font-size:.875rem;color:var(--text2);margin-bottom:3px;white-space:pre-wrap}
+.ig-uni-line{font-size:.85rem;color:var(--primary-l)}
+/* Tabs */
+.ig-tabs-bar{display:flex;border-top:1px solid var(--border);margin-bottom:4px}
+.ptab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 8px;font-size:.73rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);cursor:pointer;border-top:1px solid transparent;margin-top:-1px;background:none;border:none;border-top:1px solid transparent;font-family:inherit;transition:color .15s}
+.ptab:hover{color:var(--text)}
+.ptab.active{color:var(--text);border-top:1px solid var(--text)}
+/* Instagram post grid */
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:4px}
+.ig-post{position:relative;aspect-ratio:1/1;overflow:hidden;cursor:pointer;background:var(--card)}
+.ig-post-bg{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:filter .2s}
+.ig-post:hover .ig-post-bg{filter:brightness(.35)}
+.ig-post-type{font-size:1.8rem;font-weight:900;letter-spacing:-.04em;line-height:1}
+.ig-post-title{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;font-size:.68rem;font-weight:600;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.8));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform:translateY(100%);transition:transform .2s}
+.ig-post:hover .ig-post-title{transform:translateY(0)}
+.ig-post-hover{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:22px;opacity:0;transition:opacity .2s}
+.ig-post:hover .ig-post-hover{opacity:1}
+.ig-post-stat{display:flex;align-items:center;gap:5px;color:#fff;font-size:.95rem;font-weight:700}
+@media(max-width:700px){
+  .ig-header{flex-direction:column;align-items:center;gap:16px;text-align:center;padding:20px 0 24px}
+  .ig-av-ring{width:90px;height:90px}
+  .ig-av{font-size:2rem}
+  .ig-top-row{justify-content:center}
+  .ig-stats-row{gap:24px;justify-content:center}
+  .ig-grid{gap:2px}
+}
 
 /* STUDENT CARDS */
 .stu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
@@ -2031,42 +2064,76 @@ function loadProfile(userId) {
   });
 }
 
+function mkIgPost(r) {
+  var ft = FILE_TYPE_MAP[r.fileType] || FILE_TYPE_MAP.other;
+  var html = '<div class="ig-post" onclick="openResDetail(\'' + esc(r._id) + '\')" title="' + esc(r.title) + '">';
+  html += '<div class="ig-post-bg" style="background:' + ft.color + '1a">';
+  html += '<span class="ig-post-type" style="color:' + ft.color + '">' + ft.label + '</span>';
+  html += '</div>';
+  html += '<div class="ig-post-title">' + esc(r.title) + '</div>';
+  html += '<div class="ig-post-hover">';
+  html += '<div class="ig-post-stat">' + _ico('heart',15,2.5) + ' ' + (r.likesCount || 0) + '</div>';
+  html += '<div class="ig-post-stat">' + _ico('download',15,2.5) + ' ' + (r.downloads || 0) + '</div>';
+  html += '</div></div>';
+  return html;
+}
+
 function renderProfile(u, isOwn) {
   var ini = initials(u.name);
   var followerCount = u.followerCount !== undefined ? u.followerCount : (u.followers ? u.followers.length : 0);
   var followingCount = u.followingCount !== undefined ? u.followingCount : (u.following ? u.following.length : 0);
-  var savedCount = u.savedResources ? u.savedResources.length : 0;
+  var uploadCount = u.uploadCount || (u.resources ? u.resources.length : 0);
   var isFollowing = me && u.followers && u.followers.some(function(id){ return (id._id||id) === me._id; });
-  var html = '';
-  html += '<div class="profile-hero">';
-  html += '<div class="profile-av-wrap"><div class="av av-xl">' + esc(ini) + '</div></div>';
-  html += '<div class="profile-info">';
-  html += '<div class="profile-name">' + esc(u.name) + '</div>';
-  html += '<div class="profile-meta">';
-  if (u.university) html += '<span>'+_ico('users',13,2)+' ' + esc(u.university) + '</span>';
-  if (u.year) html += '<span>'+_ico('bookmark',13,2)+' ' + esc(u.year) + '</span>';
-  if (u.subject) html += '<span>'+_ico('book',13,2)+' ' + esc(u.subject) + '</span>';
-  html += '</div>';
-  if (u.bio) html += '<div class="profile-bio">' + esc(u.bio) + '</div>';
-  html += '<div class="profile-stats">';
-  html += '<div class="profile-stat"><div class="profile-stat-val">' + (u.uploadCount || (u.resources ? u.resources.length : 0)) + '</div><div class="profile-stat-lbl">Uploads</div></div>';
-  html += '<div class="profile-stat"><div class="profile-stat-val">' + followerCount + '</div><div class="profile-stat-lbl">Followers</div></div>';
-  html += '<div class="profile-stat"><div class="profile-stat-val">' + followingCount + '</div><div class="profile-stat-lbl">Following</div></div>';
-  if (isOwn) html += '<div class="profile-stat"><div class="profile-stat-val">' + savedCount + '</div><div class="profile-stat-lbl">Saved</div></div>';
-  html += '</div>';
-  if (!isOwn && me) {
-    html += '<div class="mt16"><button class="btn ' + (isFollowing ? 'btn-ghost' : 'btn-primary') + ' btn-sm" onclick="toggleFollow(\'' + esc(u._id) + '\',this)">' + (isFollowing ? 'Unfollow' : 'Follow') + '</button></div>';
+  var html = '<div class="ig-profile">';
+
+  // ── Header ────────────────────────────────────────────────────────────────
+  html += '<div class="ig-header">';
+  html += '<div class="ig-av-ring"><div class="ig-av">' + esc(ini) + '</div></div>';
+  html += '<div class="ig-info">';
+
+  // Username row + action button
+  html += '<div class="ig-top-row">';
+  html += '<h2 class="ig-username">' + esc(u.name) + '</h2>';
+  if (isOwn) {
+    html += '<button class="ig-edit-btn" onclick="showProfileTab(\'settings\',null,true)">Edit profile</button>';
+  } else if (me) {
+    html += '<button class="ig-follow-btn ' + (isFollowing ? 'following' : '') + '" onclick="toggleFollow(\'' + esc(u._id) + '\',this)">' + (isFollowing ? 'Following' : 'Follow') + '</button>';
   }
-  html += '</div></div>';
-  // Tabs
-  html += '<div class="profile-tabs">';
-  html += '<div class="ptab active" id="ptab-resources" onclick="showProfileTab(\'resources\',null,' + isOwn + ')">Resources</div>';
-  if (isOwn) html += '<div class="ptab" id="ptab-saved" onclick="showProfileTab(\'saved\',null,true)">Saved</div>';
-  if (isOwn) html += '<div class="ptab" id="ptab-settings" onclick="showProfileTab(\'settings\',null,true)">Settings</div>';
   html += '</div>';
+
+  // Stats row
+  html += '<div class="ig-stats-row">';
+  html += '<div class="ig-stat-item"><span class="ig-stat-num">' + uploadCount + '</span><span class="ig-stat-lbl">resources</span></div>';
+  html += '<div class="ig-stat-item"><span class="ig-stat-num">' + followerCount + '</span><span class="ig-stat-lbl">followers</span></div>';
+  html += '<div class="ig-stat-item"><span class="ig-stat-num">' + followingCount + '</span><span class="ig-stat-lbl">following</span></div>';
+  html += '</div>';
+
+  // Bio section
+  html += '<div class="ig-bio-wrap">';
+  if (u.subject || u.year) {
+    html += '<div class="ig-real-name">' + (u.subject ? esc(u.subject) : '') + (u.subject && u.year ? ' · ' : '') + (u.year ? esc(u.year) : '') + '</div>';
+  }
+  if (u.bio) html += '<div class="ig-bio-text">' + esc(u.bio) + '</div>';
+  if (u.university) html += '<div class="ig-uni-line">🏛 ' + esc(u.university) + '</div>';
+  html += '</div>';
+
+  html += '</div></div>'; // close ig-info + ig-header
+
+  // ── Tabs ──────────────────────────────────────────────────────────────────
+  html += '<div class="ig-tabs-bar">';
+  html += '<button class="ptab active" id="ptab-resources" onclick="showProfileTab(\'resources\',null,' + isOwn + ')">';
+  html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Resources</button>';
+  if (isOwn) {
+    html += '<button class="ptab" id="ptab-saved" onclick="showProfileTab(\'saved\',null,true)">';
+    html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Saved</button>';
+    html += '<button class="ptab" id="ptab-settings" onclick="showProfileTab(\'settings\',null,true)">';
+    html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</button>';
+  }
+  html += '</div>';
+
   html += '<div id="profile-tab-content"></div>';
+  html += '</div>'; // close ig-profile
   document.getElementById('profile-content').innerHTML = html;
-  // Store user data for tab switches
   window._profileUser = u;
   window._profileIsOwn = isOwn;
 }
@@ -2084,14 +2151,14 @@ function showProfileTab(tab, u, isOwn) {
     if (!resources.length) {
       el.innerHTML = '<div class="empty-state"><div class="empty-state-ico">'+_ico('file',44,1.2)+'</div><h3>No uploads yet</h3>' + (isOwn ? '<p>Go to Upload to share your first resource!</p><button class="btn btn-primary btn-sm mt12" onclick="nav(\'upload\')">Upload Now</button>' : '<p>This student hasn\'t uploaded anything yet</p>') + '</div>';
     } else {
-      el.innerHTML = '<div class="resource-grid">' + resources.map(function(r){ return mkResCard(r, {hideSave: !isOwn}); }).join('') + '</div>';
+      el.innerHTML = '<div class="ig-grid">' + resources.map(function(r){ return mkIgPost(r); }).join('') + '</div>';
     }
   } else if (tab === 'saved') {
     var saved = u.savedResources || [];
     if (!saved.length) {
-      el.innerHTML = '<div class="empty-state"><div class="empty-state-ico">'+_ico('bookmark',44,1.2)+'</div><h3>No saved resources</h3><p>Browse resources and save them to access later.</p></div>';
+      el.innerHTML = '<div class="empty-state"><div class="empty-state-ico">' + _ico('bookmark',44,1.2) + '</div><h3>No saved resources</h3><p>Browse resources and save them to access later.</p></div>';
     } else {
-      el.innerHTML = '<div class="resource-grid">' + saved.map(function(r){ return mkResCard(r); }).join('') + '</div>';
+      el.innerHTML = '<div class="ig-grid">' + saved.map(function(r){ return mkIgPost(r); }).join('') + '</div>';
     }
   } else if (tab === 'settings') {
     renderSettings(u);
