@@ -94,10 +94,19 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .auth-err{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.18);border-radius:var(--rs);color:var(--red);padding:10px 14px;font-size:.83rem;margin-bottom:18px;display:none;line-height:1.5}
 .auth-err.show{display:block}
 
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(15,12,35,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:500}
+.topbar-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.topbar-ico{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#6366F1,#F472B6);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 14px rgba(99,102,241,.4)}
+.topbar-name{font-size:1.05rem;font-weight:400;color:var(--text);font-family:'Lucida Calligraphy','Lucida Handwriting',cursive;letter-spacing:.02em}
+.topbar-name em{color:var(--primary-l);font-style:normal}
+.topbar-ham{background:none;border:none;cursor:pointer;color:var(--text3);width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:9px;transition:background .15s,color .15s;flex-shrink:0}
+.topbar-ham:hover{background:var(--card);color:var(--text)}
+
 /* APP LAYOUT */
-#app{display:flex;min-height:100vh}
-.sidebar{position:fixed;top:0;left:0;height:100vh;width:var(--sw);background:var(--surf);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:300;transition:transform .2s}
-.sl{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+#app{display:flex;min-height:100vh;padding-top:56px}
+.sidebar{position:fixed;top:56px;left:0;height:calc(100vh - 56px);width:var(--sw);background:var(--surf);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:400;transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.sl{display:none}
 .sl-ico{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366F1,#F472B6);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 0 16px rgba(99,102,241,.35)}
 .sl-txt{font-size:1.1rem;font-weight:400;color:var(--text);font-family:'Lucida Calligraphy','Lucida Handwriting',cursive;letter-spacing:.02em}
 .sl-txt em{color:var(--primary-l);font-style:normal}
@@ -122,7 +131,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .btn-lo:hover{background:rgba(248,113,113,.16)}
 
 /* MAIN CONTENT */
-.main{margin-left:var(--sw);flex:1;min-height:100vh;background:var(--bg)}
+.main{margin-left:var(--sw);flex:1;min-height:100vh;background:var(--bg);transition:margin-left .25s cubic-bezier(.4,0,.2,1)}
 .panel{display:none;padding:28px 32px;max-width:1200px;min-height:100vh}
 .panel.active{display:block}
 .panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
@@ -333,8 +342,8 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 .page-btn:disabled{opacity:.4;cursor:not-allowed}
 
 /* MOBILE */
-.hamburger{display:none;position:fixed;top:14px;left:14px;z-index:400;background:var(--card);border:1px solid var(--border2);border-radius:9px;width:38px;height:38px;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:290}
+.hamburger{display:none}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:550;backdrop-filter:blur(2px)}
 
 @media(max-width:960px){
   .auth-left{display:none}
@@ -348,12 +357,11 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
   .auth-right{padding:28px 16px}
 }
 @media(max-width:768px){
-  .sidebar{transform:translateX(-100%)}
+  .sidebar{transform:translateX(-100%);top:0;height:100vh;z-index:600}
   .sidebar.open{transform:translateX(0)}
   .main{margin-left:0}
-  .hamburger{display:flex}
   .sidebar-overlay.show{display:block}
-  .panel{padding:20px 16px;padding-top:60px}
+  .panel{padding:20px 16px}
   .channels-layout{flex-direction:column;height:auto}
   .ch-list{width:100%;min-width:unset;height:220px;border-right:none;border-bottom:1px solid var(--border)}
   #panel-channels{min-height:unset;overflow:auto}
@@ -522,8 +530,16 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
   </div>
 </div>
 
-<!-- HAMBURGER -->
-<div class="hamburger" id="hamburger" onclick="toggleSidebar()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+    <span class="topbar-name">Skill<em>Link</em></span>
+  </div>
+  <button class="topbar-ham" onclick="toggleSidebar()" aria-label="Toggle menu">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</header>
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <!-- APP -->
@@ -1052,8 +1068,23 @@ function nav(panel) {
 }
 
 function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebar-overlay').classList.toggle('show');
+  var sb = document.getElementById('sidebar');
+  var ov = document.getElementById('sidebar-overlay');
+  var main = document.querySelector('.main');
+  if (window.innerWidth <= 768) {
+    sb.classList.toggle('open');
+    ov.classList.toggle('show');
+  } else {
+    var closing = !sb.classList.contains('collapsed');
+    sb.classList.toggle('collapsed');
+    if (closing) {
+      sb.style.transform = 'translateX(-100%)';
+      if (main) main.style.marginLeft = '0';
+    } else {
+      sb.style.transform = '';
+      if (main) main.style.marginLeft = '';
+    }
+  }
 }
 
 // ─── UPDATE UI ────────────────────────────────────────────────────────────────
