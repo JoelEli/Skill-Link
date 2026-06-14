@@ -146,7 +146,8 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
 
 /* STAT CARDS */
 .stat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:28px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:4px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .15s}
+.stat-card:hover{border-color:var(--primary-l);transform:translateY(-2px);box-shadow:0 6px 24px rgba(99,102,241,.15)}
 .stat-card-val{font-size:1.6rem;font-weight:700;color:var(--text)}
 .stat-card-lbl{font-size:.75rem;color:var(--text3)}
 .stat-card-icon{width:22px;height:22px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;color:var(--primary-l)}
@@ -566,10 +567,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
         </div>
       </div>
       <div class="stat-row" id="home-stats"></div>
-      <div class="section" id="home-feed-section">
-        <div class="section-hd"><h2>Recent from people you follow</h2></div>
-        <div id="home-feed"></div>
-      </div>
       <div class="section">
         <div class="section-hd"><h2>Trending Resources</h2><a onclick="nav('discover')">View all →</a></div>
         <div class="resource-grid" id="home-trending"></div>
@@ -756,6 +753,17 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0D0D1
         <button type="submit" class="btn btn-primary btn-full" id="btn-create-ch">Create Channel</button>
       </form>
     </div>
+  </div>
+</div>
+
+<!-- USERS LIST MODAL (Followers / Following) -->
+<div class="modal-overlay" id="mod-users" onclick="closeModBg(event,'mod-users')">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2 id="mod-users-title">Users</h2>
+      <button class="modal-close" onclick="closeMod('mod-users')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="mod-users-list" style="max-height:60vh;overflow-y:auto"></div>
   </div>
 </div>
 
@@ -1122,29 +1130,22 @@ function loadHome() {
   if (!me) return;
   // Stats
   document.getElementById('home-stats').innerHTML =
-    '<div class="stat-card"><div class="stat-card-icon">'+_ico('file',20,1.8)+'</div><div class="stat-card-val" id="hs-uploads">—</div><div class="stat-card-lbl">My Uploads</div></div>' +
-    '<div class="stat-card"><div class="stat-card-icon">'+_ico('users',20)+'</div><div class="stat-card-val" id="hs-followers">—</div><div class="stat-card-lbl">Followers</div></div>' +
-    '<div class="stat-card"><div class="stat-card-icon">'+_ico('arrowR',20)+'</div><div class="stat-card-val" id="hs-following">—</div><div class="stat-card-lbl">Following</div></div>' +
-    '<div class="stat-card"><div class="stat-card-icon">'+_ico('bookmark',20)+'</div><div class="stat-card-val" id="hs-saved">—</div><div class="stat-card-lbl">Saved</div></div>';
+    '<div class="stat-card" onclick="nav(\'profile\')"><div class="stat-card-icon">'+_ico('file',20,1.8)+'</div><div class="stat-card-val" id="hs-uploads">—</div><div class="stat-card-lbl">My Uploads</div></div>' +
+    '<div class="stat-card" onclick="showUsersModal(\'Followers\',window._homeFollowers||[])"><div class="stat-card-icon">'+_ico('users',20)+'</div><div class="stat-card-val" id="hs-followers">—</div><div class="stat-card-lbl">Followers</div></div>' +
+    '<div class="stat-card" onclick="showUsersModal(\'Following\',window._homeFollowing||[])"><div class="stat-card-icon">'+_ico('arrowR',20)+'</div><div class="stat-card-val" id="hs-following">—</div><div class="stat-card-lbl">Following</div></div>' +
+    '<div class="stat-card" onclick="window._profileAutoTab=\'saved\';nav(\'profile\')"><div class="stat-card-icon">'+_ico('bookmark',20)+'</div><div class="stat-card-val" id="hs-saved">—</div><div class="stat-card-lbl">Saved</div></div>';
 
   // Load profile for stats
   api('GET', '/users/me/profile').then(function(d) {
     var u = d.user;
+    window._homeFollowers = u.followers || [];
+    window._homeFollowing = u.following || [];
     me = Object.assign({}, me, { followers: u.followers, following: u.following, savedResources: u.savedResources });
     localStorage.setItem('sl_user', JSON.stringify(me));
     document.getElementById('hs-uploads').textContent = u.uploadCount || 0;
     document.getElementById('hs-followers').textContent = (u.followers || []).length;
     document.getElementById('hs-following').textContent = (u.following || []).length;
     document.getElementById('hs-saved').textContent = (u.savedResources || []).length;
-
-    // Feed: resources from following
-    var feedSection = document.getElementById('home-feed-section');
-    if (!u.following || u.following.length === 0) {
-      document.getElementById('home-feed').innerHTML =
-        '<div class="cta-card"><h3>Follow other students</h3><p>Start following students to see their latest uploads in your feed.</p><button class="btn btn-primary" onclick="nav(\'discover\')">Discover Students</button></div>';
-    } else {
-      loadFeed(u.following);
-    }
   }).catch(function() {});
 
   // Trending
@@ -1158,25 +1159,43 @@ function loadHome() {
   }).catch(function() {});
 }
 
-function loadFeed(followingIds) {
-  var feedEl = document.getElementById('home-feed');
-  feedEl.innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner"></div></div>';
-  // Load resources from each followed user (simplified: pick first 3 followers)
-  var promises = followingIds.slice(0,5).map(function(uid) {
-    var uidStr = (uid && uid._id) ? uid._id : String(uid);
-    return api('GET', '/resources?userId=' + uidStr + '&limit=4&sort=newest');
-  });
-  Promise.all(promises).then(function(results) {
-    var all = [];
-    results.forEach(function(d) { if (d.resources) all = all.concat(d.resources); });
-    all.sort(function(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); });
-    all = all.slice(0, 12);
-    if (!all.length) {
-      feedEl.innerHTML = '<div class="empty-state"><div class="empty-state-ico">'+_ico('inbox',44,1.2)+'</div><h3>Nothing yet</h3><p>The people you follow haven\'t uploaded anything yet.</p></div>';
-      return;
+function showUsersModal(title, users) {
+  document.getElementById('mod-users-title').textContent = title;
+  var el = document.getElementById('mod-users-list');
+  if (!users || !users.length) {
+    el.innerHTML = '<div class="empty-state" style="padding:24px 0"><div class="empty-state-ico">'+_ico('users',40,1.2)+'</div><h3>No ' + esc(title.toLowerCase()) + ' yet</h3></div>';
+  } else {
+    el.innerHTML = users.map(function(u) {
+      var uid = u._id || u;
+      var name = u.name || 'Unknown';
+      var isMe = me && uid === me._id;
+      var isFollowing = me && window._homeFollowing && window._homeFollowing.some(function(f){ return (f._id || f) === uid; });
+      return '<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)">' +
+        '<div class="av" style="width:40px;height:40px;flex-shrink:0;font-size:.9rem">' + esc(name.charAt(0).toUpperCase()) + '</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(name) + '</div>' +
+          '<div style="font-size:.78rem;color:var(--text3)">' + (u.university ? esc(u.university) : 'Student') + (u.year ? ' · ' + esc(u.year) : '') + '</div>' +
+        '</div>' +
+        (!isMe ? '<button class="btn btn-sm ' + (isFollowing ? 'btn-ghost' : 'btn-primary') + '" onclick="toggleFollowModal(\'' + esc(uid) + '\',this)">' + (isFollowing ? 'Unfollow' : 'Follow') + '</button>' : '<span style="font-size:.75rem;color:var(--text4)">You</span>') +
+      '</div>';
+    }).join('');
+  }
+  openMod('mod-users');
+}
+
+function toggleFollowModal(uid, btn) {
+  var isFollowing = btn.textContent.trim() === 'Unfollow';
+  api('POST', '/users/' + uid + (isFollowing ? '/unfollow' : '/follow')).then(function() {
+    btn.textContent = isFollowing ? 'Follow' : 'Unfollow';
+    btn.className = 'btn btn-sm ' + (isFollowing ? 'btn-primary' : 'btn-ghost');
+    if (window._homeFollowing) {
+      if (isFollowing) {
+        window._homeFollowing = window._homeFollowing.filter(function(f){ return (f._id || f) !== uid; });
+      } else {
+        window._homeFollowing.push({ _id: uid });
+      }
     }
-    feedEl.innerHTML = '<div class="resource-grid">' + all.map(function(r){ return mkResCard(r); }).join('') + '</div>';
-  }).catch(function() { feedEl.innerHTML = ''; });
+  }).catch(function(err) { toast(err.message, 'error'); });
 }
 
 // ─── DISCOVER ─────────────────────────────────────────────────────────────────
@@ -1608,8 +1627,10 @@ function loadProfile(userId) {
       localStorage.setItem('sl_user', JSON.stringify(me));
     }
     renderProfile(u, isOwn);
-    profileTab = 'resources';
-    showProfileTab('resources', u, isOwn);
+    var autoTab = window._profileAutoTab;
+    window._profileAutoTab = null;
+    profileTab = autoTab || 'resources';
+    showProfileTab(profileTab, u, isOwn);
   }).catch(function(err) {
     content.innerHTML = '<div class="empty-state"><div class="empty-state-ico">'+_ico('warn',44,1.2)+'</div><h3>Error loading profile</h3><p>' + esc(err.message) + '</p></div>';
   });

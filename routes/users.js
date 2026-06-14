@@ -25,7 +25,10 @@ router.get('/', async (req, res) => {
 // GET /me/profile
 router.get('/me/profile', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-password').populate('savedResources', 'title subject fileType fileSize downloads likesCount likes createdAt user');
+    const user = await User.findById(req.user._id).select('-password')
+      .populate('savedResources', 'title subject fileType fileSize downloads likesCount likes createdAt user')
+      .populate('followers', 'name university year subject')
+      .populate('following', 'name university year subject');
     const resources = await Resource.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.json({ user: { ...user.toJSON(), uploadCount: resources.length, resources } });
   } catch(e) { res.status(500).json({ error: 'Server error' }); }
