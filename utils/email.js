@@ -1,37 +1,29 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-let transporter = null;
+let resend = null;
 
-function getTransporter() {
-  if (transporter) return transporter;
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    return null;
-  }
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT) || 587,
-    secure: (process.env.SMTP_PORT || '587') === '465',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
-  });
-  return transporter;
+function getClient() {
+  if (resend) return resend;
+  if (!process.env.RESEND_API_KEY) return null;
+  resend = new Resend(process.env.RESEND_API_KEY);
+  return resend;
 }
 
 function getBaseUrl() {
   return process.env.BASE_URL || ('http://localhost:' + (process.env.PORT || 5000));
 }
 
+var FROM = 'SkillLink <onboarding@resend.dev>';
+
 async function sendVerificationEmail(user, token) {
-  var t = getTransporter();
-  if (!t) {
-    console.log('SMTP not configured — verification email skipped for', user.email);
+  var client = getClient();
+  if (!client) {
+    console.log('RESEND_API_KEY not set — verification email skipped for', user.email);
     return false;
   }
   var link = getBaseUrl() + '?verify=' + token;
-  await t.sendMail({
-    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+  await client.emails.send({
+    from: process.env.RESEND_FROM || FROM,
     to: user.email,
     subject: 'Verify your SkillLink account',
     html:
@@ -46,14 +38,14 @@ async function sendVerificationEmail(user, token) {
 }
 
 async function sendPasswordResetEmail(user, token) {
-  var t = getTransporter();
-  if (!t) {
-    console.log('SMTP not configured — reset email skipped for', user.email);
+  var client = getClient();
+  if (!client) {
+    console.log('RESEND_API_KEY not set — reset email skipped for', user.email);
     return false;
   }
   var link = getBaseUrl() + '?reset=' + token;
-  await t.sendMail({
-    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+  await client.emails.send({
+    from: process.env.RESEND_FROM || FROM,
     to: user.email,
     subject: 'Reset your SkillLink password',
     html:
