@@ -4,6 +4,7 @@ const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const Resource = require('../models/Resource');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
@@ -170,6 +171,33 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// PUT /:id — edit resource metadata (owner only, no file change)
+router.put('/:id', auth, async (req, res) => {
+  try {
+    var resource = await Resource.findById(req.params.id);
+    if (!resource) return res.status(404).json({ error: 'Resource not found' });
+    if (resource.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+
+    var { title, description, subject, tags } = req.body;
+    if (title !== undefined) {
+      if (!title.trim()) return res.status(400).json({ error: 'Title cannot be empty' });
+      resource.title = title.trim();
+    }
+    if (description !== undefined) resource.description = description.trim();
+    if (subject !== undefined) resource.subject = subject;
+    if (tags !== undefined) resource.tags = parseTags(tags);
+
+    await resource.save();
+    await resource.populate('user', 'name university year');
+    res.json({ message: 'Resource updated', resource });
+  } catch(e) {
+    if (e.name === 'CastError') return res.status(400).json({ error: 'Invalid resource ID' });
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // GET /:id/download — auth required; increments counter, returns Cloudinary URL
 router.get('/:id/download', auth, async (req, res) => {
   try {
@@ -179,7 +207,16 @@ router.get('/:id/download', auth, async (req, res) => {
     resource.downloads = (resource.downloads || 0) + 1;
     await resource.save();
 
-    // Insert fl_attachment flag so Cloudinary forces a file download instead of inline display
+    if (resource.user.toString() !== req.user._id.toString()) {
+      new Notification({
+        user: resource.user,
+        type: 'download',
+        from: req.user._id,
+        resource: resource._id,
+        message: 'downloaded your resource "' + resource.title + '"'
+      }).save().catch(function() {});
+    }
+
     var downloadUrl = resource.fileUrl.replace('/upload/', '/upload/fl_attachment/');
     res.json({ url: downloadUrl, fileName: resource.fileName });
   } catch(e) {
@@ -204,6 +241,17 @@ router.post('/:id/like', auth, async (req, res) => {
     }
     resource.likesCount = resource.likes.length;
     await resource.save();
+
+    if (!isLiked && resource.user.toString() !== userId) {
+      new Notification({
+        user: resource.user,
+        type: 'like',
+        from: req.user._id,
+        resource: resource._id,
+        message: 'liked your resource "' + resource.title + '"'
+      }).save().catch(function() {});
+    }
+
     res.json({ liked: !isLiked, likesCount: resource.likesCount });
   } catch(e) {
     if (e.name === 'CastError') return res.status(400).json({ error: 'Invalid resource ID' });

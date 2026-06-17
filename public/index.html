@@ -583,6 +583,38 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
 .icon-opt:hover{border-color:var(--primary)}
 .icon-opt.selected{border-color:var(--primary);background:var(--primary-g)}
 .no-select{user-select:none}
+
+/* NOTIFICATION BELL & PANEL */
+.notif-badge{position:absolute;top:4px;right:4px;background:var(--red);color:#fff;font-size:.6rem;font-weight:800;min-width:16px;height:16px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 4px;line-height:1;pointer-events:none}
+.notif-panel{position:absolute;top:calc(100% + 8px);right:0;width:360px;max-height:440px;background:var(--surf);border:1px solid var(--border2);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:700;display:none;flex-direction:column;overflow:hidden}
+.notif-panel.open{display:flex}
+.notif-panel-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
+.notif-panel-title{font-size:.9rem;font-weight:700;color:var(--text)}
+.notif-mark-all{background:none;border:none;color:var(--primary-l);font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;padding:0}
+.notif-mark-all:hover{text-decoration:underline}
+.notif-panel-body{flex:1;overflow-y:auto;max-height:370px}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--border)}
+.notif-item:last-child{border-bottom:none}
+.notif-item:hover{background:rgba(255,255,255,.03)}
+.notif-item.unread{background:rgba(99,102,241,.06)}
+.notif-item.unread:hover{background:rgba(99,102,241,.1)}
+.notif-ico{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
+.notif-ico.follow{background:rgba(99,102,241,.15);color:var(--primary-l)}
+.notif-ico.like{background:rgba(248,113,113,.12);color:var(--red)}
+.notif-ico.download{background:rgba(52,211,153,.12);color:var(--green)}
+.notif-ico.channel_post{background:rgba(244,114,182,.12);color:var(--pink)}
+.notif-body{flex:1;min-width:0}
+.notif-text{font-size:.82rem;color:var(--text2);line-height:1.45}
+.notif-text strong{color:var(--text);font-weight:700}
+.notif-time{font-size:.7rem;color:var(--text4);margin-top:2px}
+@media(max-width:480px){.notif-panel{width:calc(100vw - 24px);right:-40px}}
+
+/* EDIT RESOURCE MODAL */
+.edit-res-form .form-group{margin-bottom:14px}
+.edit-res-form label{display:block;font-size:.78rem;font-weight:500;color:var(--text3);margin-bottom:5px}
+.edit-res-form input,.edit-res-form textarea{width:100%;padding:10px 12px;background:var(--card);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.88rem;font-family:inherit;outline:none;transition:border-color .15s}
+.edit-res-form input:focus,.edit-res-form textarea:focus{border-color:var(--primary)}
+.edit-res-form textarea{resize:vertical;min-height:80px}
 </style>
 </head>
 <body>
@@ -650,7 +682,54 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
           </div>
           <button type="submit" class="btn-auth" id="btn-signin">Sign In</button>
         </form>
+        <p style="text-align:right;margin-top:10px"><a onclick="openAuth('forgot')" style="color:#C8956C;cursor:pointer;font-size:.82rem;font-weight:500">Forgot password?</a></p>
         <p class="auth-switch">Don't have an account? <a onclick="openAuth('signup')">Sign Up</a></p>
+      </div>
+      <!-- FORGOT PASSWORD -->
+      <div id="form-forgot" style="display:none">
+        <h2>Reset Password</h2>
+        <p class="auth-subtitle">Enter your email and we'll send you a reset link</p>
+        <div class="auth-err" id="forgot-err"></div>
+        <div id="forgot-success" style="display:none;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.18);border-radius:8px;color:#34D399;padding:10px 14px;font-size:.83rem;margin-bottom:18px;line-height:1.5"></div>
+        <form onsubmit="doForgotPassword(event)">
+          <div class="form-group">
+            <label>Email address</label>
+            <input type="email" id="fp-email" placeholder="you@university.edu" required autocomplete="email"/>
+          </div>
+          <button type="submit" class="btn-auth" id="btn-forgot">Send Reset Link</button>
+        </form>
+        <p class="auth-switch"><a onclick="openAuth('signin')" style="color:#C8956C;cursor:pointer">&larr; Back to Sign In</a></p>
+      </div>
+      <!-- RESET PASSWORD -->
+      <div id="form-reset" style="display:none">
+        <h2>New Password</h2>
+        <p class="auth-subtitle">Enter your new password below</p>
+        <div class="auth-err" id="reset-err"></div>
+        <div id="reset-success" style="display:none;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.18);border-radius:8px;color:#34D399;padding:10px 14px;font-size:.83rem;margin-bottom:18px;line-height:1.5"></div>
+        <form onsubmit="doResetPassword(event)">
+          <div class="form-group">
+            <label>New Password</label>
+            <div class="pw-wrap">
+              <input type="password" id="rp-pass" placeholder="Minimum 6 characters" required autocomplete="new-password"/>
+              <button type="button" class="pw-toggle" onclick="togglePw('rp-pass',this)" tabindex="-1" aria-label="Toggle password">
+                <svg class="eye-show" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-hide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <div class="pw-wrap">
+              <input type="password" id="rp-pass2" placeholder="Re-enter password" required autocomplete="new-password"/>
+              <button type="button" class="pw-toggle" onclick="togglePw('rp-pass2',this)" tabindex="-1" aria-label="Toggle password">
+                <svg class="eye-show" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-hide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn-auth" id="btn-reset">Reset Password</button>
+        </form>
+        <p class="auth-switch"><a onclick="openAuth('signin')" style="color:#C8956C;cursor:pointer">&larr; Back to Sign In</a></p>
       </div>
       <!-- SIGN UP -->
       <div id="form-signup" style="display:none">
@@ -761,6 +840,21 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
     <span class="topbar-name">Skill<em>Link</em></span>
   </div>
   <div style="display:flex;align-items:center;gap:4px">
+    <div class="notif-bell-wrap" id="notif-bell-wrap" style="position:relative;display:none">
+      <button class="bw-btn" id="notif-bell-btn" onclick="toggleNotifPanel()" title="Notifications" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      </button>
+      <div class="notif-panel" id="notif-panel">
+        <div class="notif-panel-hd">
+          <span class="notif-panel-title">Notifications</span>
+          <button class="notif-mark-all" onclick="markAllNotifsRead()">Mark all read</button>
+        </div>
+        <div class="notif-panel-body" id="notif-panel-body">
+          <div class="empty-state" style="padding:24px"><p style="font-size:.82rem">No notifications yet</p></div>
+        </div>
+      </div>
+    </div>
     <button class="bw-btn" id="bw-btn" onclick="toggleBW()" title="Toggle black & white mode" aria-label="Toggle B&W mode">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="9"/>
@@ -774,6 +868,11 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
     </button>
   </div>
 </header>
+<!-- Email verification banner -->
+<div id="verify-banner" style="display:none;background:linear-gradient(135deg,#8B4A1A,#C8956C);padding:10px 18px;text-align:center;font-size:.83rem;color:#fff;position:fixed;top:56px;left:0;right:0;z-index:499">
+  <span>Please verify your email to unlock all features.</span>
+  <button onclick="resendVerification()" style="background:#fff;color:#8B4A1A;border:none;padding:4px 14px;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;margin-left:12px;font-family:inherit">Resend Email</button>
+</div>
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <!-- APP -->
@@ -1090,6 +1189,44 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
   </div>
 </div>
 
+<!-- EDIT RESOURCE MODAL -->
+<div class="modal-overlay" id="mod-edit-res" onclick="closeModBg(event,'mod-edit-res')">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2>Edit Resource</h2>
+      <button class="modal-close" onclick="closeMod('mod-edit-res')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <form class="edit-res-form" onsubmit="submitEditResource(event)">
+        <input type="hidden" id="edit-res-id"/>
+        <div class="form-group">
+          <label>Title *</label>
+          <input type="text" id="edit-res-title" maxlength="150" required/>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="edit-res-subject">
+            <option value="Academic">Academic</option>
+            <option value="Story Books">Story Books</option>
+            <option value="Journals">Journals</option>
+            <option value="Academic Research">Academic Research</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tags (comma-separated)</label>
+          <input type="text" id="edit-res-tags"/>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="edit-res-desc" maxlength="1000"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="btn-edit-res">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- RESOURCE PREVIEW MODAL -->
 <div class="modal-overlay" id="mod-preview" onclick="closeModBg(event,'mod-preview')">
   <div class="modal modal-xl" style="height:90vh;display:flex;flex-direction:column;overflow:hidden;padding:0">
@@ -1173,7 +1310,8 @@ var _P = {
   cloud:   '<polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>',
   save:    '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>',
   dots:    '<circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/>',
-  eye:     '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
+  eye:     '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  edit:    '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>'
 };
 function _ico(name, size, sw, filled) {
   size = size || 16; sw = sw || 2;
@@ -1256,10 +1394,13 @@ function hideAuthOverlay() {
   document.getElementById('auth-overlay').style.display = 'none';
 }
 function openAuth(tab) {
-  document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
+  var allTabs = ['signin','signup','forgot','reset'];
+  allTabs.forEach(function(t) {
+    var el = document.getElementById('form-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  document.getElementById('tab-signin').classList.toggle('active', tab === 'signin' || tab === 'forgot' || tab === 'reset');
   document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
-  document.getElementById('form-signin').style.display = tab === 'signin' ? 'block' : 'none';
-  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('signin-err').classList.remove('show');
   document.getElementById('signup-err').classList.remove('show');
   if (tab === 'signup') {
@@ -1365,11 +1506,189 @@ function doSignout() {
   clearAuth();
   showAuthOverlay();
   openAuth('signin');
+  if (notifInterval) { clearInterval(notifInterval); notifInterval = null; }
   toast('Signed out successfully', 'info');
 }
 
+function doForgotPassword(e) {
+  e.preventDefault();
+  var btn = document.getElementById('btn-forgot');
+  var errEl = document.getElementById('forgot-err');
+  var succEl = document.getElementById('forgot-success');
+  errEl.classList.remove('show'); succEl.style.display = 'none';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Sending...';
+  api('POST', '/auth/forgot-password', {
+    email: document.getElementById('fp-email').value.trim()
+  }).then(function(d) {
+    succEl.textContent = d.message; succEl.style.display = 'block';
+  }).catch(function(err) {
+    errEl.textContent = err.message; errEl.classList.add('show');
+  }).finally(function() {
+    btn.disabled = false; btn.textContent = 'Send Reset Link';
+  });
+}
+
+function doResetPassword(e) {
+  e.preventDefault();
+  var btn = document.getElementById('btn-reset');
+  var errEl = document.getElementById('reset-err');
+  var succEl = document.getElementById('reset-success');
+  errEl.classList.remove('show'); succEl.style.display = 'none';
+  var pass = document.getElementById('rp-pass').value;
+  var pass2 = document.getElementById('rp-pass2').value;
+  if (pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters'; errEl.classList.add('show'); return; }
+  if (pass !== pass2) { errEl.textContent = 'Passwords do not match'; errEl.classList.add('show'); return; }
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Resetting...';
+  api('POST', '/auth/reset-password/' + window._resetToken, { password: pass }).then(function(d) {
+    succEl.innerHTML = d.message + ' <a onclick="openAuth(\'signin\')" style="color:#C8956C;cursor:pointer;font-weight:600">Sign in now →</a>';
+    succEl.style.display = 'block';
+  }).catch(function(err) {
+    errEl.textContent = err.message; errEl.classList.add('show');
+  }).finally(function() {
+    btn.disabled = false; btn.textContent = 'Reset Password';
+  });
+}
+
+function resendVerification() {
+  api('POST', '/auth/resend-verification', {}).then(function(d) {
+    toast(d.message, 'success');
+  }).catch(function(err) {
+    toast(err.message || 'Failed to send email', 'error');
+  });
+}
+
+function checkVerifyBanner() {
+  if (me && me.verified === false) {
+    document.getElementById('verify-banner').style.display = 'block';
+    document.getElementById('app').style.paddingTop = '92px';
+  } else {
+    document.getElementById('verify-banner').style.display = 'none';
+    document.getElementById('app').style.paddingTop = '';
+  }
+}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
+var notifInterval = null;
+var NOTIF_ICONS = { follow: '👤', like: '❤️', download: '⬇️', channel_post: '💬' };
+
+function initNotifications() {
+  if (!token) return;
+  document.getElementById('notif-bell-wrap').style.display = '';
+  loadNotifCount();
+  if (notifInterval) clearInterval(notifInterval);
+  notifInterval = setInterval(loadNotifCount, 30000);
+}
+
+function loadNotifCount() {
+  if (!token) return;
+  api('GET', '/notifications/unread-count').then(function(d) {
+    var badge = document.getElementById('notif-badge');
+    if (d.unreadCount > 0) {
+      badge.textContent = d.unreadCount > 99 ? '99+' : d.unreadCount;
+      badge.style.display = '';
+    } else {
+      badge.style.display = 'none';
+    }
+  }).catch(function() {});
+}
+
+function toggleNotifPanel() {
+  var panel = document.getElementById('notif-panel');
+  var isOpen = panel.classList.contains('open');
+  if (isOpen) { panel.classList.remove('open'); return; }
+  panel.classList.add('open');
+  loadNotifications();
+  document.addEventListener('click', closeNotifOnOutside, true);
+}
+
+function closeNotifOnOutside(e) {
+  var wrap = document.getElementById('notif-bell-wrap');
+  if (!wrap.contains(e.target)) {
+    document.getElementById('notif-panel').classList.remove('open');
+    document.removeEventListener('click', closeNotifOnOutside, true);
+  }
+}
+
+function loadNotifications() {
+  api('GET', '/notifications?limit=20').then(function(d) {
+    var body = document.getElementById('notif-panel-body');
+    if (!d.notifications.length) {
+      body.innerHTML = '<div class="empty-state" style="padding:24px"><p style="font-size:.82rem;color:var(--text3)">No notifications yet</p></div>';
+      return;
+    }
+    body.innerHTML = d.notifications.map(function(n) {
+      var fromName = n.from ? n.from.name : 'Someone';
+      var ico = NOTIF_ICONS[n.type] || '🔔';
+      var html = '<div class="notif-item' + (n.read ? '' : ' unread') + '" onclick="handleNotifClick(\'' + n._id + '\',\'' + n.type + '\',' + (n.resource ? '\'' + n.resource._id + '\'' : 'null') + ',' + (n.from ? '\'' + n.from._id + '\'' : 'null') + ')">';
+      html += '<div class="notif-ico ' + n.type + '">' + ico + '</div>';
+      html += '<div class="notif-body">';
+      html += '<div class="notif-text"><strong>' + esc(fromName) + '</strong> ' + esc(n.message) + '</div>';
+      html += '<div class="notif-time">' + timeAgo(n.createdAt) + '</div>';
+      html += '</div></div>';
+      return html;
+    }).join('');
+  }).catch(function() {});
+}
+
+function handleNotifClick(notifId, type, resourceId, fromId) {
+  api('PUT', '/notifications/' + notifId + '/read').then(function() { loadNotifCount(); }).catch(function() {});
+  document.getElementById('notif-panel').classList.remove('open');
+  if (type === 'like' || type === 'download') {
+    if (resourceId) openResDetail(resourceId);
+  } else if (type === 'follow') {
+    if (fromId) loadProfile(fromId);
+  }
+}
+
+function markAllNotifsRead() {
+  api('PUT', '/notifications/read-all').then(function() {
+    loadNotifCount();
+    loadNotifications();
+    toast('All notifications marked as read', 'info');
+  }).catch(function() {});
+}
+
+// ─── EDIT RESOURCE ────────────────────────────────────────────────────────────
+function openEditResource(resourceId) {
+  api('GET', '/resources/' + resourceId).then(function(d) {
+    var r = d.resource;
+    document.getElementById('edit-res-id').value = r._id;
+    document.getElementById('edit-res-title').value = r.title;
+    document.getElementById('edit-res-subject').value = r.subject || 'Other';
+    document.getElementById('edit-res-tags').value = (r.tags || []).join(', ');
+    document.getElementById('edit-res-desc').value = r.description || '';
+    openMod('mod-edit-res');
+  }).catch(function(err) { toast(err.message || 'Failed to load resource', 'error'); });
+}
+
+function submitEditResource(e) {
+  e.preventDefault();
+  var btn = document.getElementById('btn-edit-res');
+  var id = document.getElementById('edit-res-id').value;
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Saving...';
+  api('PUT', '/resources/' + id, {
+    title: document.getElementById('edit-res-title').value,
+    subject: document.getElementById('edit-res-subject').value,
+    tags: document.getElementById('edit-res-tags').value,
+    description: document.getElementById('edit-res-desc').value
+  }).then(function(d) {
+    toast('Resource updated!', 'success');
+    closeMod('mod-edit-res');
+    closeMod('mod-res-detail');
+    if (currentPanel === 'discover') loadDiscover();
+    else if (currentPanel === 'home') loadHome();
+    else if (currentPanel === 'profile') loadProfile(null);
+  }).catch(function(err) {
+    toast(err.message || 'Failed to update', 'error');
+  }).finally(function() {
+    btn.disabled = false; btn.textContent = 'Save Changes';
+  });
+}
+
 // ─── NAV ──────────────────────────────────────────────────────────────────────
+var currentPanel = 'home';
 function nav(panel) {
+  currentPanel = panel;
   var panels = ['home','discover','upload','channels','students','profile'];
   panels.forEach(function(p) {
     document.getElementById('panel-' + p).classList.toggle('active', p === panel);
@@ -1407,10 +1726,11 @@ function updUI() {
   document.getElementById('sidebar-av').textContent = initials;
   document.getElementById('sidebar-name').textContent = me.name;
   document.getElementById('sidebar-sub').textContent = me.university || me.subject || 'Student';
-  // Greeting
   var hr = new Date().getHours();
   var greet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
   document.getElementById('home-greeting').textContent = greet + ', ' + me.name.split(' ')[0] + '!';
+  checkVerifyBanner();
+  initNotifications();
 }
 
 function esc(s) {
@@ -2369,6 +2689,7 @@ function viewResDetail(id) {
     html += '<button class="btn btn-primary" onclick="downloadResource(\''+esc(r._id)+'\',\''+esc(r.fileName)+'\')">'+_ico('download',15,2.5)+' Download</button>';
     html += '<button class="btn btn-sm '+(isLiked?'btn-danger':'btn-ghost')+'" onclick="toggleLike(\''+esc(r._id)+'\',this)" id="modal-like-btn">'+_ico('heart',14,2.5,isLiked)+' '+(isLiked?'Liked':'Like')+'</button>';
     html += '<button class="btn btn-sm '+(isSaved?'btn-green':'btn-ghost')+'" onclick="toggleSave(\''+esc(r._id)+'\',this)">'+_ico('bookmark',14,2.5,isSaved)+' '+(isSaved?'Saved':'Save')+'</button>';
+    if (isOwner) html += '<button class="btn btn-sm btn-ghost" onclick="openEditResource(\''+esc(r._id)+'\')">'+_ico('edit',14,2.5)+' Edit</button>';
     if (isOwner) html += '<button class="btn btn-sm btn-danger" onclick="deleteResource(\''+esc(r._id)+'\')">'+_ico('trash',14,2.5)+' Delete</button>';
     html += '</div>';
     document.getElementById('mod-res-body').innerHTML = html;
@@ -2539,6 +2860,29 @@ function toggleBW() {
 (function init() {
   if (localStorage.getItem('sl_bw') === '1') document.documentElement.classList.add('bw');
   loadAuth();
+
+  // Handle URL params: ?verify=TOKEN, ?reset=TOKEN
+  var params = new URLSearchParams(window.location.search);
+  var verifyToken = params.get('verify');
+  var resetToken = params.get('reset');
+
+  if (verifyToken) {
+    window.history.replaceState({}, '', window.location.pathname);
+    api('GET', '/auth/verify-email/' + verifyToken).then(function(d) {
+      toast(d.message || 'Email verified!', 'success');
+      if (me) { me.verified = true; localStorage.setItem('sl_user', JSON.stringify(me)); checkVerifyBanner(); }
+    }).catch(function(err) {
+      toast(err.message || 'Verification failed', 'error');
+    });
+  }
+
+  if (resetToken) {
+    window.history.replaceState({}, '', window.location.pathname);
+    window._resetToken = resetToken;
+    showAuthOverlay();
+    openAuth('reset');
+    return;
+  }
 
   if (!me || !token) {
     showAuthOverlay();

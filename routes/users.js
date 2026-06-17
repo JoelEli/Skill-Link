@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Resource = require('../models/Resource');
+const Notification = require('../models/Notification');
 const auth = require('../middleware/auth');
 const { updateProfileValidation, handleValidationErrors } = require('../middleware/validation');
 const router = express.Router();
@@ -109,6 +110,16 @@ router.post('/:id/follow', auth, async (req, res) => {
       target.followers.push(req.user._id);
     }
     await Promise.all([me.save(), target.save()]);
+
+    if (!isFollowing) {
+      new Notification({
+        user: target._id,
+        type: 'follow',
+        from: req.user._id,
+        message: me.name + ' started following you'
+      }).save().catch(function() {});
+    }
+
     res.json({ following: !isFollowing, followerCount: target.followers.length });
   } catch(e) {
     if (e.name === 'CastError') return res.status(400).json({ error: 'Invalid user ID' });

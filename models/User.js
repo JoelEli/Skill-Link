@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
   university:{ type: String, default: '', maxlength: 100 },
   year:      { type: String, default: '', enum: ['','1st Year','2nd Year','3rd Year','4th Year','5th Year','Masters','PhD','Graduate'] },
   subject:   { type: String, default: '' },
+  verified:           { type: Boolean, default: false },
+  verificationToken:  { type: String, default: null },
+  resetToken:         { type: String, default: null },
+  resetTokenExpiry:   { type: Date, default: null },
   followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   savedResources: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }]

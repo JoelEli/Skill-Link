@@ -6,7 +6,6 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 const path = require('path');
-const fs = require('fs');
 
 dotenv.config();
 
@@ -17,18 +16,9 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const resourceRoutes = require('./routes/resources');
 const channelRoutes = require('./routes/channels');
+const notificationRoutes = require('./routes/notifications');
 
 const app = express();
-
-// Ensure uploads directories exist
-const uploadsDir = path.join(__dirname, 'public', 'uploads');
-const resourcesDir = path.join(__dirname, 'public', 'uploads', 'resources');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-if (!fs.existsSync(resourcesDir)) {
-  fs.mkdirSync(resourcesDir, { recursive: true });
-}
 
 // Security headers
 app.use(helmet({
@@ -39,9 +29,9 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'"],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:'],
+      imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
       fontSrc: ["'self'", 'https:', 'data:'],
-      connectSrc: ["'self'"],
+      connectSrc: ["'self'", 'https://res.cloudinary.com'],
       objectSrc: ["'none'"],
       frameAncestors: ["'self'"],
       baseUri: ["'self'"],
@@ -119,6 +109,7 @@ app.use('/api/users', userRoutes);
 app.post('/api/resources', uploadLimiter);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/channels', channelRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Stats endpoint
 app.get('/api/stats', async (req, res) => {
