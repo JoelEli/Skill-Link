@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 const { signupValidation, loginValidation, handleValidationErrors } = require('../middleware/validation');
-const { sendVerificationEmail, sendPasswordResetEmail } = require('../utils/email');
+const { sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } = require('../utils/email');
 
 const router = express.Router();
 
@@ -34,6 +34,9 @@ router.post('/signup', signupValidation, handleValidationErrors, async (req, res
     });
     await user.save();
 
+    sendWelcomeEmail(user).catch(function(err) {
+      console.error('Failed to send welcome email:', err.message);
+    });
     sendVerificationEmail(user, verificationToken).catch(function(err) {
       console.error('Failed to send verification email:', err.message);
     });
