@@ -2415,7 +2415,7 @@ function renderProfile(u, isOwn) {
   html += '<div class="ig-top-row">';
   html += '<h2 class="ig-username">' + esc(u.name) + '</h2>';
   if (isOwn) {
-    html += '<button class="ig-edit-btn" onclick="showProfileTab(\'settings\',null,true)">Edit profile</button>';
+    html += '<button class="ig-edit-btn" onclick="toggleEditProfile(this)">Edit profile</button>';
   } else if (me) {
     html += '<button class="ig-follow-btn ' + (isFollowing ? 'following' : '') + '" onclick="toggleFollow(\'' + esc(u._id) + '\',this)">' + (isFollowing ? 'Following' : 'Follow') + '</button>';
   }
@@ -2446,8 +2446,6 @@ function renderProfile(u, isOwn) {
   if (isOwn) {
     html += '<button class="ptab" id="ptab-saved" onclick="showProfileTab(\'saved\',null,true)">';
     html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Saved</button>';
-    html += '<button class="ptab" id="ptab-settings" onclick="showProfileTab(\'settings\',null,true)">';
-    html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</button>';
   }
   html += '</div>';
 
@@ -2456,6 +2454,16 @@ function renderProfile(u, isOwn) {
   document.getElementById('profile-content').innerHTML = html;
   window._profileUser = u;
   window._profileIsOwn = isOwn;
+}
+
+function toggleEditProfile(btn) {
+  if (profileTab === 'settings') {
+    showProfileTab('resources', null, true);
+    btn.textContent = 'Edit profile';
+  } else {
+    showProfileTab('settings', null, true);
+    btn.textContent = 'Close editing';
+  }
 }
 
 function showProfileTab(tab, u, isOwn) {
