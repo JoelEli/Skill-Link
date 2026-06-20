@@ -2,10 +2,14 @@ const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
+const { SlimFileClient } = require('@slimfile/sdk');
 const Resource = require('../models/Resource');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
 const auth = require('../middleware/auth');
+
+var slimfile = null;
+try { slimfile = new SlimFileClient(); } catch(e) { /* no API key — compression disabled */ }
 
 const router = express.Router();
 
@@ -60,6 +64,22 @@ function getFileType(ext) {
 function getCloudinaryResourceType(ext) {
   if (['.png','.jpg','.jpeg','.gif','.webp'].includes(ext)) return 'image';
   return 'raw';
+}
+
+var SLIMFILE_SUPPORTED = new Set(['.jpg','.jpeg','.png','.webp','.pdf','.pptx','.docx','.xlsx']);
+
+async function compressFile(buffer, fileName) {
+  if (!slimfile) return { buffer: buffer, compressed: false };
+  var ext = path.extname(fileName).toLowerCase();
+  if (!SLIMFILE_SUPPORTED.has(ext)) return { buffer: buffer, compressed: false };
+  try {
+    var result = await slimfile.compress(buffer, { fileName: fileName, quality: 80 });
+    console.log('SlimFile: ' + fileName + ' — ' + result.originalSize + ' → ' + result.compressedSize + ' (' + result.compressionRatio + '% saved)');
+    return { buffer: result.data, compressed: true, originalSize: result.originalSize, compressedSize: result.compressedSize, ratio: result.compressionRatio };
+  } catch(e) {
+    console.error('SlimFile compression failed, using original:', e.message);
+    return { buffer: buffer, compressed: false };
+  }
 }
 
 function uploadToCloudinary(buffer, options) {
@@ -129,7 +149,10 @@ router.post('/', auth, applyUpload, async (req, res) => {
     var fileType = getFileType(ext);
     var cloudinaryResourceType = getCloudinaryResourceType(ext);
 
-    var result = await uploadToCloudinary(req.file.buffer, {
+    var compressed = await compressFile(req.file.buffer, req.file.originalname);
+    var uploadBuffer = compressed.buffer;
+
+    var result = await uploadToCloudinary(uploadBuffer, {
       folder: 'skilllink/resources',
       resource_type: cloudinaryResourceType,
       use_filename: true,
@@ -146,7 +169,7 @@ router.post('/', auth, applyUpload, async (req, res) => {
       cloudinaryResourceType: cloudinaryResourceType,
       fileName:               req.file.originalname,
       fileType,
-      fileSize:               req.file.size,
+      fileSize:               compressed.compressed ? compressed.compressedSize : req.file.size,
       tags:                   parseTags(tags),
       user:                   req.user._id,
       tenant:                 req.user.tenant || '',
