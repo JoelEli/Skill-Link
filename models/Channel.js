@@ -7,11 +7,13 @@ const channelSchema = new mongoose.Schema({
   icon:        { type: String, default: '📚' },
   creator:     { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   members:     [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  isPrivate:   { type: Boolean, default: false }
+  isPrivate:   { type: Boolean, default: false },
+  tenant:      { type: String, default: '' }
 }, { timestamps: true });
 
 channelSchema.virtual('memberCount').get(function(){ return this.members.length; });
 channelSchema.set('toJSON', { virtuals: true });
+channelSchema.index({ tenant: 1, createdAt: -1 });
 
 const postSchema = new mongoose.Schema({
   channel:  { type: mongoose.Schema.Types.ObjectId, ref: 'Channel', required: true },

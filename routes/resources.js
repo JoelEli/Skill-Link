@@ -79,11 +79,12 @@ function parseTags(raw) {
 // GET / — list resources
 router.get('/', async (req, res) => {
   try {
-    var { subject, search, fileType, sort, page, limit, userId } = req.query;
+    var { subject, search, fileType, sort, page, limit, userId, scope, tenant } = req.query;
     var pageNum = Math.max(1, parseInt(page) || 1);
     var limitNum = Math.min(50, parseInt(limit) || 12);
     var query = {};
 
+    if (scope !== 'global' && tenant) query.tenant = tenant;
     if (subject && subject !== 'All') query.subject = subject;
     if (fileType && fileType !== 'All') query.fileType = fileType;
     if (userId) query.user = userId;
@@ -147,7 +148,8 @@ router.post('/', auth, applyUpload, async (req, res) => {
       fileType,
       fileSize:               req.file.size,
       tags:                   parseTags(tags),
-      user:                   req.user._id
+      user:                   req.user._id,
+      tenant:                 req.user.tenant || ''
     });
 
     await resource.save();

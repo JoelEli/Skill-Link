@@ -5,15 +5,17 @@ const Resource = require('../models/Resource');
 const Notification = require('../models/Notification');
 const auth = require('../middleware/auth');
 const { updateProfileValidation, handleValidationErrors } = require('../middleware/validation');
+const slugify = require('../utils/slugify');
 const router = express.Router();
 
 // GET / — list users (search, page, limit)
 router.get('/', async (req, res) => {
   try {
-    const { search, page=1, limit=12 } = req.query;
+    const { search, page=1, limit=12, scope, tenant } = req.query;
     const pageNum = Math.max(1, parseInt(page)||1);
     const limitNum = Math.min(50, parseInt(limit)||12);
     const query = {};
+    if (scope !== 'global' && tenant) query.tenant = tenant;
     if (search) query.name = { $regex: search, $options: 'i' };
     const [users, total] = await Promise.all([
       User.find(query).select('-password -savedResources').sort({ createdAt: -1 }).skip((pageNum-1)*limitNum).limit(limitNum),
@@ -42,7 +44,10 @@ router.put('/me/profile', auth, updateProfileValidation, handleValidationErrors,
     const updates = {};
     if (name) updates.name = name.trim();
     if (bio !== undefined) updates.bio = bio.trim();
-    if (university !== undefined) updates.university = university.trim();
+    if (university !== undefined) {
+      updates.university = university.trim();
+      updates.tenant = slugify(university.trim());
+    }
     if (year !== undefined) updates.year = year;
     if (subject !== undefined) updates.subject = subject;
     const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true, runValidators: true }).select('-password');

@@ -114,11 +114,13 @@ app.use('/api/notifications', notificationRoutes);
 // Stats endpoint
 app.get('/api/stats', async (req, res) => {
   try {
+    const { scope, tenant } = req.query;
+    const filter = (scope !== 'global' && tenant) ? { tenant } : {};
     const [totalResources, totalUsers, dlResult, totalChannels] = await Promise.all([
-      Resource.countDocuments(),
-      User.countDocuments(),
-      Resource.aggregate([{ $group: { _id: null, total: { $sum: '$downloads' } } }]),
-      Channel.countDocuments()
+      Resource.countDocuments(filter),
+      User.countDocuments(filter),
+      Resource.aggregate([{ $match: filter }, { $group: { _id: null, total: { $sum: '$downloads' } } }]),
+      Channel.countDocuments(filter)
     ]);
     res.json({
       totalResources,

@@ -609,6 +609,13 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
 .notif-time{font-size:.7rem;color:var(--text4);margin-top:2px}
 @media(max-width:480px){.notif-panel{width:calc(100vw - 24px);right:-40px}}
 
+/* SCOPE TOGGLE */
+.scope-toggle{display:inline-flex;border-radius:9px;overflow:hidden;border:1px solid var(--border2);margin-bottom:16px}
+.scope-btn{padding:8px 16px;font-size:.78rem;font-weight:600;cursor:pointer;border:none;color:var(--text3);background:transparent;transition:all .15s;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.scope-btn:hover{color:var(--primary-l);background:rgba(99,102,241,.06)}
+.scope-btn.active{background:var(--primary-g);color:var(--primary-l)}
+@media(max-width:480px){.scope-btn{padding:6px 10px;font-size:.72rem}}
+
 /* EDIT RESOURCE MODAL */
 .edit-res-form .form-group{margin-bottom:14px}
 .edit-res-form label{display:block;font-size:.78rem;font-weight:500;color:var(--text3);margin-bottom:5px}
@@ -1259,6 +1266,7 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
 // ─── STATE ─────────────────────────────────────────────────────────────────
 var me = null;
 var token = null;
+var scopeMode = 'university';
 var discoverState = { page: 1, subject: '', search: '', fileType: '', sort: 'newest' };
 var discViewMode = 'grid';
 var channelState = { activeChannelId: null, myChannels: [] };
@@ -1325,6 +1333,7 @@ function loadAuth() {
     var t = localStorage.getItem('sl_token');
     var u = localStorage.getItem('sl_user');
     if (t && u) { token = t; me = JSON.parse(u); }
+    scopeMode = localStorage.getItem('sl_scope') || 'university';
   } catch(e) { clearAuth(); }
 }
 function saveAuth(user, tok) {
@@ -1751,6 +1760,32 @@ function timeAgo(d) {
   if (s < 604800) return Math.floor(s/86400) + 'd ago';
   return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
+// ─── MULTI-TENANCY SCOPE ──────────────────────────────────────────────────
+function getTenant() { return (me && me.tenant) ? me.tenant : ''; }
+function getScopeParams() {
+  if (scopeMode === 'global' || !getTenant()) return '&scope=global';
+  return '&tenant=' + encodeURIComponent(getTenant());
+}
+function setScope(mode) {
+  scopeMode = mode;
+  localStorage.setItem('sl_scope', mode);
+  document.querySelectorAll('.scope-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.scope === mode);
+  });
+  if (currentPanel === 'home') loadHome();
+  else if (currentPanel === 'discover') loadDiscover(1);
+  else if (currentPanel === 'channels') loadChannels();
+  else if (currentPanel === 'students') loadStudents(1);
+}
+function mkScopeToggle() {
+  var uni = (me && me.university) ? me.university : '';
+  if (!getTenant()) return '';
+  return '<div class="scope-toggle">' +
+    '<button class="scope-btn' + (scopeMode === 'university' ? ' active' : '') + '" data-scope="university" onclick="setScope(\'university\')">🏫 ' + esc(uni) + '</button>' +
+    '<button class="scope-btn' + (scopeMode === 'global' ? ' active' : '') + '" data-scope="global" onclick="setScope(\'global\')">🌐 Global</button>' +
+  '</div>';
+}
+
 function initials(name) {
   if (!name) return '?';
   return name.split(' ').map(function(w){ return w[0]; }).join('').slice(0,2).toUpperCase();
@@ -1795,7 +1830,16 @@ function loadHome() {
 
   // Trending
   document.getElementById('home-trending').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px"><div class="spinner"></div></div>';
-  api('GET', '/resources?sort=downloads&limit=6').then(function(d) {
+  // Scope toggle
+  var heroEl = document.querySelector('#panel-home .home-hero');
+  var scopeEl = document.getElementById('home-scope-toggle');
+  if (!scopeEl && heroEl) {
+    heroEl.insertAdjacentHTML('afterend', '<div id="home-scope-toggle">' + mkScopeToggle() + '</div>');
+  } else if (scopeEl) {
+    scopeEl.innerHTML = mkScopeToggle();
+  }
+
+  api('GET', '/resources?sort=downloads&limit=6' + getScopeParams()).then(function(d) {
     if (!d.resources || !d.resources.length) {
       document.getElementById('home-trending').innerHTML = '<div style="grid-column:1/-1" class="empty-state"><div class="empty-state-ico">'+_ico('inbox',44,1.2)+'</div><h3>No resources yet</h3><p>Be the first to upload!</p></div>';
       return;
@@ -1960,6 +2004,16 @@ function loadDiscover(page) {
   if (discoverState.subject) q += '&subject=' + encodeURIComponent(discoverState.subject);
   if (search) q += '&search=' + encodeURIComponent(search);
   if (discoverState.fileType) q += '&fileType=' + encodeURIComponent(discoverState.fileType);
+  q += getScopeParams();
+
+  // Scope toggle
+  var scopeEl = document.getElementById('disc-scope-toggle');
+  if (!scopeEl) {
+    var filterRow = document.querySelector('#panel-discover .disc-filter-row');
+    if (filterRow) filterRow.insertAdjacentHTML('beforebegin', '<div id="disc-scope-toggle">' + mkScopeToggle() + '</div>');
+  } else {
+    scopeEl.innerHTML = mkScopeToggle();
+  }
 
   var grid = document.getElementById('disc-grid');
   grid.innerHTML = [1,2,3,4,5,6].map(mkSkelCard).join('');
@@ -2077,7 +2131,7 @@ function chSearchDebounce() {
 
 function loadChannels() {
   var search = document.getElementById('ch-search').value.trim();
-  var q = '?limit=50' + (search ? '&search=' + encodeURIComponent(search) : '');
+  var q = '?limit=50' + (search ? '&search=' + encodeURIComponent(search) : '') + getScopeParams();
   api('GET', '/channels' + q).then(function(d) {
     channelState.myChannels = (d.channels || []).filter(function(c) {
       return me && c.members && c.members.some(function(mid){ return (mid._id || mid) === me._id; });
@@ -2800,6 +2854,17 @@ function loadStudents(page) {
   var search = (document.getElementById('stu-search').value || '').trim();
   var q = '?page=' + (page || 1) + '&limit=12';
   if (search) q += '&search=' + encodeURIComponent(search);
+  q += getScopeParams();
+
+  // Scope toggle
+  var scopeEl = document.getElementById('stu-scope-toggle');
+  if (!scopeEl) {
+    var filterBar = document.querySelector('#panel-students .filter-bar');
+    if (filterBar) filterBar.insertAdjacentHTML('beforebegin', '<div id="stu-scope-toggle">' + mkScopeToggle() + '</div>');
+  } else {
+    scopeEl.innerHTML = mkScopeToggle();
+  }
+
   var grid = document.getElementById('stu-grid');
   grid.innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
   api('GET', '/users' + q).then(function(d) {

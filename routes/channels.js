@@ -7,10 +7,11 @@ const router = express.Router();
 // GET / — list channels (search, page, limit), public only
 router.get('/', async (req, res) => {
   try {
-    var { search, page, limit } = req.query;
+    var { search, page, limit, scope, tenant } = req.query;
     var pageNum = Math.max(1, parseInt(page) || 1);
     var limitNum = Math.min(50, parseInt(limit) || 20);
     var query = { isPrivate: false };
+    if (scope !== 'global' && tenant) query.tenant = tenant;
     if (search) query.name = { $regex: search, $options: 'i' };
 
     var [channels, total] = await Promise.all([
@@ -42,7 +43,8 @@ router.post('/', auth, async (req, res) => {
       icon: icon || '📚',
       creator: req.user._id,
       members: [req.user._id],
-      isPrivate: isPrivate === true || isPrivate === 'true'
+      isPrivate: isPrivate === true || isPrivate === 'true',
+      tenant: req.user.tenant || ''
     });
 
     await channel.save();

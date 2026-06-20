@@ -6,6 +6,7 @@ const User = require('../models/User');
 const auth = require('../middleware/auth');
 const { signupValidation, loginValidation, handleValidationErrors } = require('../middleware/validation');
 const { sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } = require('../utils/email');
+const slugify = require('../utils/slugify');
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router.post('/signup', signupValidation, handleValidationErrors, async (req, res
       email,
       password: hashedPassword,
       university: university || '',
+      tenant: slugify(university || ''),
       year: year || '',
       subject: subject || '',
       verified: false,

@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   university:{ type: String, default: '', maxlength: 100 },
   year:      { type: String, default: '', enum: ['','1st Year','2nd Year','3rd Year','4th Year','5th Year','Masters','PhD','Graduate'] },
   subject:   { type: String, default: '' },
+  tenant:    { type: String, default: '', index: true },
   verified:           { type: Boolean, default: false },
   verificationToken:  { type: String, default: null },
   resetToken:         { type: String, default: null },
@@ -20,5 +21,6 @@ const userSchema = new mongoose.Schema({
 userSchema.virtual('followerCount').get(function(){ return this.followers ? this.followers.length : 0; });
 userSchema.virtual('followingCount').get(function(){ return this.following ? this.following.length : 0; });
 userSchema.set('toJSON', { virtuals: true, transform: function(doc, ret){ delete ret.password; return ret; } });
+userSchema.index({ tenant: 1, createdAt: -1 });
 
 module.exports = mongoose.model('User', userSchema);

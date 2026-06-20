@@ -12,8 +12,8 @@ const resourceSchema = new mongoose.Schema({
   title:       { type: String, required: true, trim: true, maxlength: 150 },
   description: { type: String, default: '', maxlength: 1000 },
   subject:     { type: String, required: true },
-  fileUrl:              { type: String, required: true },
-  cloudinaryId:         { type: String },
+  fileUrl:     { type: String, required: true },
+  cloudinaryId: { type: String },
   cloudinaryResourceType: { type: String },
   fileName:    { type: String, required: true },
   fileType:    { type: String, required: true },
@@ -22,7 +22,8 @@ const resourceSchema = new mongoose.Schema({
   downloads:   { type: Number, default: 0 },
   likes:       [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   likesCount:  { type: Number, default: 0 },
-  user:        { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+  user:        { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  tenant:      { type: String, default: '' }
 }, { timestamps: true });
 
 resourceSchema.set('toJSON', { virtuals: false });
@@ -31,6 +32,10 @@ resourceSchema.index({ subject: 1, createdAt: -1 });
 resourceSchema.index({ user: 1, createdAt: -1 });
 resourceSchema.index({ downloads: -1 });
 resourceSchema.index({ likesCount: -1 });
+resourceSchema.index({ tenant: 1, createdAt: -1 });
+resourceSchema.index({ tenant: 1, subject: 1, createdAt: -1 });
+resourceSchema.index({ tenant: 1, downloads: -1 });
+resourceSchema.index({ tenant: 1, likesCount: -1 });
 
 const Resource = mongoose.model('Resource', resourceSchema);
 module.exports = Resource;
