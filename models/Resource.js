@@ -23,7 +23,8 @@ const resourceSchema = new mongoose.Schema({
   likes:       [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   likesCount:  { type: Number, default: 0 },
   user:        { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  tenant:      { type: String, default: '' }
+  tenant:      { type: String, default: '' },
+  accessMode:  { type: String, default: 'download', enum: ['download', 'view-only'] }
 }, { timestamps: true });
 
 resourceSchema.set('toJSON', { virtuals: false });

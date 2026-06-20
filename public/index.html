@@ -609,6 +609,51 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
 .notif-time{font-size:.7rem;color:var(--text4);margin-top:2px}
 @media(max-width:480px){.notif-panel{width:calc(100vw - 24px);right:-40px}}
 
+/* FEED */
+.feed-wrap{max-width:680px;margin:0 auto;padding:20px 0 60px}
+.feed-create{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.feed-create-top{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;transition:background .12s}
+.feed-create-top:hover{background:rgba(255,255,255,.02)}
+.feed-create-placeholder{flex:1;color:var(--text4);font-size:.9rem;padding:10px 16px;border:1px solid var(--border2);border-radius:99px;transition:border-color .15s}
+.feed-create-top:hover .feed-create-placeholder{border-color:var(--text3)}
+.feed-create-expanded{padding:0 18px 16px}
+.feed-create-expanded .form-group{margin-bottom:10px}
+.feed-create-expanded input,.feed-create-expanded textarea{width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.88rem;font-family:inherit;outline:none;transition:border-color .15s}
+.feed-create-expanded input:focus,.feed-create-expanded textarea:focus{border-color:var(--primary)}
+.feed-create-expanded textarea{resize:vertical;min-height:60px}
+.feed-meta-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+.feed-select{padding:8px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.8rem;font-family:inherit;outline:none;cursor:pointer}
+.feed-tags-input{flex:1;min-width:120px;padding:8px 12px!important;font-size:.8rem!important}
+.feed-access-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border:1px solid var(--border2);border-radius:var(--rs);font-size:.78rem;color:var(--text3);white-space:nowrap;transition:all .15s;user-select:none}
+.feed-access-toggle:hover{border-color:var(--primary);color:var(--primary-l)}
+.feed-access-toggle input{accent-color:var(--primary)}
+.feed-create-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+/* Feed post cards */
+.feed-post{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:border-color .15s}
+.feed-post:hover{border-color:rgba(99,102,241,.2)}
+.feed-post-hd{display:flex;align-items:center;gap:10px;padding:14px 18px 0}
+.feed-post-author{flex:1;min-width:0}
+.feed-post-name{font-size:.875rem;font-weight:700;color:var(--text);cursor:pointer}
+.feed-post-name:hover{color:var(--primary-l)}
+.feed-post-meta{font-size:.72rem;color:var(--text4);display:flex;align-items:center;gap:5px}
+.feed-post-body{padding:10px 18px 0}
+.feed-post-desc{font-size:.875rem;color:var(--text2);line-height:1.6;margin-bottom:10px;white-space:pre-wrap;word-break:break-word}
+.feed-post-file{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:background .12s}
+.feed-post-file:hover{background:rgba(99,102,241,.06)}
+.feed-post-file-ico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;flex-shrink:0}
+.feed-post-file-info{flex:1;min-width:0}
+.feed-post-file-title{font-size:.85rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feed-post-file-meta{font-size:.72rem;color:var(--text4);display:flex;gap:8px}
+.feed-post-file-badge{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:5px;color:#fff;flex-shrink:0;align-self:center}
+.feed-post-access{font-size:.65rem;font-weight:600;padding:2px 8px;border-radius:5px;flex-shrink:0;align-self:center}
+.feed-post-access.dl{background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.2)}
+.feed-post-access.vo{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.2)}
+.feed-post-actions{display:flex;align-items:center;gap:2px;padding:8px 14px;border-top:1px solid var(--border)}
+.feed-act-btn{display:flex;align-items:center;gap:5px;padding:8px 14px;border:none;background:none;color:var(--text3);font-size:.78rem;font-weight:600;cursor:pointer;border-radius:var(--rs);transition:all .12s;font-family:inherit;flex:1;justify-content:center}
+.feed-act-btn:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.feed-act-btn.liked{color:var(--red)}
+.feed-act-btn.saved{color:var(--green)}
+
 /* SCOPE TOGGLE */
 .scope-toggle{display:inline-flex;border-radius:9px;overflow:hidden;border:1px solid var(--border2);margin-bottom:16px}
 .scope-btn{padding:8px 16px;font-size:.78rem;font-weight:600;cursor:pointer;border:none;color:var(--text3);background:transparent;transition:all .15s;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:5px}
@@ -894,7 +939,7 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
       <ul>
         <li class="ni active" id="nav-home" onclick="nav('home')"><span class="ni-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</li>
         <li class="ni" id="nav-discover" onclick="nav('discover')"><span class="ni-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span>Discover</li>
-        <li class="ni" id="nav-upload" onclick="nav('upload')"><span class="ni-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>Upload</li>
+        <li class="ni" id="nav-upload" onclick="nav('upload')"><span class="ni-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></span>Feed</li>
         <li class="ni" id="nav-channels" onclick="nav('channels')"><span class="ni-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Channels</li>
         <li class="ni" id="nav-students" onclick="nav('students')"><span class="ni-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Students</li>
         <li class="ni" id="nav-profile" onclick="nav('profile')"><span class="ni-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>My Profile</li>
@@ -923,7 +968,7 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
           <h1 id="home-greeting">Welcome back! 👋</h1>
           <p class="home-hero-sub">Share knowledge, discover resources, and connect with students in your network.</p>
           <div class="home-hero-btns">
-            <button class="btn btn-primary btn-sm" onclick="nav('upload')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg> Upload Resource</button>
+            <button class="btn btn-primary btn-sm" onclick="nav('upload')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg> New Post</button>
             <button class="btn btn-ghost btn-sm" onclick="nav('discover')">Explore Resources →</button>
           </div>
         </div>
@@ -1008,73 +1053,70 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
       <div id="disc-pagination"></div>
     </div>
 
-    <!-- UPLOAD -->
+    <!-- FEED -->
     <div class="panel" id="panel-upload">
-      <div class="panel-hd">
-        <div><h1>Upload Resource</h1><p>Share your study materials with other students</p></div>
-      </div>
-      <div class="upload-wrap">
-        <div class="dropzone" id="dropzone" ondragover="dzDrag(event,true)" ondragleave="dzDrag(event,false)" ondrop="dzDrop(event)">
-          <input type="file" id="upload-file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar,.7z,.png,.jpg,.jpeg,.gif,.csv,.json,.md" onchange="dzSelect(this)"/>
-          <div id="dz-placeholder">
-            <div class="dropzone-ico">📁</div>
-            <div class="dropzone-txt">Drag &amp; drop your file here, or <strong>click to browse</strong></div>
-            <div class="text-sm text4 mt8">PDF, PPT, DOC, XLS, ZIP, images and more — up to 50MB</div>
+      <div class="feed-wrap">
+        <!-- Create post card -->
+        <div class="feed-create" id="feed-create">
+          <div class="feed-create-top" onclick="expandFeedCreate()">
+            <div class="av av-md" id="feed-av">?</div>
+            <div class="feed-create-placeholder" id="feed-create-placeholder">Share a resource with your campus...</div>
           </div>
-          <div class="dropzone-preview" id="dz-preview">
-            <div class="dropzone-preview-ico" id="dz-prev-ico"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-            <div class="dropzone-preview-info">
-              <div class="dropzone-preview-name" id="dz-prev-name"></div>
-              <div class="dropzone-preview-size" id="dz-prev-size"></div>
-            </div>
-            <button type="button" class="btn btn-ghost btn-xs" onclick="dzClear(event)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Clear</button>
+          <div class="feed-create-expanded" id="feed-create-expanded" style="display:none">
+            <form id="upload-form" onsubmit="submitResource(event)">
+              <div class="form-group">
+                <input type="text" id="up-title" placeholder="Title — e.g. Calculus Chapter 3 Notes *" maxlength="150" required/>
+              </div>
+              <div class="form-group">
+                <textarea id="up-desc" placeholder="Write something about this resource..." maxlength="1000" rows="3"></textarea>
+              </div>
+              <!-- File attach zone -->
+              <div class="feed-file-zone" id="feed-file-zone">
+                <div class="dropzone" id="dropzone" ondragover="dzDrag(event,true)" ondragleave="dzDrag(event,false)" ondrop="dzDrop(event)" style="padding:20px 16px;margin:0;border-radius:10px">
+                  <input type="file" id="upload-file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar,.7z,.png,.jpg,.jpeg,.gif,.csv,.json,.md" onchange="dzSelect(this)"/>
+                  <div id="dz-placeholder">
+                    <div class="dropzone-ico" style="font-size:1.5rem">📎</div>
+                    <div class="dropzone-txt" style="font-size:.82rem">Drop file here or <strong>click to browse</strong></div>
+                  </div>
+                  <div class="dropzone-preview" id="dz-preview">
+                    <div class="dropzone-preview-ico" id="dz-prev-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                    <div class="dropzone-preview-info">
+                      <div class="dropzone-preview-name" id="dz-prev-name"></div>
+                      <div class="dropzone-preview-size" id="dz-prev-size"></div>
+                    </div>
+                    <button type="button" class="btn btn-ghost btn-xs" onclick="dzClear(event)">Clear</button>
+                  </div>
+                </div>
+              </div>
+              <!-- Category row -->
+              <div class="feed-meta-row">
+                <select id="up-subject" class="feed-select" required>
+                  <option value="">Category *</option>
+                  <option value="Academic">Academic</option>
+                  <option value="Story Books">Story Books</option>
+                  <option value="Journals">Journals</option>
+                  <option value="Academic Research">Academic Research</option>
+                  <option value="Other">Other</option>
+                </select>
+                <input type="text" id="up-tags" placeholder="Tags (comma-separated)" class="feed-tags-input"/>
+                <label class="feed-access-toggle">
+                  <input type="checkbox" id="up-view-only"/>
+                  <span class="feed-access-label">View only</span>
+                </label>
+              </div>
+              <div class="feed-create-actions">
+                <button type="button" class="btn btn-ghost btn-sm" onclick="collapseFeedCreate()">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm" id="btn-upload">Post</button>
+              </div>
+            </form>
           </div>
         </div>
-        <form id="upload-form" onsubmit="submitResource(event)">
-          <div class="form-group">
-            <label>Title *</label>
-            <input type="text" id="up-title" placeholder="e.g. Calculus Chapter 3 Notes" maxlength="150" required/>
-          </div>
-          <div class="form-group">
-            <label>Category *</label>
-            <div class="cat-picker" id="cat-picker">
-              <button type="button" class="cat-card" onclick="selectCategory('Academic',this)">
-                <span class="cat-ico">📚</span>
-                <span class="cat-name">Academic</span>
-                <span class="cat-desc">Lecture notes, past papers, study guides</span>
-              </button>
-              <button type="button" class="cat-card" onclick="selectCategory('Story Books',this)">
-                <span class="cat-ico">📖</span>
-                <span class="cat-name">Story Books</span>
-                <span class="cat-desc">Fiction, novels, literature</span>
-              </button>
-              <button type="button" class="cat-card" onclick="selectCategory('Journals',this)">
-                <span class="cat-ico">📰</span>
-                <span class="cat-name">Journals</span>
-                <span class="cat-desc">Articles, periodicals, magazines</span>
-              </button>
-              <button type="button" class="cat-card" onclick="selectCategory('Academic Research',this)">
-                <span class="cat-ico">🔬</span>
-                <span class="cat-name">Academic Research</span>
-                <span class="cat-desc">Research papers, dissertations, theses</span>
-              </button>
-              <button type="button" class="cat-card" onclick="selectCategory('Other',this)">
-                <span class="cat-ico">📄</span>
-                <span class="cat-name">Other</span>
-                <span class="cat-desc">Anything that doesn't fit above</span>
-              </button>
-            </div>
-            <input type="hidden" id="up-subject"/>
-          </div>
-          <div class="form-group">
-            <label>Tags <span class="text4">(comma-separated)</span></label>
-            <input type="text" id="up-tags" placeholder="calculus, exam, notes"/>
-          </div>
-          <div class="form-group">
-            <label>Description</label>
-            <textarea id="up-desc" placeholder="Describe what this resource covers…" maxlength="1000"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary" id="btn-upload"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Resource</button>
+        <!-- Scope toggle -->
+        <div id="feed-scope-toggle"></div>
+        <!-- Feed stream -->
+        <div id="feed-stream"><div class="empty-state"><div class="spinner"></div></div></div>
+        <div id="feed-pagination"></div>
+      </div>
         </form>
       </div>
     </div>
@@ -2055,9 +2097,87 @@ function selectCategory(cat, el) {
 }
 
 function initUpload() {
-  // reset category picker
-  document.querySelectorAll('#cat-picker .cat-card').forEach(function(c){ c.classList.remove('active'); });
   document.getElementById('up-subject').value = '';
+  if (me) {
+    document.getElementById('feed-av').textContent = initials(me.name);
+  }
+  collapseFeedCreate();
+  loadFeed(1);
+}
+
+function expandFeedCreate() {
+  document.getElementById('feed-create-expanded').style.display = '';
+  document.getElementById('feed-create-placeholder').style.display = 'none';
+  document.getElementById('up-title').focus();
+}
+
+function collapseFeedCreate() {
+  document.getElementById('feed-create-expanded').style.display = 'none';
+  document.getElementById('feed-create-placeholder').style.display = '';
+  var form = document.getElementById('upload-form');
+  if (form) form.reset();
+  dzClear();
+  uploadFile = null;
+}
+
+function loadFeed(page) {
+  var q = '?page=' + (page || 1) + '&limit=10&sort=newest' + getScopeParams();
+  var stream = document.getElementById('feed-stream');
+  stream.innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
+
+  var scopeEl = document.getElementById('feed-scope-toggle');
+  if (scopeEl) scopeEl.innerHTML = mkScopeToggle();
+
+  api('GET', '/resources' + q).then(function(d) {
+    if (!d.resources || !d.resources.length) {
+      stream.innerHTML = '<div class="empty-state"><div class="empty-state-ico">' + _ico('inbox',44,1.2) + '</div><h3>No posts yet</h3><p>Be the first to share a resource!</p></div>';
+      document.getElementById('feed-pagination').innerHTML = '';
+      return;
+    }
+    stream.innerHTML = d.resources.map(mkFeedPost).join('');
+    renderPagination('feed-pagination', d.page, d.pages, 'loadFeed');
+  }).catch(function() {
+    stream.innerHTML = '<div class="empty-state"><div class="empty-state-ico">' + _ico('warn',44,1.2) + '</div><h3>Could not load feed</h3></div>';
+  });
+}
+
+function mkFeedPost(r) {
+  var ft = FILE_TYPE_MAP[r.fileType] || FILE_TYPE_MAP.other;
+  var authorName = r.user ? (r.user.name || 'Unknown') : 'Unknown';
+  var authorId = r.user ? (r.user._id || r.user) : null;
+  var authorUni = r.user && r.user.university ? r.user.university : '';
+  var isLiked = me && r.likes && r.likes.some(function(id){ return id === me._id || (id && id._id === me._id); });
+  var isSaved = me && me.savedResources && me.savedResources.some(function(id){ return id === r._id || (id && (id._id || id) === r._id); });
+  var likesCount = r.likesCount !== undefined ? r.likesCount : (r.likes ? r.likes.length : 0);
+  var isViewOnly = r.accessMode === 'view-only';
+
+  var html = '<div class="feed-post">';
+  // Header
+  html += '<div class="feed-post-hd">';
+  html += '<div class="av av-md" onclick="viewStudentProfile(\'' + esc(String(authorId)) + '\')" style="cursor:pointer">' + esc(initials(authorName)) + '</div>';
+  html += '<div class="feed-post-author">';
+  html += '<div class="feed-post-name" onclick="viewStudentProfile(\'' + esc(String(authorId)) + '\')">' + esc(authorName) + '</div>';
+  html += '<div class="feed-post-meta">' + (authorUni ? esc(authorUni) + ' · ' : '') + timeAgo(r.createdAt) + '</div>';
+  html += '</div></div>';
+  // Body
+  html += '<div class="feed-post-body">';
+  if (r.description) html += '<div class="feed-post-desc">' + esc(r.description) + '</div>';
+  // File card
+  html += '<div class="feed-post-file" onclick="openResDetail(\'' + esc(r._id) + '\')">';
+  html += '<div class="feed-post-file-ico" style="background:' + ft.color + '1a;color:' + ft.color + '">' + ft.label + '</div>';
+  html += '<div class="feed-post-file-info">';
+  html += '<div class="feed-post-file-title">' + esc(r.title) + '</div>';
+  html += '<div class="feed-post-file-meta"><span>' + fmtSize(r.fileSize) + '</span><span>' + esc(r.subject) + '</span></div>';
+  html += '</div>';
+  html += '<span class="feed-post-access ' + (isViewOnly ? 'vo' : 'dl') + '">' + (isViewOnly ? 'View only' : 'Download') + '</span>';
+  html += '</div></div>';
+  // Actions
+  html += '<div class="feed-post-actions">';
+  html += '<button class="feed-act-btn' + (isLiked ? ' liked' : '') + '" onclick="toggleLike(\'' + esc(r._id) + '\',this)">' + _ico('heart',15,2,isLiked) + ' ' + likesCount + '</button>';
+  html += '<button class="feed-act-btn' + (isSaved ? ' saved' : '') + '" onclick="toggleSave(\'' + esc(r._id) + '\',this)">' + _ico('bookmark',15,2,isSaved) + ' ' + (isSaved ? 'Saved' : 'Save') + '</button>';
+  html += '<button class="feed-act-btn" onclick="openResDetail(\'' + esc(r._id) + '\')">' + _ico('eye',15,2) + ' View</button>';
+  html += '</div></div>';
+  return html;
 }
 
 function dzDrag(e, active) {
@@ -2098,28 +2218,26 @@ function getFileTypeFromExt(ext) {
 }
 function submitResource(e) {
   e.preventDefault();
-  if (!uploadFile) { toast('Please select a file', 'error'); return; }
+  if (!uploadFile) { toast('Please attach a file', 'error'); return; }
   var subject = document.getElementById('up-subject').value;
   if (!subject) { toast('Please select a category', 'error'); return; }
   var btn = document.getElementById('btn-upload');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Uploading…';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Posting…';
   var fd = new FormData();
   fd.append('file', uploadFile);
   fd.append('title', document.getElementById('up-title').value);
   fd.append('description', document.getElementById('up-desc').value);
   fd.append('subject', subject);
   fd.append('tags', document.getElementById('up-tags').value);
+  fd.append('accessMode', document.getElementById('up-view-only').checked ? 'view-only' : 'download');
   api('POST', '/resources', fd, true).then(function(d) {
-    toast('Resource uploaded successfully!', 'success');
-    document.getElementById('upload-form').reset();
-    dzClear();
-    uploadFile = null;
-    initUpload();
-    nav('profile');
+    toast('Posted!', 'success');
+    collapseFeedCreate();
+    loadFeed(1);
   }).catch(function(err) {
     toast(err.message, 'error');
   }).finally(function() {
-    btn.disabled = false; btn.innerHTML = _ico('upload',15,2.5)+' Upload Resource';
+    btn.disabled = false; btn.textContent = 'Post';
   });
 }
 
@@ -2748,7 +2866,11 @@ function viewResDetail(id) {
     html += '</div>';
     html += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
     html += '<button class="btn btn-ghost" onclick="closeMod(\'mod-res-detail\');previewResource(\''+esc(r._id)+'\')">'+_ico('eye',15,2.5)+' Preview</button>';
-    html += '<button class="btn btn-primary" onclick="downloadResource(\''+esc(r._id)+'\',\''+esc(r.fileName)+'\')">'+_ico('download',15,2.5)+' Download</button>';
+    if (r.accessMode !== 'view-only' || isOwner) {
+      html += '<button class="btn btn-primary" onclick="downloadResource(\''+esc(r._id)+'\',\''+esc(r.fileName)+'\')">'+_ico('download',15,2.5)+' Download</button>';
+    } else {
+      html += '<span class="badge badge-amber" style="padding:8px 14px;font-size:.78rem">View Only</span>';
+    }
     html += '<button class="btn btn-sm '+(isLiked?'btn-danger':'btn-ghost')+'" onclick="toggleLike(\''+esc(r._id)+'\',this)" id="modal-like-btn">'+_ico('heart',14,2.5,isLiked)+' '+(isLiked?'Liked':'Like')+'</button>';
     html += '<button class="btn btn-sm '+(isSaved?'btn-green':'btn-ghost')+'" onclick="toggleSave(\''+esc(r._id)+'\',this)">'+_ico('bookmark',14,2.5,isSaved)+' '+(isSaved?'Saved':'Save')+'</button>';
     if (isOwner) html += '<button class="btn btn-sm btn-ghost" onclick="openEditResource(\''+esc(r._id)+'\')">'+_ico('edit',14,2.5)+' Edit</button>';

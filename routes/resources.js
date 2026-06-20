@@ -121,7 +121,7 @@ router.post('/', auth, applyUpload, async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'File is required' });
 
-    var { title, description, subject, tags } = req.body;
+    var { title, description, subject, tags, accessMode } = req.body;
     if (!title || !title.trim()) return res.status(400).json({ error: 'Title is required' });
     if (!subject) return res.status(400).json({ error: 'Subject is required' });
 
@@ -149,7 +149,8 @@ router.post('/', auth, applyUpload, async (req, res) => {
       fileSize:               req.file.size,
       tags:                   parseTags(tags),
       user:                   req.user._id,
-      tenant:                 req.user.tenant || ''
+      tenant:                 req.user.tenant || '',
+      accessMode:             accessMode === 'view-only' ? 'view-only' : 'download'
     });
 
     await resource.save();
@@ -205,6 +206,10 @@ router.get('/:id/download', auth, async (req, res) => {
   try {
     var resource = await Resource.findById(req.params.id);
     if (!resource) return res.status(404).json({ error: 'Resource not found' });
+
+    if (resource.accessMode === 'view-only' && resource.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: 'This resource is view-only. The owner has disabled downloads.' });
+    }
 
     resource.downloads = (resource.downloads || 0) + 1;
     await resource.save();
