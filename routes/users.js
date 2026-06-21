@@ -6,6 +6,7 @@ const Notification = require('../models/Notification');
 const auth = require('../middleware/auth');
 const { updateProfileValidation, handleValidationErrors } = require('../middleware/validation');
 const slugify = require('../utils/slugify');
+const { sendFollowEmail } = require('../utils/email');
 const router = express.Router();
 
 // GET / — list users (search, page, limit)
@@ -123,6 +124,7 @@ router.post('/:id/follow', auth, async (req, res) => {
         from: req.user._id,
         message: me.name + ' started following you'
       }).save().catch(function() {});
+      sendFollowEmail(target, me.name).catch(function() {});
     }
 
     res.json({ following: !isFollowing, followerCount: target.followers.length });
