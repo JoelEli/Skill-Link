@@ -282,6 +282,9 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 .ch-list-title{font-size:1rem;font-weight:700;color:var(--text)}
 .ch-search{width:100%;padding:8px 12px;background:var(--card);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.82rem;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s}
 .ch-search:focus{border-color:var(--primary)}
+.ch-scope-wrap{margin-top:4px}
+.ch-scope-wrap .scope-toggle{width:100%;display:flex}
+.ch-scope-wrap .scope-btn{flex:1;padding:5px 6px;font-size:.7rem;overflow:hidden;text-overflow:ellipsis}
 .ch-list-body{flex:1;overflow-y:auto;padding:6px}
 .ch-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--rs);cursor:pointer;transition:all .15s;border:1px solid transparent;margin-bottom:2px}
 .ch-item:hover{background:rgba(255,255,255,.05);border-color:var(--border)}
@@ -1152,7 +1155,7 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
               <button class="btn btn-primary btn-xs" onclick="openCreateChannel()">+ New</button>
             </div>
             <input type="text" class="ch-search" placeholder="Search channels…" id="ch-search" oninput="chSearchDebounce()"/>
-            <div id="ch-scope-toggle" style="margin-top:4px"></div>
+            <div id="ch-scope-toggle" class="ch-scope-wrap"></div>
           </div>
           <div class="ch-list-body" id="ch-list-body">
             <div class="empty-state" style="padding:24px"><div class="spinner"></div></div>
