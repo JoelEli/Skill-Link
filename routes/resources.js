@@ -103,18 +103,22 @@ router.get('/', async (req, res) => {
     var pageNum = Math.max(1, parseInt(page) || 1);
     var limitNum = Math.min(50, parseInt(limit) || 12);
     var query = {};
+    var andClauses = [];
 
-    if (scope !== 'global' && tenant) query.tenant = tenant;
+    if (scope !== 'global' && tenant) {
+      andClauses.push({ $or: [{ tenant: tenant }, { visibility: 'global' }] });
+    }
     if (subject && subject !== 'All') query.subject = subject;
     if (fileType && fileType !== 'All') query.fileType = fileType;
     if (userId) query.user = userId;
     if (search) {
-      query.$or = [
+      andClauses.push({ $or: [
         { title: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
         { tags: { $regex: search, $options: 'i' } }
-      ];
+      ]});
     }
+    if (andClauses.length) query.$and = andClauses;
 
     var sortObj = { createdAt: -1 };
     if (sort === 'downloads') sortObj = { downloads: -1, createdAt: -1 };
@@ -141,7 +145,7 @@ router.post('/', auth, applyUpload, async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'File is required' });
 
-    var { title, description, subject, tags, accessMode } = req.body;
+    var { title, description, subject, tags, accessMode, visibility } = req.body;
     if (!title || !title.trim()) return res.status(400).json({ error: 'Title is required' });
     if (!subject) return res.status(400).json({ error: 'Subject is required' });
 
@@ -172,8 +176,9 @@ router.post('/', auth, applyUpload, async (req, res) => {
       fileSize:               compressed.compressed ? compressed.compressedSize : req.file.size,
       tags:                   parseTags(tags),
       user:                   req.user._id,
-      tenant:                 req.user.tenant || '',
-      accessMode:             accessMode === 'view-only' ? 'view-only' : 'download'
+      tenant:                 visibility === 'global' ? '' : (req.user.tenant || ''),
+      accessMode:             accessMode === 'view-only' ? 'view-only' : 'download',
+      visibility:             visibility === 'global' ? 'global' : 'tenant'
     });
 
     await resource.save();
