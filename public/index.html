@@ -1045,14 +1045,7 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
       </div>
       <!-- Filter row: type pills + sort + view toggle -->
       <div class="disc-filter-row">
-        <div class="disc-type-pills" id="disc-type-pills">
-          <button class="disc-pill active" onclick="setDiscType('',this)">All</button>
-          <button class="disc-pill" onclick="setDiscType('pdf',this)">PDF</button>
-          <button class="disc-pill" onclick="setDiscType('ppt',this)">PPT</button>
-          <button class="disc-pill" onclick="setDiscType('doc',this)">DOC</button>
-          <button class="disc-pill" onclick="setDiscType('xls',this)">XLS</button>
-          <button class="disc-pill" onclick="setDiscType('img',this)">Images</button>
-        </div>
+        <div class="disc-type-pills" id="disc-type-pills" style="display:none"></div>
         <div class="disc-filter-right">
           <select id="disc-sort" class="disc-sort-sel" onchange="loadDiscover(1)">
             <option value="newest">Newest</option>
