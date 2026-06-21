@@ -1634,13 +1634,8 @@ function resendVerification() {
 }
 
 function checkVerifyBanner() {
-  if (me && me.verified === false) {
-    document.getElementById('verify-banner').style.display = 'block';
-    document.getElementById('app').style.paddingTop = '92px';
-  } else {
-    document.getElementById('verify-banner').style.display = 'none';
-    document.getElementById('app').style.paddingTop = '';
-  }
+  document.getElementById('verify-banner').style.display = 'none';
+  document.getElementById('app').style.paddingTop = '';
 }
 
 // ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
