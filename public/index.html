@@ -1685,7 +1685,7 @@ function handleNotifClick(notifId, type, resourceId, fromId) {
   api('PUT', '/notifications/' + notifId + '/read').then(function() { loadNotifCount(); }).catch(function() {});
   document.getElementById('notif-panel').classList.remove('open');
   if (type === 'like' || type === 'download') {
-    if (resourceId) openResDetail(resourceId);
+    if (resourceId) viewResDetail(resourceId);
   } else if (type === 'follow') {
     if (fromId) loadProfile(fromId);
   }
@@ -2163,19 +2163,23 @@ function mkFeedPost(r) {
   html += '<div class="feed-post-body">';
   if (r.description) html += '<div class="feed-post-desc">' + esc(r.description) + '</div>';
   // File card
-  html += '<div class="feed-post-file" onclick="openResDetail(\'' + esc(r._id) + '\')">';
+  html += '<div class="feed-post-file" onclick="viewResDetail(\'' + esc(r._id) + '\')">';
   html += '<div class="feed-post-file-ico" style="background:' + ft.color + '1a;color:' + ft.color + '">' + ft.label + '</div>';
   html += '<div class="feed-post-file-info">';
   html += '<div class="feed-post-file-title">' + esc(r.title) + '</div>';
   html += '<div class="feed-post-file-meta"><span>' + fmtSize(r.fileSize) + '</span><span>' + esc(r.subject) + '</span></div>';
   html += '</div>';
-  html += '<span class="feed-post-access ' + (isViewOnly ? 'vo' : 'dl') + '">' + (isViewOnly ? 'View only' : 'Download') + '</span>';
+  if (isViewOnly) {
+    html += '<span class="feed-post-access vo">View only</span>';
+  } else {
+    html += '<button class="feed-post-access dl" onclick="event.stopPropagation();downloadResource(\'' + esc(r._id) + '\',\'' + esc(r.fileName || r.title) + '\')" style="cursor:pointer;border:none;font-family:inherit">Download</button>';
+  }
   html += '</div></div>';
   // Actions
   html += '<div class="feed-post-actions">';
   html += '<button class="feed-act-btn' + (isLiked ? ' liked' : '') + '" onclick="toggleLike(\'' + esc(r._id) + '\',this)">' + _ico('heart',15,2,isLiked) + ' ' + likesCount + '</button>';
   html += '<button class="feed-act-btn' + (isSaved ? ' saved' : '') + '" onclick="toggleSave(\'' + esc(r._id) + '\',this)">' + _ico('bookmark',15,2,isSaved) + ' ' + (isSaved ? 'Saved' : 'Save') + '</button>';
-  html += '<button class="feed-act-btn" onclick="openResDetail(\'' + esc(r._id) + '\')">' + _ico('eye',15,2) + ' View</button>';
+  html += '<button class="feed-act-btn" onclick="viewResDetail(\'' + esc(r._id) + '\')">' + _ico('eye',15,2) + ' View</button>';
   html += '</div></div>';
   return html;
 }
@@ -2558,7 +2562,7 @@ function loadProfile(userId) {
 
 function mkIgPost(r) {
   var ft = FILE_TYPE_MAP[r.fileType] || FILE_TYPE_MAP.other;
-  var html = '<div class="ig-post" onclick="openResDetail(\'' + esc(r._id) + '\')" title="' + esc(r.title) + '">';
+  var html = '<div class="ig-post" onclick="viewResDetail(\'' + esc(r._id) + '\')" title="' + esc(r.title) + '">';
   html += '<div class="ig-post-bg" style="background:' + ft.color + '1a">';
   html += '<span class="ig-post-type" style="color:' + ft.color + '">' + ft.label + '</span>';
   html += '</div>';
