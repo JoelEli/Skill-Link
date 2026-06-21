@@ -143,8 +143,8 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 .btn-lo:hover{background:rgba(248,113,113,.16)}
 
 /* MAIN CONTENT */
-.main{flex:1;min-height:100vh;background:var(--bg)}
-.panel{display:none;padding:28px 32px;max-width:1200px;min-height:100vh}
+.main{flex:1;min-height:calc(100vh - 56px);background:var(--bg)}
+.panel{display:none;padding:28px 32px;max-width:1200px}
 .panel.active{display:block}
 .panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
 .panel-hd h1{font-size:1.5rem;font-weight:700;color:var(--text)}
@@ -273,8 +273,8 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 .form-group textarea{resize:vertical;min-height:90px}
 
 /* CHANNELS */
-#panel-channels{padding:0;max-width:none;min-height:100vh;overflow:hidden}
-.channels-layout{display:flex;height:100vh;overflow:hidden}
+#panel-channels{padding:0;max-width:none;overflow:hidden}
+.channels-layout{display:flex;height:calc(100vh - 56px);overflow:hidden}
 /* ── Channel list (left column) ── */
 .ch-list{width:272px;min-width:272px;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surf);overflow:hidden}
 .ch-list-hd{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:12px}
@@ -467,11 +467,29 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
   .auth-right{padding:28px 16px}
 }
 @media(max-width:768px){
-  .panel{padding:20px 16px}
+  .panel{padding:16px 14px}
   .channels-layout{flex-direction:column;height:auto}
   .ch-list{width:100%;min-width:unset;height:220px;border-right:none;border-bottom:1px solid var(--border)}
-  #panel-channels{min-height:unset;overflow:auto}
+  #panel-channels{overflow:auto}
   .form-row{grid-template-columns:1fr}
+  .feed-wrap{padding:12px 0 60px}
+  .feed-meta-row{flex-direction:column;gap:8px}
+  .feed-meta-row>*{width:100%}
+  .feed-create-actions{flex-wrap:wrap}
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .disc-filter-row{flex-direction:column;align-items:stretch;gap:10px}
+  .disc-type-pills{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+  .disc-filter-right{justify-content:space-between}
+  .panel-hd{flex-direction:column;align-items:flex-start}
+  .scope-toggle{width:100%}
+  .scope-btn{flex:1;justify-content:center}
+}
+@media(max-width:480px){
+  .panel{padding:12px 10px}
+  .feed-create-top{padding:12px 14px}
+  .feed-create-expanded{padding:0 14px 12px}
+  .quick-actions{grid-template-columns:1fr}
+  .ig-header{gap:20px}
 }
 
 /* ─── HOME HERO ─────────────────────────────────────────────────────────────*/
@@ -610,7 +628,7 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
 @media(max-width:480px){.notif-panel{width:calc(100vw - 24px);right:-40px}}
 
 /* FEED */
-.feed-wrap{max-width:680px;margin:0 auto;padding:20px 0 60px}
+.feed-wrap{max-width:680px;margin:0 auto;padding:8px 0 60px}
 .feed-create{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;overflow:hidden}
 .feed-create-top{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;transition:background .12s}
 .feed-create-top:hover{background:rgba(255,255,255,.02)}
@@ -1127,7 +1145,7 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
     </div>
 
     <!-- CHANNELS -->
-    <div class="panel" id="panel-channels" style="padding:0">
+    <div class="panel" id="panel-channels">
       <div class="channels-layout">
         <div class="ch-list">
           <div class="ch-list-hd">
