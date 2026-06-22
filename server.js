@@ -29,7 +29,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'"],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
+      imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com', 'https://www.gravatar.com', 'https://secure.gravatar.com'],
       fontSrc: ["'self'", 'https:', 'data:'],
       connectSrc: ["'self'", 'https://res.cloudinary.com'],
       objectSrc: ["'none'"],
@@ -56,7 +56,7 @@ var allowedOrigins = defaultOrigins.concat(extraOrigins);
 app.use(cors({
   origin: function(origin, cb) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) return cb(null, true);
-    cb(null, true);
+    cb(new Error('Not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']

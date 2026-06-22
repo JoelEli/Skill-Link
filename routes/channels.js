@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
     var [channels, total] = await Promise.all([
       Channel.find(query)
-        .populate('creator', 'name')
+        .populate('creator', 'name email')
         .sort({ createdAt: -1 })
         .skip((pageNum - 1) * limitNum)
         .limit(limitNum),
@@ -48,7 +48,7 @@ router.post('/', auth, async (req, res) => {
     });
 
     await channel.save();
-    await channel.populate('creator', 'name');
+    await channel.populate('creator', 'name email');
     res.status(201).json({ message: 'Channel created', channel });
   } catch(e) {
     console.error('Create channel error:', e);
@@ -59,7 +59,7 @@ router.post('/', auth, async (req, res) => {
 // GET /:id — channel detail
 router.get('/:id', async (req, res) => {
   try {
-    var channel = await Channel.findById(req.params.id).populate('creator', 'name');
+    var channel = await Channel.findById(req.params.id).populate('creator', 'name email');
     if (!channel) return res.status(404).json({ error: 'Channel not found' });
     res.json({ channel });
   } catch(e) {
@@ -118,7 +118,7 @@ router.get('/:id/posts', async (req, res) => {
 
     var [posts, total] = await Promise.all([
       Post.find({ channel: req.params.id })
-        .populate('user', 'name university year')
+        .populate('user', 'name email university year')
         .populate('resource', 'title subject fileType fileSize downloads likesCount')
         .sort({ createdAt: -1 })
         .skip((pageNum - 1) * limitNum)
@@ -154,7 +154,7 @@ router.post('/:id/posts', auth, async (req, res) => {
     });
 
     await post.save();
-    await post.populate('user', 'name university year');
+    await post.populate('user', 'name email university year');
     if (post.resource) {
       await post.populate('resource', 'title subject fileType fileSize downloads likesCount');
     }

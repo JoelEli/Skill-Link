@@ -13,7 +13,7 @@ router.get('/', auth, async (req, res) => {
 
     var [notifications, total, unreadCount] = await Promise.all([
       Notification.find({ user: req.user._id })
-        .populate('from', 'name university')
+        .populate('from', 'name email university')
         .populate('resource', 'title fileType')
         .populate('channel', 'name icon')
         .sort({ createdAt: -1 })

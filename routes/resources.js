@@ -126,7 +126,7 @@ router.get('/', async (req, res) => {
 
     var [resources, total] = await Promise.all([
       Resource.find(query)
-        .populate('user', 'name university year')
+        .populate('user', 'name email university year')
         .sort(sortObj)
         .skip((pageNum - 1) * limitNum)
         .limit(limitNum),
@@ -188,7 +188,7 @@ router.post('/', auth, applyUpload, async (req, res) => {
     var resource = new Resource(resourceData);
 
     await resource.save();
-    await resource.populate('user', 'name university year');
+    await resource.populate('user', 'name email university year');
     res.status(201).json({ message: 'Resource uploaded successfully', resource });
   } catch(e) {
     console.error('Upload resource error:', e);
@@ -199,7 +199,7 @@ router.post('/', auth, applyUpload, async (req, res) => {
 // GET /:id — single resource
 router.get('/:id', async (req, res) => {
   try {
-    var resource = await Resource.findById(req.params.id).populate('user', 'name university year subject bio');
+    var resource = await Resource.findById(req.params.id).populate('user', 'name email university year subject bio');
     if (!resource) return res.status(404).json({ error: 'Resource not found' });
     res.json({ resource });
   } catch(e) {
@@ -227,7 +227,7 @@ router.put('/:id', auth, async (req, res) => {
     if (tags !== undefined) resource.tags = parseTags(tags);
 
     await resource.save();
-    await resource.populate('user', 'name university year');
+    await resource.populate('user', 'name email university year');
     res.json({ message: 'Resource updated', resource });
   } catch(e) {
     if (e.name === 'CastError') return res.status(400).json({ error: 'Invalid resource ID' });
