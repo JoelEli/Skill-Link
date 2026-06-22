@@ -140,46 +140,52 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST / — upload resource (streams buffer → Cloudinary, no disk write)
+// POST / — create post (with optional file upload)
 router.post('/', auth, applyUpload, async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: 'File is required' });
-
     var { title, description, subject, tags, accessMode, visibility } = req.body;
     if (!title || !title.trim()) return res.status(400).json({ error: 'Title is required' });
-    if (!subject) return res.status(400).json({ error: 'Subject is required' });
 
-    var ext = path.extname(req.file.originalname).toLowerCase();
-    var fileType = getFileType(ext);
-    var cloudinaryResourceType = getCloudinaryResourceType(ext);
+    var resourceData = {
+      title:       title.trim(),
+      description: description ? description.trim() : '',
+      subject:     subject || 'Other',
+      tags:        parseTags(tags),
+      user:        req.user._id,
+      tenant:      visibility === 'global' ? '' : (req.user.tenant || ''),
+      accessMode:  accessMode === 'view-only' ? 'view-only' : 'download',
+      visibility:  visibility === 'global' ? 'global' : 'tenant',
+      fileUrl:     '',
+      fileName:    '',
+      fileType:    'text',
+      fileSize:    0
+    };
 
-    var compressed = await compressFile(req.file.buffer, req.file.originalname);
-    var uploadBuffer = compressed.buffer;
+    if (req.file) {
+      var ext = path.extname(req.file.originalname).toLowerCase();
+      var fileType = getFileType(ext);
+      var cloudinaryResourceType = getCloudinaryResourceType(ext);
 
-    var result = await uploadToCloudinary(uploadBuffer, {
-      folder: 'skilllink/resources',
-      resource_type: cloudinaryResourceType,
-      use_filename: true,
-      unique_filename: true,
-      overwrite: false
-    });
+      var compressed = await compressFile(req.file.buffer, req.file.originalname);
+      var uploadBuffer = compressed.buffer;
 
-    var resource = new Resource({
-      title:                  title.trim(),
-      description:            description ? description.trim() : '',
-      subject,
-      fileUrl:                result.secure_url,
-      cloudinaryId:           result.public_id,
-      cloudinaryResourceType: cloudinaryResourceType,
-      fileName:               req.file.originalname,
-      fileType,
-      fileSize:               compressed.compressed ? compressed.compressedSize : req.file.size,
-      tags:                   parseTags(tags),
-      user:                   req.user._id,
-      tenant:                 visibility === 'global' ? '' : (req.user.tenant || ''),
-      accessMode:             accessMode === 'view-only' ? 'view-only' : 'download',
-      visibility:             visibility === 'global' ? 'global' : 'tenant'
-    });
+      var result = await uploadToCloudinary(uploadBuffer, {
+        folder: 'skilllink/resources',
+        resource_type: cloudinaryResourceType,
+        use_filename: true,
+        unique_filename: true,
+        overwrite: false
+      });
+
+      resourceData.fileUrl = result.secure_url;
+      resourceData.cloudinaryId = result.public_id;
+      resourceData.cloudinaryResourceType = cloudinaryResourceType;
+      resourceData.fileName = req.file.originalname;
+      resourceData.fileType = fileType;
+      resourceData.fileSize = compressed.compressed ? compressed.compressedSize : req.file.size;
+    }
+
+    var resource = new Resource(resourceData);
 
     await resource.save();
     await resource.populate('user', 'name university year');

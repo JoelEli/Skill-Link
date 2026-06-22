@@ -534,72 +534,9 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
   .home-hero-btns .btn{justify-content:center}
 }
 
-/* ─── BLACK & WHITE MODE ────────────────────────────────────────────────────*/
-html.bw{
-  --bg:#000;--surf:#0d0d0d;--card:#161616;
-  --border:rgba(255,255,255,.1);--border2:rgba(255,255,255,.18);
-  --primary:#e0e0e0;--primary-l:#fff;--primary-g:rgba(255,255,255,.07);
-  --pink:#bbb;--green:#aaa;--amber:#bbb;--red:#aaa;
-  --text:#fff;--text2:#ccc;--text3:#888;--text4:#555;
-}
-html.bw body{background:#000;color:#fff}
-/* Topbar */
-html.bw .topbar{background:rgba(0,0,0,.96);border-bottom-color:rgba(255,255,255,.12)}
-html.bw .topbar-ico{background:#1e1e1e;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
-html.bw .topbar-ham:hover{background:rgba(255,255,255,.1)}
-/* Sidebar */
-html.bw .sidebar{background:#080808;border-right-color:rgba(255,255,255,.1)}
-html.bw .ni.active{background:rgba(255,255,255,.1);color:#fff}
-html.bw .ni.active .ni-ico{color:#fff}
-html.bw .uc{border-top-color:rgba(255,255,255,.08)}
-/* Auth left panel */
-html.bw .auth-left{background:#000}
-html.bw .auth-left::before,html.bw .auth-left::after{opacity:0}
-html.bw .auth-logo-ico{background:#1e1e1e;box-shadow:0 0 20px rgba(255,255,255,.15),0 0 0 1px rgba(255,255,255,.12);animation:none}
-html.bw .auth-brand-name em{color:#ddd}
-html.bw .auth-headline .hl-grad{background:#fff;-webkit-text-fill-color:#fff;background-clip:unset;-webkit-background-clip:unset}
-html.bw .auth-feat-ico{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.14)!important}
-/* Auth right panel & forms */
-html.bw .auth-right{background:#0d0d0d;border-left-color:rgba(255,255,255,.1)}
-html.bw .btn-auth{background:#fff;color:#000;box-shadow:none}
-html.bw .btn-auth:hover:not(:disabled){background:#e0e0e0;box-shadow:none;transform:translateY(-1px)}
-html.bw .su-step-dot.active{background:#fff;border-color:#fff;color:#000}
-html.bw .su-step-dot.done{border-color:#fff;color:#fff}
-html.bw .su-connector.done{background:#fff}
-html.bw .auth-tab.active{color:#fff;border-bottom-color:#fff}
-html.bw .auth-switch a{color:#ddd}
-/* Buttons */
-html.bw .btn-primary{background:#fff;color:#000;box-shadow:none}
-html.bw .btn-primary:hover{background:#e0e0e0;box-shadow:none}
-/* Avatar */
-html.bw .av{background:#1e1e1e;box-shadow:none}
-html.bw .sl-ico{background:#1e1e1e;box-shadow:none}
-/* Cards hover */
-html.bw .stat-card:hover{border-color:rgba(255,255,255,.3);box-shadow:0 6px 24px rgba(255,255,255,.07)}
-/* Resource card */
-html.bw .res-card:hover{border-color:rgba(255,255,255,.2)}
-/* Discover page */
-html.bw .disc-hero{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
-html.bw .disc-search-input{background:var(--card);border-color:rgba(255,255,255,.12)}
-html.bw .disc-pill.active{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff}
-html.bw .disc-view-tog,.html.bw .disc-vbtn{border-color:rgba(255,255,255,.1)}
-/* Channel items */
-html.bw .ch-item.active{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15)}
-html.bw .ch-item.active .ch-item-name{color:#fff}
-html.bw .ch-member-badge{background:rgba(255,255,255,.08);color:#bbb}
-/* Home hero & quick actions */
-html.bw .home-hero{background:#0a0a0a;border-color:rgba(255,255,255,.12)}
-html.bw .home-hero::before,html.bw .home-hero::after{opacity:0}
-html.bw .qa-card:hover{border-color:rgba(255,255,255,.25);box-shadow:0 8px 28px rgba(255,255,255,.05)}
-html.bw .qa-ico{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.12)!important}
-/* Scrollbar */
-html.bw ::-webkit-scrollbar-thumb{background:#333}
-html.bw ::-webkit-scrollbar-thumb:hover{background:#555}
-/* B&W toggle button */
-.bw-btn{background:none;border:none;cursor:pointer;color:var(--text3);width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:background .15s,color .15s;flex-shrink:0}
-.bw-btn:hover{background:rgba(255,255,255,.08);color:var(--text)}
-.bw-btn svg{transition:transform .3s}
-html.bw .bw-btn svg{transform:rotate(180deg)}
+/* TOPBAR ICON BTN */
+.tb-icon-btn{background:none;border:none;cursor:pointer;color:var(--text3);width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:background .15s,color .15s;flex-shrink:0}
+.tb-icon-btn:hover{background:rgba(255,255,255,.08);color:var(--text)}
 
 /* UTILS */
 .badge{display:inline-block;padding:3px 8px;border-radius:99px;font-size:.7rem;font-weight:700}
@@ -653,19 +590,34 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
 .feed-create-top:hover{background:rgba(255,255,255,.02)}
 .feed-create-placeholder{flex:1;color:var(--text4);font-size:.9rem;padding:10px 16px;border:1px solid var(--border2);border-radius:99px;transition:border-color .15s}
 .feed-create-top:hover .feed-create-placeholder{border-color:var(--text3)}
-.feed-create-expanded{padding:10px 18px 16px}
-.feed-create-expanded .form-group{margin-bottom:10px}
-.feed-create-expanded input,.feed-create-expanded textarea{width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.88rem;font-family:inherit;outline:none;transition:border-color .15s}
-.feed-create-expanded input:focus,.feed-create-expanded textarea:focus{border-color:var(--primary)}
-.feed-create-expanded textarea{resize:vertical;min-height:60px}
-.feed-meta-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
-.feed-select{padding:8px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.8rem;font-family:inherit;outline:none;cursor:pointer}
-.feed-tags-input{flex:1;min-width:120px;padding:8px 12px!important;font-size:.8rem!important}
-.feed-access-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border:1px solid var(--border2);border-radius:var(--rs);font-size:.78rem;color:var(--text3);white-space:nowrap;transition:all .15s;user-select:none}
-.feed-access-toggle:hover{border-color:var(--primary);color:var(--primary-l)}
-.feed-access-toggle input{accent-color:var(--primary)}
-.feed-vis-select{padding:7px 10px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:.78rem;font-family:inherit;outline:none;cursor:pointer}
-.feed-create-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px;align-items:center}
+.feed-create-expanded{padding:0 18px 14px}
+.feed-textarea{width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:.92rem;font-family:inherit;outline:none;resize:none;min-height:80px;line-height:1.6;transition:border-color .15s}
+.feed-textarea:focus{border-bottom-color:var(--primary)}
+.feed-textarea::placeholder{color:var(--text4)}
+.feed-title-input{width:100%;padding:10px 0;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:.85rem;font-weight:600;font-family:inherit;outline:none;transition:border-color .15s;margin-bottom:8px}
+.feed-title-input:focus{border-bottom-color:var(--primary)}
+.feed-title-input::placeholder{color:var(--text4);font-weight:400}
+.feed-attached-card{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:10px}
+.feed-attached-ico{font-size:1.3rem;flex-shrink:0}
+.feed-attached-info{flex:1;min-width:0}
+.feed-attached-name{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feed-attached-size{font-size:.7rem;color:var(--text4)}
+.feed-attached-remove{background:none;border:none;color:var(--text4);cursor:pointer;font-size:.9rem;padding:4px 6px;border-radius:6px;transition:all .12s}
+.feed-attached-remove:hover{color:var(--red);background:rgba(248,113,113,.1)}
+.feed-toolbar{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);gap:8px}
+.feed-toolbar-left{display:flex;align-items:center;gap:4px}
+.feed-toolbar-right{display:flex;align-items:center;gap:8px}
+.feed-tool-btn{background:none;border:none;color:var(--text3);font-size:.78rem;cursor:pointer;padding:6px 10px;border-radius:var(--rs);transition:all .12s;font-family:inherit;white-space:nowrap}
+.feed-tool-btn:hover{background:rgba(198,255,52,.08);color:var(--primary-l)}
+.feed-tool-select{padding:5px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text3);font-size:.72rem;font-family:inherit;outline:none;cursor:pointer}
+.feed-tool-toggle{display:flex;align-items:center;cursor:pointer;padding:5px 8px;border-radius:6px;transition:background .12s;user-select:none}
+.feed-tool-toggle:hover{background:rgba(255,255,255,.05)}
+.feed-tool-toggle input{display:none}
+.feed-tool-toggle span{font-size:.85rem;opacity:.5;transition:opacity .12s}
+.feed-tool-toggle input:checked+span{opacity:1}
+.feed-post-btn{background:var(--primary);color:#0A0A0A;border:none;border-radius:20px;padding:7px 20px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.feed-post-btn:hover{background:#D4FF5C;box-shadow:0 2px 12px rgba(198,255,52,.3)}
+.feed-post-btn:disabled{opacity:.5;cursor:not-allowed}
 /* Feed post cards */
 .feed-post{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:border-color .15s}
 .feed-post:hover{border-color:rgba(198,255,52,.2)}
@@ -931,7 +883,7 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
   </div>
   <div style="display:flex;align-items:center;gap:4px">
     <div class="notif-bell-wrap" id="notif-bell-wrap" style="position:relative;display:none">
-      <button class="bw-btn" id="notif-bell-btn" onclick="toggleNotifPanel()" title="Notifications" aria-label="Notifications">
+      <button class="tb-icon-btn" id="notif-bell-btn" onclick="toggleNotifPanel()" title="Notifications" aria-label="Notifications">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <span class="notif-badge" id="notif-badge" style="display:none">0</span>
       </button>
@@ -945,12 +897,6 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
         </div>
       </div>
     </div>
-    <button class="bw-btn" id="bw-btn" onclick="toggleBW()" title="Toggle black & white mode" aria-label="Toggle B&W mode">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="9"/>
-        <path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor" stroke="none"/>
-      </svg>
-    </button>
     <button class="topbar-ham" id="topbar-ham" onclick="toggleSidebar()" aria-label="Toggle menu">
       <span class="ham-bar"></span>
       <span class="ham-bar"></span>
@@ -1087,61 +1033,53 @@ html.bw .bw-btn svg{transform:rotate(180deg)}
     <!-- FEED -->
     <div class="panel" id="panel-upload">
       <div class="feed-wrap">
-        <!-- Create post card -->
+        <!-- Create post card (LinkedIn-style) -->
         <div class="feed-create" id="feed-create">
           <div class="feed-create-top" onclick="expandFeedCreate()">
             <div class="av av-md" id="feed-av">?</div>
-            <div class="feed-create-placeholder" id="feed-create-placeholder">Share a resource with your campus...</div>
+            <div class="feed-create-placeholder" id="feed-create-placeholder">What's on your mind?</div>
           </div>
           <div class="feed-create-expanded" id="feed-create-expanded" style="display:none">
             <form id="upload-form" onsubmit="submitResource(event)">
-              <div class="form-group">
-                <input type="text" id="up-title" placeholder="Title — e.g. Calculus Chapter 3 Notes *" maxlength="150" required/>
-              </div>
-              <div class="form-group">
-                <textarea id="up-desc" placeholder="Write something about this resource..." maxlength="1000" rows="3"></textarea>
-              </div>
-              <!-- File attach zone -->
-              <div class="feed-file-zone" id="feed-file-zone">
-                <div class="dropzone" id="dropzone" ondragover="dzDrag(event,true)" ondragleave="dzDrag(event,false)" ondrop="dzDrop(event)" style="padding:20px 16px;margin:0;border-radius:10px">
-                  <input type="file" id="upload-file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar,.7z,.png,.jpg,.jpeg,.gif,.csv,.json,.md" onchange="dzSelect(this)"/>
-                  <div id="dz-placeholder">
-                    <div class="dropzone-ico" style="font-size:1.5rem">📎</div>
-                    <div class="dropzone-txt" style="font-size:.82rem">Drop file here or <strong>click to browse</strong></div>
+              <textarea id="up-desc" placeholder="Share a thought, question, or resource with your campus..." maxlength="1000" rows="4" class="feed-textarea"></textarea>
+              <input type="text" id="up-title" placeholder="Title (required)" maxlength="150" required class="feed-title-input"/>
+              <!-- File preview (shown when file attached) -->
+              <div id="feed-file-attached" style="display:none">
+                <div class="feed-attached-card">
+                  <div class="feed-attached-ico" id="dz-prev-ico">📎</div>
+                  <div class="feed-attached-info">
+                    <div class="feed-attached-name" id="dz-prev-name"></div>
+                    <div class="feed-attached-size" id="dz-prev-size"></div>
                   </div>
-                  <div class="dropzone-preview" id="dz-preview">
-                    <div class="dropzone-preview-ico" id="dz-prev-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-                    <div class="dropzone-preview-info">
-                      <div class="dropzone-preview-name" id="dz-prev-name"></div>
-                      <div class="dropzone-preview-size" id="dz-prev-size"></div>
-                    </div>
-                    <button type="button" class="btn btn-ghost btn-xs" onclick="dzClear(event)">Clear</button>
-                  </div>
+                  <button type="button" class="feed-attached-remove" onclick="dzClear(event)">✕</button>
                 </div>
               </div>
-              <!-- Category row -->
-              <div class="feed-meta-row">
-                <select id="up-subject" class="feed-select" required>
-                  <option value="">Category *</option>
-                  <option value="Academic">Academic</option>
-                  <option value="Story Books">Story Books</option>
-                  <option value="Journals">Journals</option>
-                  <option value="Academic Research">Academic Research</option>
-                  <option value="Other">Other</option>
-                </select>
-                <input type="text" id="up-tags" placeholder="Tags (comma-separated)" class="feed-tags-input"/>
-                <label class="feed-access-toggle">
-                  <input type="checkbox" id="up-view-only"/>
-                  <span class="feed-access-label">View only</span>
-                </label>
-              </div>
-              <div class="feed-create-actions">
-                <button type="button" class="btn btn-ghost btn-sm" onclick="collapseFeedCreate()">Cancel</button>
-                <select id="up-visibility" class="feed-vis-select">
-                  <option value="tenant">🏫 My University</option>
-                  <option value="global">🌐 Global</option>
-                </select>
-                <button type="submit" class="btn btn-primary btn-sm" id="btn-upload">Post</button>
+              <input type="file" id="upload-file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar,.7z,.png,.jpg,.jpeg,.gif,.csv,.json,.md" onchange="dzSelect(this)" style="display:none"/>
+              <input type="hidden" id="up-subject" value="Other"/>
+              <!-- Bottom toolbar -->
+              <div class="feed-toolbar">
+                <div class="feed-toolbar-left">
+                  <button type="button" class="feed-tool-btn" onclick="document.getElementById('upload-file').click()" title="Attach file">📎 File</button>
+                  <select id="up-subject-sel" class="feed-tool-select" onchange="document.getElementById('up-subject').value=this.value">
+                    <option value="Other">Category</option>
+                    <option value="Academic">📚 Academic</option>
+                    <option value="Story Books">📖 Story Books</option>
+                    <option value="Journals">📰 Journals</option>
+                    <option value="Academic Research">🔬 Research</option>
+                    <option value="Other">📄 Other</option>
+                  </select>
+                  <label class="feed-tool-toggle" title="View only — disable downloads">
+                    <input type="checkbox" id="up-view-only"/>
+                    <span>🔒</span>
+                  </label>
+                </div>
+                <div class="feed-toolbar-right">
+                  <select id="up-visibility" class="feed-tool-select">
+                    <option value="tenant">🏫 University</option>
+                    <option value="global">🌐 Global</option>
+                  </select>
+                  <button type="submit" class="feed-post-btn" id="btn-upload">Post</button>
+                </div>
               </div>
             </form>
           </div>
@@ -1365,6 +1303,7 @@ var FILE_TYPE_MAP = {
   txt:  { color:'#14B8A6', label:'TXT'   },
   csv:  { color:'#059669', label:'CSV'   },
   md:   { color:'#7C3AED', label:'MD'    },
+  text: { color:'#C6FF34', label:'POST'  },
   other:{ color:'#94A3B8', label:'FILE'  }
 };
 
@@ -2192,16 +2131,18 @@ function mkFeedPost(r) {
   html += '<div class="feed-post-body">';
   if (r.description) html += '<div class="feed-post-desc">' + esc(r.description) + '</div>';
   // File card
-  html += '<div class="feed-post-file" onclick="viewResDetail(\'' + esc(r._id) + '\')">';
-  html += '<div class="feed-post-file-ico" style="background:' + ft.color + '1a;color:' + ft.color + '">' + ft.label + '</div>';
-  html += '<div class="feed-post-file-info">';
-  html += '<div class="feed-post-file-title">' + esc(r.title) + '</div>';
-  html += '<div class="feed-post-file-meta"><span>' + fmtSize(r.fileSize) + '</span><span>' + esc(r.subject) + '</span></div>';
-  html += '</div>';
-  if (isViewOnly) {
-    html += '<span class="feed-post-access vo">View only</span>';
-  } else {
-    html += '<button class="feed-post-access dl" onclick="event.stopPropagation();downloadResource(\'' + esc(r._id) + '\',\'' + esc(r.fileName || r.title) + '\')" style="cursor:pointer;border:none;font-family:inherit">Download</button>';
+  if (r.fileUrl && r.fileType !== 'text') {
+    html += '<div class="feed-post-file" onclick="viewResDetail(\'' + esc(r._id) + '\')">';
+    html += '<div class="feed-post-file-ico" style="background:' + ft.color + '1a;color:' + ft.color + '">' + ft.label + '</div>';
+    html += '<div class="feed-post-file-info">';
+    html += '<div class="feed-post-file-title">' + esc(r.title) + '</div>';
+    html += '<div class="feed-post-file-meta"><span>' + fmtSize(r.fileSize) + '</span><span>' + esc(r.subject) + '</span></div>';
+    html += '</div>';
+    if (isViewOnly) {
+      html += '<span class="feed-post-access vo">View only</span>';
+    } else {
+      html += '<button class="feed-post-access dl" onclick="event.stopPropagation();downloadResource(\'' + esc(r._id) + '\',\'' + esc(r.fileName || r.title) + '\')" style="cursor:pointer;border:none;font-family:inherit">Download</button>';
+    }
   }
   html += '</div></div>';
   // Actions
@@ -2228,22 +2169,19 @@ function dzSelect(input) {
 }
 function setUploadFile(file) {
   uploadFile = file;
-  document.getElementById('dz-placeholder').style.display = 'none';
-  var prev = document.getElementById('dz-preview');
-  prev.classList.add('show');
   var ext = file.name.split('.').pop().toLowerCase();
   var ftKey = getFileTypeFromExt(ext);
   var ft = FILE_TYPE_MAP[ftKey] || FILE_TYPE_MAP.other;
-  document.getElementById('dz-prev-ico').textContent = ft.ico;
+  document.getElementById('dz-prev-ico').textContent = ft.label || '📎';
   document.getElementById('dz-prev-name').textContent = file.name;
   document.getElementById('dz-prev-size').textContent = fmtSize(file.size);
+  document.getElementById('feed-file-attached').style.display = '';
 }
 function dzClear(e) {
   if (e && e.stopPropagation) e.stopPropagation();
   uploadFile = null;
   document.getElementById('upload-file').value = '';
-  document.getElementById('dz-placeholder').style.display = 'block';
-  document.getElementById('dz-preview').classList.remove('show');
+  document.getElementById('feed-file-attached').style.display = 'none';
 }
 function getFileTypeFromExt(ext) {
   var m = {pdf:'pdf',ppt:'ppt',pptx:'ppt',doc:'doc',docx:'doc',xls:'xls',xlsx:'xls',zip:'zip',rar:'zip','7z':'zip',png:'img',jpg:'img',jpeg:'img',gif:'img',txt:'txt',csv:'csv',md:'md'};
@@ -2251,17 +2189,15 @@ function getFileTypeFromExt(ext) {
 }
 function submitResource(e) {
   e.preventDefault();
-  if (!uploadFile) { toast('Please attach a file', 'error'); return; }
-  var subject = document.getElementById('up-subject').value;
-  if (!subject) { toast('Please select a category', 'error'); return; }
+  var title = document.getElementById('up-title').value.trim();
+  if (!title) { toast('Please add a title', 'error'); return; }
   var btn = document.getElementById('btn-upload');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Posting…';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
   var fd = new FormData();
-  fd.append('file', uploadFile);
-  fd.append('title', document.getElementById('up-title').value);
+  if (uploadFile) fd.append('file', uploadFile);
+  fd.append('title', title);
   fd.append('description', document.getElementById('up-desc').value);
-  fd.append('subject', subject);
-  fd.append('tags', document.getElementById('up-tags').value);
+  fd.append('subject', document.getElementById('up-subject').value || 'Other');
   fd.append('accessMode', document.getElementById('up-view-only').checked ? 'view-only' : 'download');
   fd.append('visibility', document.getElementById('up-visibility').value);
   api('POST', '/resources', fd, true).then(function(d) {
@@ -3082,14 +3018,7 @@ function followFromDiscover(userId, btn) {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-// ─── B&W MODE ─────────────────────────────────────────────────────────────────
-function toggleBW() {
-  var on = document.documentElement.classList.toggle('bw');
-  localStorage.setItem('sl_bw', on ? '1' : '0');
-}
-
 (function init() {
-  if (localStorage.getItem('sl_bw') === '1') document.documentElement.classList.add('bw');
   loadAuth();
 
   // Handle URL params: ?verify=TOKEN, ?reset=TOKEN
