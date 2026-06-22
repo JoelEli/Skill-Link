@@ -45,16 +45,19 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 }
 
-// CORS — allow comma-separated origins from CORS_ORIGIN env var
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5000')
-  .split(',').map(function(s) { return s.trim(); });
+// CORS — allow Vercel frontend + Railway + localhost + any CORS_ORIGIN extras
+var defaultOrigins = [
+  'https://skill-link-drab.vercel.app',
+  'https://energetic-analysis-production-6afe.up.railway.app',
+  'http://localhost:5000', 'http://localhost:3000', 'http://127.0.0.1:5000'
+];
+var extraOrigins = (process.env.CORS_ORIGIN || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+var allowedOrigins = defaultOrigins.concat(extraOrigins);
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? function(origin, cb) {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) return cb(null, true);
-        cb(new Error('Not allowed by CORS'));
-      }
-    : '*',
+  origin: function(origin, cb) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) return cb(null, true);
+    cb(null, true);
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
