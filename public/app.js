@@ -507,6 +507,14 @@ function nav(panel, opts) {
     if (window.location.hash !== hashStr) window.location.hash = hashStr;
     _navLock = false;
   }
+  var activePanel = document.getElementById('panel-' + panel);
+  activePanel.classList.add('anim-fade-in');
+  activePanel.addEventListener('animationend', function handler() {
+    activePanel.classList.remove('anim-fade-in');
+    activePanel.removeEventListener('animationend', handler);
+  }, { once: true });
+  var mainEl = document.querySelector('.main');
+  if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
   if (panel === 'home') loadHome();
   else if (panel === 'discover') loadDiscover(1);
   else if (panel === 'upload') initUpload();
@@ -579,6 +587,34 @@ function closeSidebar() {
   var btn = document.getElementById('topbar-ham');
   if (btn) btn.classList.remove('open');
 }
+
+// ─── ANIMATION HELPERS ───────────────────────────────────────────────────────
+function staggerChildren(containerSel) {
+  var el = typeof containerSel === 'string' ? document.querySelector(containerSel) : containerSel;
+  if (!el) return;
+  var children = el.children;
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+    child.style.setProperty('animation-delay', Math.min(i * 30, 300) + 'ms');
+    child.classList.add('anim-fade-in-up');
+  }
+  el.addEventListener('animationend', function handler(e) {
+    if (e.target && e.target.parentNode === el) {
+      e.target.classList.remove('anim-fade-in-up');
+      e.target.style.removeProperty('animation-delay');
+    }
+  });
+}
+
+(function initScrollShadow() {
+  var main = document.querySelector('.main');
+  var topbar = document.querySelector('.topbar');
+  if (main && topbar) {
+    window.addEventListener('scroll', function() {
+      topbar.classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+  }
+})();
 
 // ─── UPDATE UI ────────────────────────────────────────────────────────────────
 function updUI() {
@@ -704,6 +740,7 @@ function loadHome() {
       return;
     }
     document.getElementById('home-trending').innerHTML = d.resources.map(function(r){ return mkResCard(r); }).join('');
+    staggerChildren('#home-trending');
   }).catch(function() {});
 }
 
@@ -893,6 +930,7 @@ function loadDiscover(page) {
     grid.innerHTML = d.resources.map(function(r) {
       return discViewMode === 'list' ? mkResCardList(r) : mkResCard(r);
     }).join('');
+    staggerChildren(grid);
     var meta = document.getElementById('disc-meta');
     var info = 'Showing <strong>' + d.count + '</strong> of <strong>' + d.total + '</strong> resource' + (d.total !== 1 ? 's' : '');
     if (search) info += ' for &ldquo;<strong>' + esc(search) + '</strong>&rdquo;';
@@ -929,7 +967,13 @@ function initUpload() {
 }
 
 function expandFeedCreate() {
-  document.getElementById('feed-create-expanded').style.display = '';
+  var expanded = document.getElementById('feed-create-expanded');
+  expanded.style.display = '';
+  expanded.classList.add('anim-fade-in');
+  expanded.addEventListener('animationend', function handler() {
+    expanded.classList.remove('anim-fade-in');
+    expanded.removeEventListener('animationend', handler);
+  }, { once: true });
   document.getElementById('feed-create-placeholder').style.display = 'none';
   document.getElementById('up-title').focus();
 }
@@ -958,6 +1002,7 @@ function loadFeed(page) {
       return;
     }
     stream.innerHTML = d.resources.map(mkFeedPost).join('');
+    staggerChildren(stream);
     renderPagination('feed-pagination', d.page, d.pages, 'loadFeed');
   }).catch(function() {
     stream.innerHTML = '<div class="empty-state"><div class="empty-state-ico">' + _ico('warn',44,1.2) + '</div><h3>Could not load feed</h3></div>';
@@ -1108,6 +1153,7 @@ function renderChannelList(channels) {
       (isCreator ? '<button class="ch-item-del" onclick="deleteChannel(event,\''+esc(c._id)+'\')" title="Delete channel">'+_ico('trash',13,2)+'</button>' : '') +
     '</div>';
   }).join('');
+  staggerChildren(el);
 }
 
 function selectChannel(id) {
@@ -1477,6 +1523,7 @@ function showProfileTab(tab, u, isOwn) {
       el.innerHTML = '<div class="empty-state"><div class="empty-state-ico">'+_ico('file',44,1.2)+'</div><h3>No uploads yet</h3>' + (isOwn ? '<p>Go to Upload to share your first resource!</p><button class="btn btn-primary btn-sm mt12" onclick="nav(\'upload\')">Upload Now</button>' : '<p>This student hasn\'t uploaded anything yet</p>') + '</div>';
     } else {
       el.innerHTML = '<div class="ig-grid">' + resources.map(function(r){ return mkIgPost(r); }).join('') + '</div>';
+      staggerChildren(el.querySelector('.ig-grid'));
     }
   } else if (tab === 'saved') {
     var saved = u.savedResources || [];
@@ -1484,6 +1531,7 @@ function showProfileTab(tab, u, isOwn) {
       el.innerHTML = '<div class="empty-state"><div class="empty-state-ico">' + _ico('bookmark',44,1.2) + '</div><h3>No saved resources</h3><p>Browse resources and save them to access later.</p></div>';
     } else {
       el.innerHTML = '<div class="ig-grid">' + saved.map(function(r){ return mkIgPost(r); }).join('') + '</div>';
+      staggerChildren(el.querySelector('.ig-grid'));
     }
   } else if (tab === 'settings') {
     renderSettings(u);
@@ -1821,6 +1869,7 @@ function loadStudents(page) {
       return;
     }
     grid.innerHTML = d.users.map(mkStudentCard).join('');
+    staggerChildren(grid);
     renderPagination('stu-pagination', d.page, d.pages, 'loadStudents');
   }).catch(function() {
     grid.innerHTML = '<div class="empty-state"><div class="empty-state-ico">'+_ico('warn',44,1.2)+'</div><h3>Could not load students</h3></div>';
