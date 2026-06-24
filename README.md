@@ -6,11 +6,15 @@ A student-to-student academic resource sharing platform where university and col
 
 ## What It Does
 
-- **Upload & Share** — Students upload PDFs, PowerPoints, Word docs, spreadsheets, images, and other study materials to a permanent cloud store (Cloudinary)
+- **Upload & Share** — Students upload PDFs, PowerPoints, Word docs, spreadsheets, images, and other study materials to Cloudinary cloud storage
+- **Feed** — LinkedIn-style post creation with optional file attachments, text-only posts, category tags, and visibility controls (university or global)
 - **Discover Resources** — Browse, search, filter by subject/type, sort by newest/most downloaded/most liked, switch between grid and list views
-- **Study Channels** — Create and join topic-based discussion channels (like Slack/Discord), post messages, attach resources, like posts
+- **Study Channels** — Create and join topic-based discussion channels, post messages, attach resources, like posts
 - **Student Network** — Follow/unfollow students, view profiles with Instagram-style layouts, browse uploaded and saved resources
-- **Notifications** — Real-time bell icon with unread badge for follows, likes, and downloads on your resources
+- **Gravatar Avatars** — Profile images pulled from Gravatar with automatic initials fallback
+- **Multi-Tenancy** — Content scoped by university with a global/university toggle throughout the app
+- **Notifications** — Real-time bell icon with unread badge for follows, likes, and downloads
+- **Hash Routing** — Shareable URLs (`#home`, `#discover`, `#feed`, `#profile/USER_ID`), working back/forward buttons
 - **Email System** — Welcome email on signup, email verification, password reset via Resend
 
 ## Tech Stack
@@ -24,17 +28,17 @@ A student-to-student academic resource sharing platform where university and col
 | **Authentication** | JWT (7-day expiry) + bcryptjs password hashing |
 | **Email** | Resend (transactional emails) |
 | **Security** | Helmet (CSP, HSTS), express-rate-limit, express-validator |
-| **Frontend** | Vanilla HTML/CSS/JS (single-page app, no framework) |
-| **Hosting** | Railway (backend + frontend), Vercel (static frontend mirror) |
+| **Frontend** | Vanilla HTML/CSS/JS SPA — split into `index.html`, `style.css`, `app.js` |
+| **Hosting** | Railway (backend + static frontend) |
 
 ## Project Structure
 
 ```
 Skill-Link/
-├── server.js                 # Express app entry point, middleware, route mounting
+├── server.js                 # Express app, middleware, route mounting, SPA catch-all
 ├── models/
-│   ├── User.js               # User schema (profile, followers, saved resources, verification)
-│   ├── Resource.js            # Resource schema (file metadata, Cloudinary refs, likes, downloads)
+│   ├── User.js               # User schema (profile, followers, saved resources, tenant)
+│   ├── Resource.js            # Resource schema (Cloudinary refs, likes, downloads, visibility)
 │   ├── Channel.js             # Channel + Post schemas (members, messages, likes)
 │   └── Notification.js        # Notification schema (follow, like, download events)
 ├── routes/
@@ -47,9 +51,12 @@ Skill-Link/
 │   ├── auth.js                # JWT verification middleware
 │   └── validation.js          # express-validator rules for signup, login, profile update
 ├── utils/
-│   └── email.js               # Resend client — welcome, verification, password reset emails
+│   ├── email.js               # Resend client — welcome, verification, password reset emails
+│   └── slugify.js             # University name → tenant slug conversion
 ├── public/
-│   └── index.html             # Entire frontend SPA (HTML + CSS + JS in one file)
+│   ├── index.html             # HTML shell (628 lines) — structure and modals
+│   ├── style.css              # All styles (680 lines) — dark theme, responsive, animations
+│   └── app.js                 # All logic (1920 lines) — SPA routing, API, rendering, Gravatar
 ├── package.json
 ├── .env                       # Environment variables (not committed)
 ├── .gitignore
@@ -60,7 +67,7 @@ Skill-Link/
 
 ### User
 ```
-name, email, password (hashed), bio, university, year, subject
+name, email, password (hashed), bio, university, year, subject, tenant
 verified, verificationToken, resetToken, resetTokenExpiry
 followers[], following[], savedResources[]
 ```
@@ -71,12 +78,12 @@ title, description, subject (category), tags[]
 fileUrl (Cloudinary), cloudinaryId, cloudinaryResourceType
 fileName, fileType, fileSize
 downloads, likes[], likesCount
-user (owner ref)
+user (owner ref), tenant, accessMode (download|view-only), visibility (tenant|global)
 ```
 
 ### Channel & Post
 ```
-Channel: name, description, subject, icon, creator, members[], isPrivate
+Channel: name, description, subject, icon, creator, members[], isPrivate, tenant
 Post: channel, user, content, resource (optional attachment), likes[]
 ```
 
@@ -103,7 +110,7 @@ from (sender), resource?, channel?, read, message
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| GET | `/` | No | List resources (search, filter by subject/fileType, sort, paginate) |
+| GET | `/` | No | List resources (search, filter, sort, paginate, scope by tenant) |
 | POST | `/` | Yes | Upload resource (multipart form, file → Cloudinary) |
 | GET | `/:id` | No | Get single resource with author info |
 | PUT | `/:id` | Yes | Edit resource metadata (owner only) |
@@ -115,7 +122,7 @@ from (sender), resource?, channel?, read, message
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| GET | `/` | No | List users (search by name, paginate) |
+| GET | `/` | No | List users (search by name, paginate, scope by tenant) |
 | GET | `/me/profile` | Yes | Own profile with resources, saved, followers |
 | PUT | `/me/profile` | Yes | Update profile fields |
 | PUT | `/me/password` | Yes | Change password |
@@ -127,7 +134,7 @@ from (sender), resource?, channel?, read, message
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| GET | `/` | No | List public channels |
+| GET | `/` | No | List channels (search, scope by tenant) |
 | POST | `/` | Yes | Create channel (creator auto-joins) |
 | GET | `/:id` | No | Channel detail |
 | POST | `/:id/join` | Yes | Join channel |
@@ -208,11 +215,7 @@ Server starts at `http://localhost:5000`.
 
 ### Railway (Backend + Frontend)
 
-SkillLink is deployed on Railway. Railway does **not** auto-deploy from GitHub — every deployment requires:
-
-```bash
-railway up --service energetic-analysis --detach
-```
+SkillLink is deployed on Railway with auto-deploy from GitHub on push to `main`.
 
 Required Railway environment variables:
 - `MONGODB_URI`, `JWT_SECRET`, `NODE_ENV=production`
@@ -234,31 +237,60 @@ Documents: PDF, PPT/PPTX, DOC/DOCX, XLS/XLSX, TXT, CSV, JSON, MD, ZIP/RAR/7Z
 Images: PNG, JPG/JPEG, GIF
 Max size: 50MB
 
-No video or audio files are accepted.
-
 ## Security
 
 - **Helmet** — CSP, HSTS, X-Frame-Options, and other security headers
+- **CORS** — Strict origin validation; unknown origins are rejected
 - **Rate Limiting** — 200 req/15min general, 15 req/15min auth, 20 uploads/hour
 - **Password Hashing** — bcryptjs with 12 salt rounds
 - **JWT** — 7-day expiry, verified on every protected route
 - **Input Validation** — express-validator on all user inputs
-- **CSP** — Allows `res.cloudinary.com` for images and downloads
-- **CORS** — Configurable allowed origins
+- **CSP** — Allows Cloudinary for file serving, Gravatar for profile images
 
 ## Frontend
 
-The entire frontend is a single `public/index.html` file — a vanilla JS single-page application with no build step. Key UI features:
+The frontend is a vanilla JS single-page application split into three files with no build step:
 
-- **Auth** — Cream/brown/black themed login/signup with 2-step registration, forgot password flow
-- **Home** — Welcome hero, quick action cards, trending resources
-- **Discover** — Hero search bar, type filter pills, subject chips, grid/list toggle, pagination
-- **Upload** — Drag-and-drop dropzone, 5-category visual picker, tags input
-- **Channels** — Discord-style split layout (channel list + message feed), real-time-feel posting
-- **Students** — Card grid with avatar, university, subject, follow/profile buttons
-- **Profile** — Instagram-style layout with gradient avatar ring, horizontal stats, 3-column post grid with hover overlays, toggle edit form
-- **Notifications** — Topbar bell icon with unread badge, dropdown panel
-- **B&W Mode** — Optional black-and-white theme toggle
+- `index.html` — HTML shell with all markup and modals
+- `style.css` — Dark theme (`#0A0A0A` base, `#C6FF34` lime accent), responsive breakpoints, CSS animations
+- `app.js` — Routing, API layer, rendering, Gravatar MD5 hashing, animation helpers
+
+### Pages
+
+- **Home** — Personalized greeting, quick action cards, trending resources
+- **Discover** — Search bar, subject chips, type filters, grid/list toggle, pagination
+- **Feed** — LinkedIn-style post creation (text-only or with file), category and visibility selectors, university/global scope toggle
+- **Channels** — Split layout (channel list + message feed), create/join/leave channels, post messages with resource attachments
+- **Students** — Card grid with Gravatar avatars, follow buttons, profile links
+- **Profile** — Instagram-style layout with Gravatar ring, stats row, 3-column post grid with hover overlays, edit profile, saved resources tab
+
+### Routing
+
+Hash-based client-side routing with shareable URLs:
+
+| URL | Page |
+|-----|------|
+| `#home` | Home |
+| `#discover` | Discover |
+| `#feed` | Feed |
+| `#channels` | Channels |
+| `#students` | Students |
+| `#profile` | Own profile |
+| `#profile/USER_ID` | Other user's profile |
+
+Back/forward buttons work. Legacy `?verify=` and `?reset=` query params are auto-converted to hash routes.
+
+### Animations
+
+- Staggered fade-in-up entrance for card grids, feed posts, channel lists
+- Smooth fade-in panel transitions on navigation
+- Modal scale + backdrop blur on open
+- Notification panel slide-down with scale + fade
+- Feed posts lift on hover with shadow
+- Quick action icon scale on hover
+- Active nav items get a green left border indicator
+- Topbar shadow appears on scroll
+- All animations respect `prefers-reduced-motion`
 
 ## License
 
