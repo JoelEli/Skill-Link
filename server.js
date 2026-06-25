@@ -92,8 +92,13 @@ const uploadLimiter = rateLimit({
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-// Serve static files (frontend + uploaded files)
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files (frontend + uploaded files) — no cache in dev
+app.use(express.static(path.join(__dirname, 'public'), {
+  etag: false,
+  setHeaders: function(res) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  }
+}));
 
 // Database connection with auto-retry
 function connectDB() {
