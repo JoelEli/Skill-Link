@@ -14,7 +14,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 ::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:99px}
 ::-webkit-scrollbar-thumb:hover{background:var(--primary)}
 
-/* AUTH OVERLAY — cream / brown / black theme */
+/* AUTH OVERLAY */
 #auth-overlay{position:fixed;inset:0;z-index:600;display:flex;background:#0A0A0A;overflow-y:auto}
 .auth-left{flex:1;background:linear-gradient(160deg,#0A0A0A 0%,#111111 50%,#0D0D0D 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 48px;position:relative;overflow-y:auto;text-align:center;min-height:100vh}
 .auth-left::before{content:'';position:absolute;top:-80px;right:-80px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(198,255,52,.15),transparent 70%);filter:blur(60px);pointer-events:none;animation:orbFloat 10s ease-in-out infinite}
@@ -43,17 +43,17 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 .auth-box{width:100%;max-width:360px}
 .auth-box h2{font-size:1.5rem;font-weight:700;color:#E2E8F0;margin-bottom:4px}
 .auth-subtitle{color:#64748B;font-size:.85rem;margin-bottom:28px}
-.auth-tabs{display:flex;border-bottom:2px solid rgba(198,255,52,.15);margin-bottom:26px}
-.auth-tab{flex:1;padding:11px 8px;text-align:center;cursor:pointer;font-size:.9rem;font-weight:600;color:#64748B;transition:color .2s,border-color .2s;border-bottom:2px solid transparent;margin-bottom:-2px}
-.auth-tab:hover{color:#C6FF34}
-.auth-tab.active{color:#C6FF34;border-bottom-color:#C6FF34}
+.auth-tabs{display:flex;background:#1c1b1b;border-radius:8px;padding:3px;margin-bottom:26px;border:1px solid rgba(255,255,255,.05)}
+.auth-tab{flex:1;padding:10px 8px;text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;color:#64748B;transition:all .25s;border-radius:6px}
+.auth-tab:hover{color:#E2E8F0}
+.auth-tab.active{color:#C6FF34;background:#2a2a2a;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .auth-switch{text-align:center;font-size:.82rem;color:#64748B;margin-top:20px}
 .auth-switch a{color:#C6FF34;cursor:pointer;font-weight:600}
 .auth-switch a:hover{text-decoration:underline}
 .form-group{margin-bottom:16px}
 .form-group label{display:block;font-size:.78rem;font-weight:500;color:#94A3B8;margin-bottom:6px;letter-spacing:.01em}
-.form-group input,.form-group select{width:100%;padding:12px 14px;background:#1a1a1a;border:1px solid rgba(198,255,52,.18);border-radius:var(--rs);color:#E2E8F0;font-size:.9rem;font-family:inherit;transition:border-color .2s,box-shadow .2s;outline:none}
-.form-group input:focus,.form-group select:focus{border-color:#C6FF34;box-shadow:0 0 0 3px rgba(198,255,52,.12)}
+.form-group input,.form-group select{width:100%;padding:12px 14px;background:#0A0A0A;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);color:#E2E8F0;font-size:.9rem;font-family:inherit;transition:border-color .25s,box-shadow .25s;outline:none}
+.form-group input:focus,.form-group select:focus{border-color:#C6FF34;box-shadow:0 0 12px rgba(198,255,52,.2)}
 .form-group input::placeholder{color:#4a4a4a}
 .pw-wrap{position:relative}
 .pw-wrap input{padding-right:44px}
@@ -62,9 +62,9 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 .pw-toggle .eye-hide{display:none}
 .pw-toggle.shown .eye-show{display:none}
 .pw-toggle.shown .eye-hide{display:inline-block}
-.btn-auth{width:100%;padding:13px;font-size:.9rem;font-weight:600;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;background:#C6FF34;color:#0A0A0A;box-shadow:0 2px 12px rgba(198,255,52,.25);margin-top:4px;letter-spacing:.01em}
-.btn-auth:hover:not(:disabled){background:#D4FF5C;box-shadow:0 4px 20px rgba(198,255,52,.4);transform:translateY(-1px)}
-.btn-auth:active:not(:disabled){transform:translateY(0);box-shadow:0 2px 10px rgba(198,255,52,.2)}
+.btn-auth{width:100%;padding:14px;font-size:.88rem;font-weight:700;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;background:#C6FF34;color:#0A0A0A;box-shadow:0 0 20px rgba(198,255,52,.15);margin-top:8px;letter-spacing:.04em;text-transform:uppercase}
+.btn-auth:hover:not(:disabled){background:#D4FF5C;box-shadow:0 0 30px rgba(198,255,52,.35);transform:translateY(-1px)}
+.btn-auth:active:not(:disabled){transform:scale(.98);box-shadow:0 0 10px rgba(198,255,52,.2)}
 .btn-auth:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
 /* Sign-up step indicator */
 .su-steps{display:flex;align-items:center;margin:18px 0 22px}

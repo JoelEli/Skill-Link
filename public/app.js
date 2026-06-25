@@ -205,7 +205,21 @@ function openAuth(tab) {
   var allTabs = ['signin','signup','forgot','reset'];
   allTabs.forEach(function(t) {
     var el = document.getElementById('form-' + t);
-    if (el) el.style.display = t === tab ? 'block' : 'none';
+    if (!el) return;
+    if (t === tab) {
+      el.style.display = 'block';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(10px)';
+      requestAnimationFrame(function() {
+        el.style.transition = 'opacity .35s ease, transform .35s ease';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      });
+    } else {
+      el.style.display = 'none';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(10px)';
+    }
   });
   document.getElementById('tab-signin').classList.toggle('active', tab === 'signin' || tab === 'forgot' || tab === 'reset');
   document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
