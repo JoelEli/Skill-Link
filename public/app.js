@@ -606,6 +606,53 @@ function staggerChildren(containerSel) {
   });
 }
 
+function animateCountUp(el, target) {
+  var duration = 1200;
+  var start = performance.now();
+  function tick(now) {
+    var p = Math.min((now - start) / duration, 1);
+    var ease = p * (2 - p);
+    var val = Math.floor(ease * target);
+    el.textContent = target >= 1000 ? (val / 1000).toFixed(1) + 'k' : val;
+    if (p < 1) requestAnimationFrame(tick);
+    else el.textContent = target >= 1000 ? (target / 1000).toFixed(1) + 'k' : target;
+  }
+  requestAnimationFrame(tick);
+}
+
+function popIcon(btn) {
+  btn.classList.add('anim-pop');
+  btn.addEventListener('animationend', function handler() {
+    btn.classList.remove('anim-pop');
+    btn.removeEventListener('animationend', handler);
+  }, { once: true });
+}
+
+function initTabIndicator(barSelector) {
+  var bar = document.querySelector(barSelector);
+  if (!bar) return;
+  var indicator = bar.querySelector('.tab-indicator');
+  if (!indicator) {
+    indicator = document.createElement('div');
+    indicator.className = 'tab-indicator';
+    bar.appendChild(indicator);
+  }
+  var tabs = bar.querySelectorAll('.ptab');
+  function update(tab) {
+    indicator.style.width = tab.offsetWidth + 'px';
+    indicator.style.left = tab.offsetLeft + 'px';
+  }
+  var active = bar.querySelector('.ptab.active');
+  if (active) update(active);
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() { update(tab); });
+  });
+  window.addEventListener('resize', function() {
+    var a = bar.querySelector('.ptab.active');
+    if (a) update(a);
+  });
+}
+
 (function initScrollShadow() {
   var main = document.querySelector('.main');
   var topbar = document.querySelector('.topbar');
@@ -990,7 +1037,7 @@ function collapseFeedCreate() {
 function loadFeed(page) {
   var q = '?page=' + (page || 1) + '&limit=10&sort=newest' + getScopeParams();
   var stream = document.getElementById('feed-stream');
-  stream.innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
+  stream.innerHTML = '<div class="empty-state" style="padding:40px 0"><div class="spinner" style="margin:0 auto 12px"></div><p class="shimmer-text">Loading feed...</p></div>';
 
   var scopeEl = document.getElementById('feed-scope-toggle');
   if (scopeEl) scopeEl.innerHTML = mkScopeToggle();
@@ -1323,6 +1370,7 @@ function togglePostLike(chId, postId, btn) {
   api('POST', '/channels/' + chId + '/posts/' + postId + '/like').then(function(d) {
     btn.classList.toggle('liked', d.liked);
     btn.innerHTML = _ico('heart',13,2.5)+' '+d.likesCount;
+    popIcon(btn);
   }).catch(function(err) { toast(err.message, 'error'); });
 }
 
@@ -1403,7 +1451,7 @@ function loadProfile(userId) {
   profileUserId = userId || (me && me._id) || null;
   if (!profileUserId) return;
   var content = document.getElementById('profile-content');
-  content.innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
+  content.innerHTML = '<div class="empty-state" style="padding:40px 0"><div class="spinner" style="margin:0 auto 12px"></div><p class="shimmer-text">Loading profile...</p></div>';
   var isOwn = !userId || userId === me._id;
   var endpoint = isOwn ? '/users/me/profile' : '/users/' + userId;
   api('GET', endpoint).then(function(d) {
@@ -1447,11 +1495,14 @@ function renderProfile(u, isOwn) {
   // ── Header ────────────────────────────────────────────────────────────────
   html += '<div class="ig-header">';
   var profileGUrl = gravatarUrl(u.email, 150);
+  html += '<div style="position:relative;flex-shrink:0">';
   if (profileGUrl) {
     html += '<div class="ig-av-ring"><div class="ig-av"><img src="' + esc(profileGUrl) + '" alt="" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'\'"><span style="display:none">' + esc(ini) + '</span></div></div>';
   } else {
     html += '<div class="ig-av-ring"><div class="ig-av">' + esc(ini) + '</div></div>';
   }
+  if (u.verified) html += '<div class="verified-badge" title="Verified">✓</div>';
+  html += '</div>';
   html += '<div class="ig-info">';
 
   // Username + action button below
@@ -1466,9 +1517,9 @@ function renderProfile(u, isOwn) {
 
   // Stats row
   html += '<div class="ig-stats-row">';
-  html += '<div class="ig-stat-item"><span class="ig-stat-num">' + uploadCount + '</span><span class="ig-stat-lbl">resources</span></div>';
-  html += '<div class="ig-stat-item"><span class="ig-stat-num">' + followerCount + '</span><span class="ig-stat-lbl">followers</span></div>';
-  html += '<div class="ig-stat-item"><span class="ig-stat-num">' + followingCount + '</span><span class="ig-stat-lbl">following</span></div>';
+  html += '<div class="ig-stat-item"><span class="ig-stat-num" data-count="' + uploadCount + '">0</span><span class="ig-stat-lbl">resources</span></div>';
+  html += '<div class="ig-stat-item"><span class="ig-stat-num" data-count="' + followerCount + '">0</span><span class="ig-stat-lbl">followers</span></div>';
+  html += '<div class="ig-stat-item"><span class="ig-stat-num" data-count="' + followingCount + '">0</span><span class="ig-stat-lbl">following</span></div>';
   html += '</div>';
 
   // Bio section
@@ -1495,6 +1546,10 @@ function renderProfile(u, isOwn) {
   html += '<div id="profile-tab-content"></div>';
   html += '</div>'; // close ig-profile
   document.getElementById('profile-content').innerHTML = html;
+  document.querySelectorAll('.ig-stat-num[data-count]').forEach(function(el) {
+    animateCountUp(el, parseInt(el.getAttribute('data-count')) || 0);
+  });
+  initTabIndicator('.ig-tabs-bar');
   window._profileUser = u;
   window._profileIsOwn = isOwn;
 }
@@ -1672,12 +1727,14 @@ function toggleLike(id, btn) {
   api('POST', '/resources/' + id + '/like').then(function(d) {
     btn.className = 'btn btn-sm ' + (d.liked ? 'btn-danger' : 'btn-ghost');
     btn.innerHTML = _ico('heart',13,2.5,d.liked)+' '+d.likesCount;
+    popIcon(btn);
   }).catch(function(err) { toast(err.message, 'error'); });
 }
 
 function toggleSave(id, btn) {
   api('POST', '/users/me/save/' + id).then(function(d) {
     btn.className = 'btn btn-sm ' + (d.saved ? 'btn-green' : 'btn-ghost');
+    popIcon(btn);
     toast(d.saved ? 'Resource saved!' : 'Removed from saved', 'info');
     if (me) {
       me.savedResources = me.savedResources || [];

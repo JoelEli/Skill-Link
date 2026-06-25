@@ -348,7 +348,8 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 /* INSTAGRAM-STYLE PROFILE */
 .ig-profile{max-width:935px;margin:0 auto;padding:0 16px 60px}
 .ig-header{display:flex;align-items:flex-start;gap:52px;padding:28px 0 32px}
-.ig-av-ring{flex-shrink:0;width:150px;height:150px;border-radius:50%;background:linear-gradient(45deg,#C6FF34,#8BBF00,#C6FF34);padding:3px;cursor:default}
+@keyframes pulseRotate{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.ig-av-ring{flex-shrink:0;width:150px;height:150px;border-radius:50%;background:linear-gradient(45deg,#C6FF34,#121212,#C6FF34,#121212);background-size:200% 200%;padding:3px;cursor:default;animation:pulseRotate 4s ease-in-out infinite}
 .ig-av{width:100%;height:100%;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;color:var(--text);letter-spacing:-.02em;border:3px solid var(--bg);overflow:hidden}
 .ig-av img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 .ig-info{flex:1;padding-top:4px}
@@ -370,15 +371,16 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 .ig-bio-text{font-size:.875rem;color:var(--text2);margin-bottom:3px;white-space:pre-wrap}
 .ig-uni-line{font-size:.85rem;color:var(--primary-l)}
 /* Tabs */
-.ig-tabs-bar{display:flex;border-top:1px solid var(--border);margin-bottom:4px}
+.ig-tabs-bar{display:flex;border-top:1px solid var(--border);margin-bottom:4px;position:relative}
+.tab-indicator{height:2px;background:var(--primary);position:absolute;bottom:-1px;transition:left .35s cubic-bezier(.4,0,.2,1),width .35s cubic-bezier(.4,0,.2,1)}
 .ptab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 8px;font-size:.73rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);cursor:pointer;border-top:1px solid transparent;margin-top:-1px;background:none;border:none;border-top:1px solid transparent;font-family:inherit;transition:color .15s}
 .ptab:hover{color:var(--text)}
 .ptab.active{color:var(--text);border-top:1px solid var(--text)}
 /* Instagram post grid */
-.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:4px}
-.ig-post{position:relative;aspect-ratio:1/1;overflow:hidden;cursor:pointer;background:var(--card)}
-.ig-post-bg{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:filter .2s}
-.ig-post:hover .ig-post-bg{filter:brightness(.35)}
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:4px}
+.ig-post{position:relative;aspect-ratio:1/1;overflow:hidden;cursor:pointer;background:var(--card);border-radius:12px}
+.ig-post-bg{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:filter .3s,transform .5s}
+.ig-post:hover .ig-post-bg{filter:brightness(.35);transform:scale(1.05)}
 .ig-post-type{font-size:1.8rem;font-weight:900;letter-spacing:-.04em;line-height:1}
 .ig-post-title{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;font-size:.68rem;font-weight:600;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.8));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform:translateY(100%);transition:transform .2s}
 .ig-post:hover .ig-post-title{transform:translateY(0)}
@@ -672,6 +674,13 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 
 /* ─── ANIMATION SYSTEM ─────────────────────────────────────────────────────── */
 @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glassPulse{0%{box-shadow:0 0 0 0 rgba(198,255,52,.2)}50%{box-shadow:0 0 20px 4px rgba(198,255,52,.08)}100%{box-shadow:0 0 0 0 rgba(198,255,52,.2)}}
+@keyframes iconPop{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes shimmerText{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.feed-create:focus-within{animation:glassPulse 2s infinite ease-in-out;border-color:rgba(198,255,52,.3)}
+.anim-pop{animation:iconPop .3s cubic-bezier(.175,.885,.32,1.275)}
+.shimmer-text{background:linear-gradient(90deg,var(--text4) 25%,var(--primary) 50%,var(--text4) 75%);background-size:200% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmerText 3s infinite linear;font-size:.78rem;font-weight:600}
+.verified-badge{position:absolute;bottom:2px;right:2px;width:24px;height:24px;background:var(--primary);border-radius:50%;border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;z-index:2;color:#0A0A0A;font-size:.7rem;font-weight:900;line-height:1}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 @keyframes slideInRight{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
