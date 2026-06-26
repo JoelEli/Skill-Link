@@ -31,10 +31,10 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0A0A0
 .auth-box{width:100%;max-width:440px}
 .auth-box h2{font-size:1.75rem;font-weight:700;color:#E2E8F0;margin-bottom:4px;letter-spacing:-.02em}
 .auth-subtitle{color:#64748B;font-size:.88rem;margin-bottom:32px}
-.auth-tabs{display:flex;background:#1c1b1b;border-radius:8px;padding:3px;margin-bottom:28px;border:1px solid rgba(255,255,255,.05)}
-.auth-tab{flex:1;padding:10px 8px;text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;color:#64748B;transition:all .25s;border-radius:6px}
+.auth-tabs{display:flex;background:#111111;border-radius:10px;padding:4px;margin-bottom:28px;border:1px solid rgba(255,255,255,.08)}
+.auth-tab{flex:1;padding:11px 8px;text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;color:#64748B;transition:all .25s;border-radius:7px}
 .auth-tab:hover{color:#E2E8F0}
-.auth-tab.active{color:#C6FF34;background:#2a2a2a;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.auth-tab.active{color:#C6FF34;background:#1c1c1c;box-shadow:0 2px 6px rgba(0,0,0,.4);border:1px solid rgba(198,255,52,.12)}
 .auth-switch{text-align:center;font-size:.82rem;color:#64748B;margin-top:20px}
 .auth-switch a{color:#C6FF34;cursor:pointer;font-weight:600}
 .auth-switch a:hover{text-decoration:underline}
